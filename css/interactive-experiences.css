@@ -1,0 +1,313 @@
+/* ===================================================================
+   INTERACTIVE EXPERIENCES & 3D CYBER-SOC STYLING
+   Threat Intelligence & Incident Response Keynote Redesign
+   =================================================================== */
+
+/* 1. Mascot Styling & Expressive Motion */
+.cyber-mascot {
+  display: inline-block;
+  filter: drop-shadow(0 4px 12px rgba(0, 242, 254, 0.25));
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+}
+
+.cyber-mascot:hover {
+  transform: translateY(-6px) scale(1.05);
+}
+
+.cyber-mascot.alert-bot {
+  animation: floatBot 3s ease-in-out infinite;
+}
+
+.cyber-mascot.alert-bot.alarm {
+  animation: panicShake 0.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 16px rgba(255, 75, 75, 0.6));
+}
+
+@keyframes floatBot {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes panicShake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-3px, 2px); }
+  50% { transform: translate(3px, -2px); }
+  75% { transform: translate(-2px, -1px); }
+}
+
+/* Interactive mascot bounce upon click */
+.interactive-bounce {
+  animation: mascotClickBounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+@keyframes mascotClickBounce {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.22) translateY(-10px); }
+  70% { transform: scale(0.95) translateY(2px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 2. Three.js 3D Viewport Containers */
+.three-canvas-container {
+  width: 100%;
+  height: 300px;
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.8) 0%, rgba(5, 8, 20, 0.95) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.three-canvas-container:active {
+  cursor: grabbing;
+}
+
+.three-controls-bar {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.three-ctrl-btn {
+  background: rgba(10, 17, 40, 0.85);
+  border: 1px solid var(--cyber-cyan);
+  color: var(--cyber-cyan);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.three-ctrl-btn:hover {
+  background: rgba(0, 242, 254, 0.2);
+  color: #FFF;
+}
+
+.three-node-detail-card {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  background: rgba(5, 8, 20, 0.92);
+  border: 1px solid var(--cyber-cyan);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #F8FAFC;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  animation: popIn 0.2s ease;
+}
+
+.three-canvas-overlay {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--cyber-cyan);
+  pointer-events: none;
+  background: rgba(5, 8, 20, 0.7);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 242, 254, 0.2);
+}
+
+/* 3. Interactive Intel Cycle Pipeline */
+.intel-cycle-container {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.intel-stages-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.intel-stage-node {
+  background: rgba(10, 17, 40, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 6px;
+  padding: 8px 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #94A3B8;
+}
+
+.intel-stage-node:hover {
+  border-color: var(--cyber-cyan);
+  color: #FFF;
+}
+
+.intel-stage-node.active {
+  background: rgba(0, 242, 254, 0.12);
+  border-color: var(--cyber-cyan);
+  color: var(--cyber-cyan);
+  font-weight: 700;
+  box-shadow: 0 0 14px rgba(0, 242, 254, 0.25);
+}
+
+.intel-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.intel-progress-bar {
+  height: 100%;
+  width: 16.6%;
+  background: var(--gradient-cyber);
+}
+
+.intel-stage-desc {
+  background: #020617;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--cyber-cyan);
+  border-radius: 6px;
+  padding: 12px 16px;
+  min-height: 70px;
+  text-align: left;
+}
+
+/* 4. Interactive Phishing Hotspot Dissector */
+.phish-dissector-container {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 75, 75, 0.3);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 10px;
+}
+
+.phish-email-mockup {
+  background: #0F172A;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.phish-hotspot {
+  background: rgba(255, 75, 75, 0.15);
+  border: 1px dashed #FF4B4B;
+  color: #FF8A8A;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  transition: all 0.2s ease;
+  margin: 1px 0;
+}
+
+.phish-hotspot:hover {
+  background: #FF4B4B;
+  color: #050814;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(255, 75, 75, 0.6);
+}
+
+.phish-callout-box {
+  background: #050814;
+  border: 1px solid rgba(255, 75, 75, 0.4);
+  border-left: 3px solid #FF4B4B;
+  border-radius: 6px;
+  padding: 12px 16px;
+  min-height: 60px;
+  text-align: left;
+  margin-top: 10px;
+}
+
+/* 5. Cross-Source Telemetry Correlator */
+.telemetry-pipeline-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.telemetry-step-card {
+  background: rgba(10, 17, 40, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: left;
+  transition: border-color 0.3s ease;
+}
+
+.telemetry-correlation-result {
+  opacity: 0;
+  transform: translateY(15px);
+  background: rgba(0, 230, 118, 0.08);
+  border: 1px solid var(--emerald-pass);
+  border-radius: 8px;
+  padding: 12px 18px;
+  text-align: left;
+}
+
+/* 6. AeroGrid SCADA Breaker Simulator */
+.aerogrid-breaker-panel {
+  background: rgba(15, 23, 42, 0.9);
+  border: 2px solid var(--alert-crimson);
+  border-radius: 10px;
+  padding: 18px;
+  text-align: center;
+  margin-top: 14px;
+}
+
+.aerogrid-status-badge {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.aerogrid-switch-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 13px;
+  color: #FFF;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease;
+}
+
+.aerogrid-switch-btn:hover {
+  transform: scale(1.04);
+}

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DAY 03 — Defensive OSINT, Indicator Lifecycle & STIX 2.1 / TAXII 2.1 Protocols | Threat Intelligence & Incident Response</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Stylesheets (Referenced from shared/) -->
+  <link rel="stylesheet" href="../shared/css/reset.css">
+  <link rel="stylesheet" href="../shared/css/reveal.css">
+  <link rel="stylesheet" href="../shared/css/theme-cyber-soc.css">
+  <link rel="stylesheet" href="../shared/css/animations.css">
+  <link rel="stylesheet" href="../shared/css/interactive-experiences.css">
+  
+  <style>
+    :root {
+      --day-accent: #B388FF;
+    }
+    .telemetry-status-bar {
+      border-bottom: 2px solid var(--day-accent);
+    }
+    .nav-day-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFF;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .nav-day-btn:hover {
+      background: var(--day-accent);
+      color: #050814;
+      border-color: var(--day-accent);
+    }
+    .nav-day-btn.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: transparent;
+    }
+    .portal-home-btn {
+      background: rgba(0, 242, 254, 0.12);
+      border: 1px solid var(--cyber-cyan);
+      color: var(--cyber-cyan);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .portal-home-btn:hover {
+      background: var(--cyber-cyan);
+      color: #050814;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Real-Time Telemetry Bar -->
+  <div class="telemetry-status-bar">
+    <div class="status-left">
+      <a href="../index.html" class="portal-home-btn" title="Return to Course Master Portal">⊞ MASTER PORTAL</a>
+      <div class="status-pill">
+        <span class="live-indicator"></span>
+        <span style="color: var(--day-accent); font-weight: 700;">DAY 03</span>
+      </div>
+      <div class="status-pill">
+        <span>VENUE:</span> <strong style="color: #F8FAFC;">LH3 – 4TH FLOOR</strong>
+      </div>
+      <div class="status-pill">
+        <span>SESSION:</span> <strong style="color: #F8FAFC;">1:00 PM – 5:00 PM</strong>
+      </div>
+    </div>
+    
+    <div class="status-center">
+      <div class="status-pill">
+        <span>FOCUS:</span> <strong id="status-module" style="color: var(--day-accent);">Defensive OSINT, Indicator Lifecycle...</strong>
+      </div>
+    </div>
+    
+    <div class="status-right">
+      <a href="../day-02/index.html" class="nav-day-btn" title="Go to DAY-02">◀ PREV DAY</a>
+      <a href="../day-04/index.html" class="nav-day-btn" title="Go to DAY-04">NEXT DAY ▶</a>
+      <button onclick="toggleShortcutModal()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">KEYS [?]</button>
+      <button onclick="toggleFullScreen()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">FULL [F]</button>
+    </div>
+  </div>
+
+  <!-- Bottom Custom Slide Counter -->
+  <div id="custom-slide-counter" class="custom-slide-counter">DAY 03: SLIDE <span>01</span> / 16</div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div id="shortcut-modal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,8,20,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center;" onclick="if(event.target===this) toggleShortcutModal()">
+    <div style="background: #0F172A; border: 1px solid var(--day-accent); border-radius: 12px; padding: 28px 36px; max-width: 500px; width: 90%; box-shadow: 0 0 40px rgba(0,242,254,0.3); text-align: left;">
+      <h3 style="margin-top: 0; color: #FFF; font-family: var(--font-heading);">⌨️ DAY 03 Navigation Shortcuts</h3>
+      <table style="width: 100%; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); border-collapse: collapse;">
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Space / Right Arrow</td><td>Next Slide / Fragment</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Left Arrow</td><td>Previous Slide</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">F</td><td>Toggle Full-Screen Mode</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Esc / ?</td><td>Close Modal / Help</td></tr>
+      </table>
+      <div style="margin-top: 15px; display: flex; gap: 10px;">
+        <a href="../index.html" style="display: block; text-align: center; flex: 1; padding: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #FFF; text-decoration: none; font-size: 12px;">RETURN TO PORTAL</a>
+        <button onclick="toggleShortcutModal()" style="flex: 1; padding: 8px; background: var(--day-accent); border: none; border-radius: 6px; font-weight: 700; color: #050814; cursor: pointer; font-size: 12px;">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reveal.js Container -->
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- DAY 03 - SLIDE 01: Day 3 Launch & Objectives -->
+      <section data-day="DAY 03" data-module="MOD-03: OSINT & STIX/TAXII" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Module 3">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">MODULE 03 LAUNCH</div>
+            <h2>Open-Source Intelligence & Threat Sharing Standards (STIX 2.1 & TAXII 2.1)</h2>
+            <p>Session ID: SES-03 | Scheduled Net Teaching: 220 Minutes | Refreshment Break: 3:00 PM (20 min)</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">Target Learning Outcomes (PLO-3)</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 10px; line-height: 1.7;">
+                  <li><strong>Defensive OSINT:</strong> Execute passive reconnaissance across DNS, WHOIS, and SSL/TLS.</li>
+                  <li><strong>Indicator Lifecycle:</strong> Track degradation and aging to prevent firewall bloat.</li>
+                  <li><strong>STIX 2.1 Architecture:</strong> Construct valid SDOs, SCOs, and SROs in JSON.</li>
+                  <li><strong>TAXII 2.1 Services:</strong> Query collections, API roots, and status endpoints.</li>
+                  <li><strong>Contextual Enrichment:</strong> Combine Admiralty confidence with recency metrics.</li>
+                  <li><strong>Enterprise Feeds:</strong> Contrast IBM X-Force Exchange with open-source MISP.</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 15px;">Hands-On Milestone: LAB-02</strong>
+                <p style="font-size: 13px; margin-top: 10px;">
+                  Every analyst will write a Python script utilizing the official <code style="color: var(--cyber-cyan);">stix2</code> library to generate a valid STIX 2.1 Threat Bundle for <strong>UNC-PHOENIX</strong>, validate schema compliance, and query TAXII 2.1 collections via <code>taxii2-client</code>.
+                </p>
+                <div style="margin-top: 16px; padding: 10px; background: rgba(0, 242, 254, 0.08); border-radius: 6px; border: 1px dashed var(--cyber-cyan); font-family: var(--font-mono); font-size: 12px; color: var(--cyber-cyan);">
+                  TARGET FILE: unc_phoenix_stix_bundle.json // LAB-02 COMPLETE
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Good afternoon, colleagues, and welcome to Day 3 in LH3. Mid-week is here! I saw several of you debating at the canteen whether filter coffee or tea is the superior fuel for cyber defense. In LH3, both are acceptable as long as your packets are properly inspected! Today we tackle the universal language of threat intelligence: STIX 2.1 and TAXII 2.1.
+          [PEDAGOGY:] HUMOR ANCHOR: Friendly canteen coffee vs. tea debate. Introduce STIX 2.1 as the universal common language.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 02: Defensive OSINT & Passive Recon -->
+      <section data-day="DAY 03" data-module="MOD-03: OSINT & STIX/TAXII" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 3 Concept 1">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-blue">PASSIVE RECONNAISSANCE</div>
+            <h2>Defensive OSINT: Uncovering Infrastructure Without Alerting the Adversary</h2>
+            <p>Gathering evidence from public repositories without touching adversary systems directly.</p>
+            
+            <div class="grid-3" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan);">CERTIFICATE TRANSPARENCY</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Tool: crt.sh / Censys</div>
+                <p style="font-size: 13px;">Public append-only cryptographic logs. Reveals adversary subdomains, staging infrastructure, and issuance times hours before an attack launches.</p>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue);">PASSIVE DNS REPLICATION</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Tool: SecurityTrails / VirusTotal</div>
+                <p style="font-size: 13px;">Historical mapping of domain-to-IP resolutions. Exposes Fast-Flux rotation, hosting tenancy shifts, and related adversary staging domains.</p>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber);">BGP & ASN ROUTING</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Tool: BGPView / Hurricane Electric</div>
+                <p style="font-size: 13px;">Autonomous System Number lookup. Identifies bulletproof hosting providers, transit routes, and geographic staging hubs.</p>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] What is OSINT? OSINT is basically the digital version of your neighborhood relatives! You haven't even received your semester marks card from the university portal yet, but your aunt in Ernakulam already called your mother to ask why you got a B+ in Operating Systems! How did she find out? Passive reconnaissance across public sources! Let us see how defensive security uses those same public signals to track adversary infrastructure.
+          [PEDAGOGY:] HUMOR ANCHOR: The neighborhood relative who knows your marks before you do! Demystifies passive reconnaissance.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 03: Indicator Lifecycle & Aging Dynamics -->
+      <section data-day="DAY 03" data-module="MOD-03: OSINT & STIX/TAXII" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 3 Concept 2">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">OPERATIONAL LIFECYCLE</div>
+            <h2>The Indicator Lifecycle: Managing Expiration & Degradation</h2>
+            <p>Indicators decay over time. Without automated expiration, firewalls suffer catastrophic state bloat.</p>
+            
+            <div class="grid-4" style="margin-top: 24px; font-size: 13px;">
+              <div class="cyber-card">
+                <span class="cyber-badge badge-blue">PHASE 1: DISCOVERED</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Observation</div>
+                <p style="font-size: 12px;">New IP or hash identified in external bulletin or honeypot. Confidence: Pending verification.</p>
+              </div>
+              <div class="cyber-card" style="border-color: var(--alert-crimson);">
+                <span class="cyber-badge badge-crimson">PHASE 2: ACTIVE</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Enforced Blocking</div>
+                <p style="font-size: 12px;">Corroborated by internal telemetry. Pushed to active perimeter blocklists. Lifespan timer starts.</p>
+              </div>
+              <div class="cyber-card">
+                <span class="cyber-badge badge-amber">PHASE 3: DEPRECATED</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Aging Out</div>
+                <p style="font-size: 12px;">Zero adversary traffic observed for 30 days. Removed from active blocklist; retained in SIEM historical hunt index.</p>
+              </div>
+              <div class="cyber-card" style="border-color: var(--emerald-pass);">
+                <span class="cyber-badge badge-cyan">PHASE 4: REVOKED</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Decommissioned</div>
+                <p style="font-size: 12px;">IP confirmed reassigned to legitimate cloud customer. Fully purged from blocklists to prevent false positives.</p>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Notice Phase 3 and Phase 4: Deprecated and Revoked. If your SOC never removes indicators, your firewall state tables become huge and inspection throughput slows to a crawl. Indicators are like milk in a college hostel fridge—they have an expiration date!
+          [PEDAGOGY:] HUMOR ANCHOR: Hostel fridge milk expiration date. Emphasize why indicator aging prevents false positives and firewall latency.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 04: STIX 2.1 Graph Architecture -->
+      <section data-day="DAY 03" data-module="MOD-03: OSINT & STIX/TAXII" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 3 Concept 3">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">OPEN STANDARDS</div>
+            <h2>STIX 2.1 Architecture: SDOs, SCOs & SROs</h2>
+            <p>OASIS Structured Threat Information Expression: JSON graph serialization of threat intelligence.</p>
+            
+            <div class="grid-3" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">SDOs (Domain Objects)</strong>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">The conceptual building blocks</p>
+                <ul style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+                  <li><code>threat-actor</code> (UNC-PHOENIX)</li>
+                  <li><code>attack-pattern</code> (T1059.001)</li>
+                  <li><code>indicator</code> (Pattern match)</li>
+                  <li><code>malware</code> (BlackCat)</li>
+                  <li><code>identity</code> (Victim Org)</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 15px;">SCOs (Cyber Observables)</strong>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">The technical empirical facts</p>
+                <ul style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+                  <li><code>ipv4-addr</code> (198.51.100.45)</li>
+                  <li><code>domain-name</code> (internal-sync.com)</li>
+                  <li><code>file</code> (SHA-256 hash)</li>
+                  <li><code>network-traffic</code> (TLS port 443)</li>
+                  <li><code>user-account</code> (Compromised ID)</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card" style="border-color: var(--neon-amber);">
+                <strong style="color: var(--neon-amber); font-size: 15px;">SROs (Relationship Objects)</strong>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">The connective glue</p>
+                <ul style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+                  <li><code>relationship</code> (uses, indicates, targets)</li>
+                  <li><code>sighting</code> (internal empirical detection)</li>
+                  <li><em>Connects source_ref ➔ target_ref</em></li>
+                  <li>Enables graph visualization!</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] STIX 2.1 is the universal language of threat sharing. Why do we need it? Imagine a college lab where every student writes code in a different format: one in Python, one on a ruled sheet, one in Malayalam, and one carved on the desk! The external examiner would reject everything. STIX 2.1 standardizes SDOs, SCOs, and SROs into clean JSON that every machine can parse.
+          [PEDAGOGY:] HUMOR ANCHOR: Submitting lab records in 4 different handwriting formats vs. standard JSON. Walk through the 3 core STIX object types.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 05: TAXII 2.1 Transport Protocol -->
+      <section data-day="DAY 03" data-module="MOD-03: OSINT & STIX/TAXII" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 3 Concept 4">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-blue">SECURE TRANSPORT</div>
+            <h2>TAXII 2.1: Trusted Automated eXchange of Intelligence Information</h2>
+            <p>The RESTful API protocol engineered specifically to exchange STIX 2.1 bundles over HTTPS.</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">TAXII 2.1 Endpoint Hierarchy:</strong>
+                <div class="terminal-buffer" style="margin: 10px 0; font-size: 12px;">
+                  <div class="terminal-body">
+<span class="terminal-cmd">GET /taxii2/</span> ➔ Server Discovery & Title
+<span class="terminal-cmd">GET /api-root-1/</span> ➔ Max Content Length & Auth
+<span class="terminal-cmd">GET /api-root-1/collections/</span> ➔ List Threat Feeds
+<span class="terminal-cmd">GET /collections/{id}/objects/</span> ➔ Download STIX Bundle
+<span class="terminal-cmd">POST /collections/{id}/objects/</span> ➔ Ingest Intelligence
+                  </div>
+                </div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 15px;">Operational Protocol Mechanics:</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.7;">
+                  <li><strong>Header Requirement:</strong> <code>Accept: application/taxii+json;version=2.1</code></li>
+                  <li><strong>Authentication:</strong> HTTP Basic, API Bearer Tokens, or mTLS certificates.</li>
+                  <li><strong>Pagination:</strong> <code>?limit=100&added_after=2026-10-01T00:00:00Z</code></li>
+                  <li><strong>Delivery Metaphor:</strong> If STIX is the letter, TAXII is the postman delivering it to your firewall!</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] If STIX is the letter, TAXII is the postman. Or better yet: STIX is the hot samosa, and TAXII is the canteen boy who brings it straight to your table at 4:15 PM! It uses pure RESTful HTTPS, JSON headers, and collection endpoints.
+          [PEDAGOGY:] HUMOR ANCHOR: Samosa and canteen delivery boy analogy. Emphasize the required TAXII 2.1 Accept header.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 06: Contextual Enrichment & Scoring -->
+      <section data-day="DAY 03" data-module="MOD-03: OSINT & STIX/TAXII" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 3 Concept 5">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">SCORING ALGORITHM</div>
+            <h2>Contextual Indicator Scoring: Beyond Raw Reputation</h2>
+            <p>Calculating composite confidence from multiple weighted intelligence dimensions.</p>
+            
+            <div class="grid-3" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan);">DIMENSION 1: SOURCE PEDIGREE</strong>
+                <p style="font-size: 13px; margin-top: 6px;">NATO Admiralty Reliability score. Government DFIR bulletin (B) carries vastly greater weight than anonymous pastebins (E/F).</p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-highlight);">Weight: 35% of composite</div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue);">DIMENSION 2: RECENCY & AGING</strong>
+                <p style="font-size: 13px; margin-top: 6px;">First observed vs. Last observed. Indicators decay rapidly: confidence degrades 50% after 14 days without active C2 telemetry.</p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-highlight);">Weight: 30% of composite</div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber);">DIMENSION 3: SIGHTINGS & CONTEXT</strong>
+                <p style="font-size: 13px; margin-top: 6px;">Corroborating sightings in internal SIEM logs or sandbox detonation traces. Multi-source sightings eliminate false positives.</p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-highlight);">Weight: 35% of composite</div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Never rely on a single vendor's reputation score. We calculate a composite score: 35% source pedigree, 30% recency, and 35% internal sightings. That is how enterprise SOCs avoid blocking benign infrastructure.
+          [PEDAGOGY:] Walk through the 3-part composite scoring formula.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 07: Enterprise Threat Feeds: IBM X-Force & MISP -->
+      <section data-day="DAY 03" data-module="MOD-03: OSINT & STIX/TAXII" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 3 Section 3.4">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">ECOSYSTEM COMPARISON</div>
+            <h2>Commercial vs. Open-Source Threat Intelligence Platforms</h2>
+            <p>Integrating commercial scale with community-driven collaborative defense.</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 15px;">IBM X-FORCE EXCHANGE</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.7;">
+                  <li><strong>Scale:</strong> Billions of daily web requests, spam traps, and global sensor networks.</li>
+                  <li><strong>Strengths:</strong> High-fidelity threat group profiling, automated risk scores, commercial SLA.</li>
+                  <li><strong>Integration:</strong> Native integration with QRadar SIEM and SOAR playbooks.</li>
+                  <li><strong>Format:</strong> RESTful API with STIX 2.1 and TAXII 2.1 collection feeds.</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">MISP (MALWARE INFORMATION SHARING PLATFORM)</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.7;">
+                  <li><strong>Scale:</strong> Open-source, peer-to-peer threat sharing communities globally.</li>
+                  <li><strong>Strengths:</strong> Complete on-premise data sovereignty, zero licensing cost, flexible tagging.</li>
+                  <li><strong>Integration:</strong> OpenCTI, Zeek, Suricata, and custom Python ingestion pipelines.</li>
+                  <li><strong>Format:</strong> MISP JSON, STIX 2.1, CSV, Snort, Suricata, and Bro/Zeek formats.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Notice how IBM X-Force and MISP complement each other. IBM gives you global enterprise scale and verified research. MISP gives you trusted sector-specific community sharing and complete data sovereignty.
+          [PEDAGOGY:] Highlight both IBM X-Force and MISP as realistic tools in an enterprise security architecture.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 08: Demonstration 3: Python STIX 2.1 Bundle Generation -->
+      <section data-day="DAY 03" data-module="MOD-03: OSINT & STIX/TAXII" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Demonstration 3">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">TRAINER DEMONSTRATION</div>
+            <h2>Demo 3: Programmatic STIX 2.1 Generation via Python</h2>
+            <p>Creating verified SDOs, SCOs, and SROs using the official <code>stix2</code> Python SDK.</p>
+            
+            <div class="terminal-buffer" style="margin-top: 16px;">
+              <div class="terminal-header">
+                <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                <span>generate_stix_bundle.py // PYTHON 3.11</span>
+              </div>
+              <div class="terminal-body" style="font-size: 12px;">
+<span style="color: #64748B;"># Import official OASIS stix2 library:</span>
+<span class="terminal-cmd">from stix2 import ThreatActor, Indicator, Relationship, Bundle</span>
+
+<span style="color: #64748B;"># 1. Define Threat Actor SDO:</span>
+actor = ThreatActor(name=<span style="color: #A5D6A7;">"UNC-PHOENIX"</span>, threat_actor_types=[<span style="color: #A5D6A7;">"cybercrime"</span>])
+
+<span style="color: #64748B;"># 2. Define Indicator SDO with STIX Pattern:</span>
+indicator = Indicator(indicator_types=[<span style="color: #A5D6A7;">"malicious-activity"</span>],
+                      pattern=<span style="color: #A5D6A7;">"[ipv4-addr:value = '198.51.100.45']"</span>, pattern_type=<span style="color: #A5D6A7;">"stix"</span>)
+
+<span style="color: #64748B;"># 3. Connect via SRO Relationship:</span>
+rel = Relationship(source_ref=indicator.id, relationship_type=<span style="color: #A5D6A7;">"indicates"</span>, target_ref=actor.id)
+
+<span style="color: #64748B;"># 4. Export Validated Bundle:</span>
+bundle = Bundle(objects=[actor, indicator, rel])
+print(bundle.serialize(pretty=True))
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Look at the terminal code on screen. In just ten lines of Python using the stix2 library, we construct a ThreatActor, an Indicator with a formal STIX pattern, and bind them with an 'indicates' relationship into a valid Bundle.
+          [PEDAGOGY:] Demonstrate the clean syntax of the Python stix2 library. Show that STIX is just readable JSON under the hood.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 09: LAB 02 (Part 1/7): Introduction & Objectives -->
+      <section data-day="DAY 03" data-module="MOD-03: STIX/TAXII & IOC ENRICHMENT" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 2 — Section 2.1">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-blue">LAB-02: STEP 1 OF 7 // SPECIFICATION & OBJECTIVES</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">IOC Enrichment & Contextual Threat Scoring</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Defanging raw telemetry, algorithmic risk scoring, and OASIS STIX 2.1 bundle construction.</p>
+                
+                <div class="grid-3" style="margin-top: 18px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">🎯 Core Learning Objectives</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Parse, normalize, and safely defang heterogeneous indicators of compromise.</li>
+                      <li>Execute automated risk scoring using multi-factor weighted reputation logic.</li>
+                      <li>Construct and validate OASIS STIX 2.1 JSON intelligence bundles in Python.</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⏱️ Parameters & Scope</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Estimated Duration:</strong> 85 Minutes.</li>
+                      <li><strong>Instructional Framework:</strong> IBM ICE & OASIS STIX 2.1 Standard.</li>
+                      <li><strong>PLO Mapping:</strong> PLO-2 (Dissecting and enriching IoCs using STIX 2.1).</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">📦 Required Deliverables</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Completed <code>enrich_indicators.py</code> Python script.</li>
+                      <li>Validated STIX 2.1 JSON bundle: <code>student_bundle_&lt;id&gt;.json</code>.</li>
+                      <li>Calculated Threat Scoring Table with Critical/Suspicious/Low tiers.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Welcome to Day 3's practical lab. Today you will bridge the gap between raw, messy indicators and machine-readable threat intelligence using the OASIS STIX 2.1 standard.
+          [PEDAGOGY:] Emphasize that without defanging, automated chat systems or email scanners might accidentally resolve malicious links.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 10: LAB 02 (Part 2/7): Environment Preparation -->
+      <section data-day="DAY 03" data-module="MOD-03: STIX/TAXII & IOC ENRICHMENT" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 2 — Section 2.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-02: STEP 2 OF 7 // WORKSTATION PREPARATION</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Virtual Environment & Python Package Verification</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Activating the dedicated SOC virtual environment and verifying STIX 2.1 libraries.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">💻 Environment Configuration</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Virtual Environment:</td><td><code>C:\Threat_Intel_IR_2026\venv_soc\</code></td></tr>
+                      <tr><td style="color: #FFF;">Python Runtime:</td><td>Python 3.12 64-bit</td></tr>
+                      <tr><td style="color: #FFF;">Core Libraries:</td><td><code>stix2 (v3.0.1)</code>, <code>requests</code>, <code>pandas</code></td></tr>
+                      <tr><td style="color: #FFF;">Dataset:</td><td><code>stix_bundle_apt_example.json</code></td></tr>
+                    </table>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⚡ Pre-Flight Verification Commands</strong>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Run in PowerShell to activate environment and verify stix2:</p>
+                    <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># 1. Activate dedicated SOC Python virtual environment</span>
+& "C:\Threat_Intel_IR_2026\venv_soc\Scripts\Activate.ps1"
+<span class="terminal-cmd"># 2. Test stix2 library availability and version</span>
+python -c "import stix2; print('STIX2 Ready: ' + stix2.__version__)"
+                      </div>
+                    </div>
+                    <div style="font-size: 10px; color: var(--emerald-pass); margin-top: 4px;">✓ Expected response: 'STIX2 Ready: 3.0.1'</div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Activate your PowerShell virtual environment. Make sure you see (venv_soc) in your prompt before running any scripts.
+          [PEDAGOGY:] Check that students are running inside venv_soc so package dependencies are isolated from system Python.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 11: LAB 02 (Part 3/7): Step-by-Step Procedure -->
+      <section data-day="DAY 03" data-module="MOD-03: STIX/TAXII & IOC ENRICHMENT" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 2 — Section 2.4">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-amber">LAB-02: STEP 3 OF 7 // EXECUTION PROTOCOL</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">3-Phase Practical Enrichment Protocol</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Defang raw telemetry, apply weighted scoring, and serialize STIX 2.1 bundles.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">PHASE 1: Indicator Parsing & Defanging (Minutes 00–25)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Open <code>enrich_indicators.py</code> in VS Code.</li>
+                      <li>Implement string defanging: Replace dots with <code>[.]</code> and protocol prefixes with <code>hxxp://</code>.</li>
+                      <li>Parse raw target indicators: IP <code>203.0.113.88</code>, Domain <code>login-portal-auth365.com</code>, and SHA-256 hash.</li>
+                    </ol>
+                  </div>
+                  
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--electric-blue); font-size: 12px;">PHASE 2: Automated Threat Scoring Logic (Minutes 25–55)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Apply the weighted scoring formula: <code>Score = (Age_Weight * 0.3) + (Reputation_Weight * 0.4) + (Sighting_Weight * 0.3)</code>.</li>
+                      <li>Classify into actionable risk tiers: Critical (80–100 -> EDR block), Suspicious (50–79 -> sandbox), Low (0–49).</li>
+                    </ol>
+                  </div>
+
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">PHASE 3: OASIS STIX 2.1 Bundle Construction (Minutes 55–85)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Instantiate STIX 2.1 <code>Indicator</code> using pattern <code>[domain-name:value = 'login-portal-auth365.com']</code>.</li>
+                      <li>Instantiate <code>ThreatActor</code> for <code>UNC-PHOENIX</code>.</li>
+                      <li>Create SRO <code>Relationship</code> with <code>relationship_type='indicates'</code> and serialize into a <code>Bundle</code>.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Walk through the Python script. Notice how the stix2 library enforces exact syntax — the pattern expression requires square brackets and single quotes inside double quotes.
+          [PEDAGOGY:] Guide students through the STIX pattern grammar: [domain-name:value = 'x'] is standard OASIS syntax.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 12: LAB 02 (Part 4/7): Expected Output & STIX Schema -->
+      <section data-day="DAY 03" data-module="MOD-03: STIX/TAXII & IOC ENRICHMENT" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 2 — Section 2.5">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-green">LAB-02: STEP 4 OF 7 // VERIFIED ARTIFACTS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Expected Serialized STIX 2.1 JSON Bundle</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Verify your output against this validated OASIS STIX 2.1 JSON extract.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div>
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">Serialized STIX 2.1 JSON Extract:</strong>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px; max-height: 240px; overflow-y: auto;">
+                      <div class="terminal-body">
+{
+  "type": "bundle",
+  "id": "bundle--3d92b0fa-9811-477d-b2a1-fae120893b11",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f",
+      "created": "2026-10-28T09:15:00.000Z",
+      "name": "UNC-PHOENIX C2 Beacon Domain",
+      "pattern": "[domain-name:value = 'login-portal-auth365.com']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-26T00:00:00Z"
+    },
+    {
+      "type": "threat-actor",
+      "spec_version": "2.1",
+      "id": "threat-actor--b210a4df-6d73-41bb-927b-23a9d9401823",
+      "name": "UNC-PHOENIX",
+      "threat_actor_types": ["cybercrime", "espionage"]
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--c501e4a1-7b92-48cd-b12a-394017f8a123",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f",
+      "target_ref": "threat-actor--b210a4df-6d73-41bb-927b-23a9d9401823"
+    }
+  ]
+}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">What to Inspect & Verify:</strong>
+                    <div class="cyber-card" style="margin-top: 6px; font-size: 11px; line-height: 1.6;">
+                      <ul style="color: var(--text-secondary); padding-left: 16px;">
+                        <li><strong>Canonical UUIDv4:</strong> Every STIX object ID must begin with its type prefix followed by a valid UUID (e.g. <code>indicator--&lt;uuid&gt;</code>).</li>
+                        <li><strong>Referential Integrity:</strong> In the relationship object, <code>source_ref</code> must exactly equal the indicator ID, and <code>target_ref</code> must equal the threat-actor ID.</li>
+                        <li><strong>Threat Score Output:</strong> Domain score must compute to <strong>86/100 (Critical)</strong>.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Look at the relationship object: source_ref points to the indicator, target_ref points to the actor. That is how STIX constructs a graph of intelligence rather than isolated flat records.
+          [PEDAGOGY:] Ask the class: 'What happens if a SIEM receives an indicator without an expiration date?' Explain IOC rot.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 13: LAB 02 (Part 5/7): Technical Interpretation -->
+      <section data-day="DAY 03" data-module="MOD-03: STIX/TAXII & IOC ENRICHMENT" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 2 — Section 2.5.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-02: STEP 5 OF 7 // ANALYTICAL SYNTHESIS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Intelligence Operationalization & Scoring Rationale</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">How weighted scoring drives automated SIEM/EDR containment workflows.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">🎯 Operational Decision Matrix</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: var(--alert-crimson);">Score 80–100:</td><td><strong>Automated Block:</strong> Immediate boundary firewall DNS sinkhole & EDR network isolation.</td></tr>
+                      <tr><td style="color: var(--neon-amber);">Score 50–79:</td><td><strong>Suspicious Monitoring:</strong> High-priority sandbox execution & proxy logging alert.</td></tr>
+                      <tr><td style="color: var(--emerald-pass);">Score 0–49:</td><td><strong>Baseline Log:</strong> Standard audit retention, no active blocking.</td></tr>
+                    </table>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">💡 Why STIX 2.1 Over CSV Feeds?</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>CSVs contain bare strings without confidence, expiration, or context.</li>
+                      <li>STIX 2.1 bundles capture the complete relationship graph: Which malware family uses this IP? Which campaign operates this C2?</li>
+                      <li>Enables TAXII 2.1 automated machine-to-machine exchange across trusted defense communities.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] When an analyst manually blocks 500 IPs from a CSV, they are doing janitorial work. When your TAXII server ingests STIX bundles and feeds your firewall based on dynamic score tiers, you have achieved modern CTI engineering.
+          [PEDAGOGY:] Reinforce that threat scoring solves alert fatigue by filtering out low-confidence noise.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 14: LAB 02 (Part 6/7): Troubleshooting & Recovery -->
+      <section data-day="DAY 03" data-module="MOD-03: STIX/TAXII & IOC ENRICHMENT" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 2 — Section 2.7">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-red">LAB-02: STEP 6 OF 7 // ERROR RESOLUTION & RECOVERY</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Common STIX Python Errors & Diagnostics</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Resolving pattern syntax exceptions and serialization bugs.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 12px;">Issue 1: stix2.exceptions.InvalidValueError in Pattern</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Occurs if STIX pattern quotes are malformed or missing brackets.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># INCORRECT: pattern="domain-name:value = 'x'"</span>
+<span class="terminal-cmd"># CORRECT SYNTAX:</span>
+pattern="[domain-name:value = 'login-portal-auth365.com']"
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 12px;">Issue 2: ModuleNotFoundError: No module named 'stix2'</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Script was run using global Python interpreter instead of venv_soc.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Recovery: Explicitly invoke python inside the venv path</span>
+& "C:\Threat_Intel_IR_2026\venv_soc\Scripts\python.exe" enrich_indicators.py
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] If you get an InvalidValueError, check your quotation marks inside the pattern string. STIX patterns require square brackets around the object path.
+          [PEDAGOGY:] Guide students to inspect the exact exception stack trace to locate the failing line in their Python script.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 15: LAB 02 (Part 7/7): Completion & Assessment -->
+      <section data-day="DAY 03" data-module="MOD-03: STIX/TAXII & IOC ENRICHMENT" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 2 — Section 2.6">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-02: STEP 7 OF 7 // VERIFICATION & GRADING</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Deliverable Checklist & Assessment Rubric</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Ensure all script outputs and serialized JSON bundles are saved.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">📋 Completion Checklist</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.8;">
+                      <li>[ ] Defanging function correctly defangs IP, domain, and URL strings.</li>
+                      <li>[ ] Weighted scoring formula generates numerical threat scores for all 3 indicators.</li>
+                      <li>[ ] Validated STIX 2.1 JSON file <code>student_bundle_&lt;id&gt;.json</code> saved in lab root.</li>
+                      <li>[ ] Zero schema validation errors reported by <code>stix2.validator</code>.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">⚖️ Assessment Rubric (100 Points)</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Defanging & String Normalization:</td><td><strong>30 Pts</strong> (Clean regex implementation)</td></tr>
+                      <tr><td style="color: #FFF;">STIX 2.1 Schema Validity:</td><td><strong>40 Pts</strong> (Valid Bundle, SDOs, SROs & UUIDs)</td></tr>
+                      <tr><td style="color: #FFF;">Threat Scoring Rationale:</td><td><strong>30 Pts</strong> (Correct multi-factor calculation)</td></tr>
+                      <tr><td style="color: var(--cyber-cyan);">Total Passing Standard:</td><td><strong>75% or higher</strong></td></tr>
+                    </table>
+                  </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 16px;">
+                  <span class="cyber-badge badge-green" style="font-size: 12px; padding: 6px 18px;">LAB-02 OFFICIAL COMPLETION VERIFIED // PROCEED TO KNOWLEDGE CHECK</span>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Ensure your STIX JSON bundle is serialized with pretty-printing enabled. Pod leads, please verify that student scripts run with zero syntax errors.
+          [PEDAGOGY:] Check that the relationship ID correctly links the two SDOs together.
+        </aside>
+      </section>
+
+      <!-- DAY 03 - SLIDE 16: Day 3 Knowledge Check -->
+      <section data-day="DAY 03" data-module="MOD-03: OSINT & STIX/TAXII" data-session="1:00 PM – 5:00 PM" data-ref="Trainer Handbook Section 3.7">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">END-OF-DAY CHECKPOINT</div>
+            <h2>Day 3 Knowledge Check: Standards & Ingestion</h2>
+            <p>Verify your mastery of STIX and TAXII before we move into engine-room telemetry.</p>
+            
+            <div class="interactive-decision-box" style="margin-top: 20px;">
+              <strong style="color: #FFF; font-size: 15px;">Question for Pod 1 & Pod 2:</strong>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 8px 0 14px 0;">
+                Why does STIX 2.1 strictly separate Cyber Observable Objects (SCOs) like an IPv4 address from Indicator SDOs?
+              </p>
+              <div class="decision-options">
+                <button class="decision-btn" onclick="selectDecision(this, false, 'An IP is not inherently malicious. A raw IP address is just a network observable fact.')">
+                  <span>A) Because every IPv4 address observed in threat intelligence is automatically malicious.</span>
+                  <span>➔</span>
+                </button>
+                <button class="decision-btn" onclick="selectDecision(this, true, 'Correct! An IPv4 address is an objective network observable (SCO). It only becomes an Indicator (SDO) when bound to an explicit detection pattern, time window, and confidence rationale.')">
+                  <span>B) Because an IP is an objective observable fact. It only becomes an Indicator when paired with malicious context and detection patterns.</span>
+                  <span>➔</span>
+                </button>
+              </div>
+              <div class="decision-explanation" style="margin-top: 12px; font-size: 13px; font-family: var(--font-mono);"></div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Pod 1 and Pod 2, review the question. Why does STIX separate observables from indicators? Exactly! An IP address is just an observable fact. It only becomes an indicator when bound to a malicious pattern. That distinction is the core of modern threat sharing.
+          [PEDAGOGY:] Reinforce the SCO vs SDO distinction. Bridge smoothly to Day 4: telemetry correlation.
+        </aside>
+      </section>
+
+
+      <!-- DAY 03 - CONCLUSION & PORTAL RETURN -->
+      <section data-day="DAY 03" data-module="WRAP-UP & ADJOURNMENT" data-session="1:00 PM – 5:00 PM" data-ref="Course Syllabus">
+        <div style="text-align: center; padding: 30px 10px;">
+          <div class="cyber-badge badge-purple" style="margin-bottom: 15px;">DAY 03 ADJOURNMENT</div>
+          <h2>Session Concluded: Defensive OSINT, Indicator Lifecycle & STIX 2.1 / TAXII 2.1 Protocols</h2>
+          <p style="color: var(--text-secondary); max-width: 780px; margin: 0 auto 25px auto; font-size: 15px;">
+            You have completed all planned instructional milestones, practical demonstrations, and lab exercises for Wednesday, 28 October 2026.
+          </p>
+          
+          <div class="grid-2" style="max-width: 800px; margin: 0 auto 30px auto; text-align: left;">
+            <div class="cyber-card">
+              <strong style="color: var(--day-accent); font-size: 14px;">Today's Completed Practical Milestones</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                DEMO-03: Python stix2 | LAB-02: Threat Intel Feeds, STIX 2.1 & TAXII 2.1
+              </div>
+            </div>
+            <div class="cyber-card">
+              <strong style="color: var(--neon-amber); font-size: 14px;">Next Session Briefing</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                Multi-Source Enterprise Telemetry Correlation & Sigma Detection Rules
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: flex; justify-content: center; gap: 15px;">
+            <a href="../index.html" class="portal-home-btn" style="padding: 10px 24px; font-size: 13px;">⊞ RETURN TO MASTER PORTAL</a>
+            <a href="../day-04/index.html" class="nav-day-btn" style="padding: 10px 24px; font-size: 13px; background: var(--day-accent); color: #050814; font-weight: bold;">LAUNCH DAY 04 ▶</a>
+          </div>
+        </div>
+      </section>
+    
+    </div>
+  </div>
+
+  <!-- Shared Script Engines: Reveal.js, GSAP, Three.js, Mascots & Narratives -->
+  <script src="../shared/js/reveal.js"></script>
+  <script src="../shared/js/gsap.min.js"></script>
+  <script src="../shared/js/three.min.js"></script>
+  <script src="../shared/js/characters.js"></script>
+  <script src="../shared/js/cyber-3d.js"></script>
+  <script src="../shared/js/gsap-narratives.js"></script>
+  <script src="../shared/js/presentation-app.js"></script>
+  <script>
+    Reveal.on('slidechanged', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 03: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+    Reveal.on('ready', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 03: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+  </script>
+</body>
+</html>

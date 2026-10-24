@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DAY 01 — CTI Fundamentals, Threat Actor Profiling & The Diamond Model | Threat Intelligence & Incident Response</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Stylesheets (Referenced from shared/) -->
+  <link rel="stylesheet" href="../shared/css/reset.css">
+  <link rel="stylesheet" href="../shared/css/reveal.css">
+  <link rel="stylesheet" href="../shared/css/theme-cyber-soc.css">
+  <link rel="stylesheet" href="../shared/css/animations.css">
+  <link rel="stylesheet" href="../shared/css/interactive-experiences.css">
+  
+  <style>
+    :root {
+      --day-accent: #00F2FE;
+    }
+    .telemetry-status-bar {
+      border-bottom: 2px solid var(--day-accent);
+    }
+    .nav-day-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFF;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .nav-day-btn:hover {
+      background: var(--day-accent);
+      color: #050814;
+      border-color: var(--day-accent);
+    }
+    .nav-day-btn.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: transparent;
+    }
+    .portal-home-btn {
+      background: rgba(0, 242, 254, 0.12);
+      border: 1px solid var(--cyber-cyan);
+      color: var(--cyber-cyan);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .portal-home-btn:hover {
+      background: var(--cyber-cyan);
+      color: #050814;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Real-Time Telemetry Bar -->
+  <div class="telemetry-status-bar">
+    <div class="status-left">
+      <a href="../index.html" class="portal-home-btn" title="Return to Course Master Portal">⊞ MASTER PORTAL</a>
+      <div class="status-pill">
+        <span class="live-indicator"></span>
+        <span style="color: var(--day-accent); font-weight: 700;">DAY 01</span>
+      </div>
+      <div class="status-pill">
+        <span>VENUE:</span> <strong style="color: #F8FAFC;">LH3 – 4TH FLOOR</strong>
+      </div>
+      <div class="status-pill">
+        <span>SESSION:</span> <strong style="color: #F8FAFC;">1:00 PM – 5:00 PM</strong>
+      </div>
+    </div>
+    
+    <div class="status-center">
+      <div class="status-pill">
+        <span>FOCUS:</span> <strong id="status-module" style="color: var(--day-accent);">CTI Fundamentals, Threat Actor Profi...</strong>
+      </div>
+    </div>
+    
+    <div class="status-right">
+      <span class="nav-day-btn disabled">◀ START</span>
+      <a href="../day-02/index.html" class="nav-day-btn" title="Go to DAY-02">NEXT DAY ▶</a>
+      <button onclick="toggleShortcutModal()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">KEYS [?]</button>
+      <button onclick="toggleFullScreen()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">FULL [F]</button>
+    </div>
+  </div>
+
+  <!-- Bottom Custom Slide Counter -->
+  <div id="custom-slide-counter" class="custom-slide-counter">DAY 01: SLIDE <span>01</span> / 22</div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div id="shortcut-modal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,8,20,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center;" onclick="if(event.target===this) toggleShortcutModal()">
+    <div style="background: #0F172A; border: 1px solid var(--day-accent); border-radius: 12px; padding: 28px 36px; max-width: 500px; width: 90%; box-shadow: 0 0 40px rgba(0,242,254,0.3); text-align: left;">
+      <h3 style="margin-top: 0; color: #FFF; font-family: var(--font-heading);">⌨️ DAY 01 Navigation Shortcuts</h3>
+      <table style="width: 100%; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); border-collapse: collapse;">
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Space / Right Arrow</td><td>Next Slide / Fragment</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Left Arrow</td><td>Previous Slide</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">F</td><td>Toggle Full-Screen Mode</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Esc / ?</td><td>Close Modal / Help</td></tr>
+      </table>
+      <div style="margin-top: 15px; display: flex; gap: 10px;">
+        <a href="../index.html" style="display: block; text-align: center; flex: 1; padding: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #FFF; text-decoration: none; font-size: 12px;">RETURN TO PORTAL</a>
+        <button onclick="toggleShortcutModal()" style="flex: 1; padding: 8px; background: var(--day-accent); border: none; border-radius: 6px; font-weight: 700; color: #050814; cursor: pointer; font-size: 12px;">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reveal.js Container -->
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- DAY 01 - SLIDE 01: Title Keynote -->
+      <section data-day="DAY 01" data-module="COURSE LAUNCH" data-session="1:00 PM – 5:00 PM" data-ref="Course Overview & Persona">
+
+  <div style="text-align: center; padding: 25px 20px;">
+    <div style="display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 12px;">
+      <div id="mascot-title-detective"></div>
+      <div class="cyber-badge badge-cyan animate-fade-up">OPERATIONAL CYBERSECURITY IMMERSION</div>
+      <div id="mascot-title-guardian"></div>
+    </div>
+    <h1 class="animate-fade-up delay-1" style="font-size: 2.6em; margin-bottom: 8px;">Threat Intelligence &<br><span style="color: var(--cyber-cyan);">Incident Response</span></h1>
+    <p class="animate-fade-up delay-2" style="font-size: 1.1em; color: var(--text-secondary); max-width: 800px; margin: 0 auto 24px auto;">
+      Transforming Alert Janitors into Adversary-Centric Defenders Across Multi-Source Enterprise Telemetry
+    </p>
+    
+    <div class="grid-3 animate-fade-up delay-3" style="max-width: 900px; margin: 0 auto; text-align: left;">
+      <div class="cyber-card">
+        <div style="color: var(--cyber-cyan); font-family: var(--font-mono); font-size: 11px;">TRAINING VENUE</div>
+        <div style="font-size: 15px; font-weight: 700; color: #FFF; margin-top: 4px;">LH3 – 4th Floor</div>
+        <div style="color: var(--text-muted); font-size: 12px;">SOC Pod Setup (24 Workstations)</div>
+      </div>
+      <div class="cyber-card">
+        <div style="color: var(--electric-blue); font-family: var(--font-mono); font-size: 11px;">SCHEDULE & VOLUME</div>
+        <div style="font-size: 15px; font-weight: 700; color: #FFF; margin-top: 4px;">26–31 October 2026</div>
+        <div style="color: var(--text-muted); font-size: 12px;">26.5h Gross / 23.4h Net (6 Days)</div>
+      </div>
+      <div class="cyber-card">
+        <div style="color: var(--neon-amber); font-family: var(--font-mono); font-size: 11px;">LEAD INSTRUCTOR</div>
+        <div style="font-size: 15px; font-weight: 700; color: #FFF; margin-top: 4px;">Gopinath A</div>
+        <div style="color: var(--text-muted); font-size: 12px;">Chief AI Knowledge Architect</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    setTimeout(() => {
+      const d = document.getElementById('mascot-title-detective');
+      const g = document.getElementById('mascot-title-guardian');
+      if (d && window.CyberCharacters) d.innerHTML = window.CyberCharacters.getDetective('neutral', 65, 65);
+      if (g && window.CyberCharacters) g.innerHTML = window.CyberCharacters.getGuardian('defending', 65, 65);
+    }, 100);
+  </script>
+
+        <aside class="notes">
+          [SAY:] Good afternoon, colleagues, and welcome to Venue LH3 on the 4th Floor. My name is Gopinath, and over the next six days, we will be working together on an intensive, operational immersion into Threat Intelligence and Incident Response. Whether you are working as a SOC analyst, a threat researcher, a security engineer, or academic faculty, this program is engineered to build battle-tested capabilities.
+          [PEDAGOGY:] Establish instructor credibility immediately. Acknowledge the room's energy and set an authoritative, encouraging tone.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 02: Alert Janitors vs. Threat Hunters -->
+      <section data-day="DAY 01" data-module="COURSE PHILOSOPHY" data-session="1:00 PM – 5:00 PM" data-ref="Trainer Handbook Section 1.2">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-crimson">OPERATIONAL REALITY CHECK</div>
+            <h2>The Enterprise Dilemma: Alert Janitor vs. Threat Hunter</h2>
+            <p>Every single day, an enterprise SOC ingests millions of events. How your team responds defines your security posture.</p>
+            
+            <div class="grid-2" style="margin-top: 24px;">
+              <div class="cyber-card alert-card">
+                <div style="color: var(--alert-crimson); font-family: var(--font-mono); font-weight: 700; font-size: 13px;">❌ THE ALERT JANITOR (REACTIVE TRAP)</div>
+                <ul style="font-size: 14px; color: var(--text-secondary); margin-top: 12px; line-height: 1.7;">
+                  <li>Treats every IP address as an isolated emergency.</li>
+                  <li>Blindly copies indicators into perimeter blocklists.</li>
+                  <li>Measures success by tickets closed per hour.</li>
+                  <li>Leaves the SOC completely blind when the adversary switches IPs.</li>
+                  <li><em>Adversary cost to bypass: 15 seconds and four cents.</em></li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card intel-card">
+                <div style="color: var(--cyber-cyan); font-family: var(--font-mono); font-weight: 700; font-size: 13px;">✅ THE ADVERSARY-CENTRIC DEFENDER</div>
+                <ul style="font-size: 14px; color: var(--text-secondary); margin-top: 12px; line-height: 1.7;">
+                  <li>Uncovers the human operator behind the terminal.</li>
+                  <li>Maps adversary intent, infrastructure, and capabilities.</li>
+                  <li>Breaks adversary TTPs using MITRE ATT&CK and D3FEND.</li>
+                  <li>Preserves forensic evidence without destroying volatile memory.</li>
+                  <li><em>Adversary cost to bypass: complete campaign rebuilding.</em></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] An alert sounds, an IP address flashes crimson on a monitor, a dashboard announces that 50,000 bad indicators were ingested today. And what does the average tier-1 analyst do? They copy the IP into a perimeter blocklist, close the ticket, and move to the next alert. Colleagues, that is not cybersecurity. That is alert janitorial work. Real defense begins when you understand the human adversary.
+          [PEDAGOGY:] Contrast reactive alert janitorial work with strategic threat hunting. Disarm the misconception that closing alerts equals true security.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 03: Master Course Delivery Roadmap -->
+      <section data-day="DAY 01" data-module="COURSE ROADMAP" data-session="1:00 PM – 5:00 PM" data-ref="Trainer Handbook Section 1.3">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-blue">SIX-DAY IMMERSION ROADMAP</div>
+            <h2>Master Course Delivery Roadmap & Hands-on Labs</h2>
+            <p>26.50 Gross Hours | 23.42 Net Instructional Hours (1,405 Net Minutes) across 8 Core Modules.</p>
+            
+            <div class="grid-3" style="font-size: 12px; margin-top: 18px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan);">DAY 1 (26 OCT) • 1:00–5:00 PM</strong>
+                <div style="color: #FFF; font-weight: 600; margin-top: 4px;">CTI Fundamentals & Diamond Model</div>
+                <div style="color: var(--text-muted); margin-top: 4px;">LAB-01: Admiralty Scoring & AlienVault OTX</div>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue);">DAY 2 (27 OCT) • 1:00–5:00 PM</strong>
+                <div style="color: #FFF; font-weight: 600; margin-top: 4px;">Threat Modeling & ATT&CK Matrix</div>
+                <div style="color: var(--text-muted); margin-top: 4px;">LAB-03: ATT&CK Navigator Layer Algebra</div>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--matrix-teal);">DAY 3 (28 OCT) • 1:00–5:00 PM</strong>
+                <div style="color: #FFF; font-weight: 600; margin-top: 4px;">Defensive OSINT & STIX/TAXII</div>
+                <div style="color: var(--text-muted); margin-top: 4px;">LAB-02: STIX 2.1 Bundle Construction</div>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber);">DAY 4 (29 OCT) • 1:00–5:00 PM</strong>
+                <div style="color: #FFF; font-weight: 600; margin-top: 4px;">Multi-Source Telemetry & Sigma</div>
+                <div style="color: var(--text-muted); margin-top: 4px;">LAB-04: Sysmon, Zeek & pySigma Rules</div>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--alert-crimson);">DAY 5 (30 OCT) • 2:00–5:00 PM</strong>
+                <div style="color: #FFF; font-weight: 600; margin-top: 4px;">Incident Triage & Forensics</div>
+                <div style="color: var(--text-muted); margin-top: 4px;">LAB-06: KAPE Triage & Timestomp Forensics</div>
+              </div>
+              <div class="cyber-card" style="border: 1px solid var(--cyber-cyan);">
+                <strong style="color: var(--purple-intel);">DAY 6 (31 OCT) • 9:30 AM–5:00 PM</strong>
+                <div style="color: #FFF; font-weight: 600; margin-top: 4px;">Saturday Capstone Intensive</div>
+                <div style="color: var(--text-muted); margin-top: 4px;">LAB-05/07/08: Phishing, SOAR & AeroGrid APT</div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Here is our flight plan for the week. Notice the progression: we start with intelligence fundamentals on Day 1, move to behavioral frameworks on Day 2, standards on Day 3, engine-room telemetry on Day 4, forensic triage on Day 5, and culminate in our 7.5-hour Saturday Capstone intensive.
+          [PEDAGOGY:] Set clear trajectory expectations. Highlight that Saturday is a marathon capstone bringing every skill together.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 04: Classroom Operating Rules & Culture -->
+      <section data-day="DAY 01" data-module="CLASSROOM NORMS" data-session="1:00 PM – 5:00 PM" data-ref="Trainer Delivery Script - Section C">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">CAMPUS LAB REALITY</div>
+            <h2>Classroom Ground Rules: Collaboration Over Competition</h2>
+            <p>Welcome to LH3 – 4th Floor. We are operating as a unified Security Operations Center.</p>
+            
+            <div class="grid-3" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <div style="font-size: 24px; margin-bottom: 8px;">🔋</div>
+                <strong style="color: #FFF;">The Power Rule</strong>
+                <p style="font-size: 13px; margin-top: 6px;">Your laptop battery will show 98% in the hostel and drop to 3% the moment the trainer speaks! Verified power sockets are live at all 6 pods. Keep plugged in.</p>
+              </div>
+              <div class="cyber-card">
+                <div style="font-size: 24px; margin-bottom: 8px;">🤝</div>
+                <strong style="color: #FFF;">Pod Collaboration</strong>
+                <p style="font-size: 13px; margin-top: 6px;">No group-project syndromes here! Unlike college projects where one person writes code and four people contribute roll numbers, every analyst executes their own labs.</p>
+              </div>
+              <div class="cyber-card">
+                <div style="font-size: 24px; margin-bottom: 8px;">☕</div>
+                <strong style="color: #FFF;">The Chai/Coffee Protocol</strong>
+                <p style="font-size: 13px; margin-top: 6px;">Filter coffee or canteen tea? Both are acceptable threat-hunting fuel. Scheduled 20-minute refreshment breaks are strictly respected to keep minds sharp.</p>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] I see everyone has found their pods, laptops are booted, and chargers are plugged in. We all know the universal law of campus labs: your laptop battery will show 98% in the hostel, and the moment the external examiner or trainer walks in, it drops to 3% with a critical warning! Rest assured, LH3 has verified power sockets at every desk. We are here to build real-world capability.
+          [PEDAGOGY:] HUMOR ANCHOR: Disarm classroom stiffness with light, culturally relatable campus observations (hostel batteries, group projects, canteen coffee). Encourages collaborative bonding.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 05: The 40/60 Pedagogical Rule -->
+      <section data-day="DAY 01" data-module="METHODOLOGY" data-session="1:00 PM – 5:00 PM" data-ref="Trainer Handbook Section 1.4">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">SOC POD PEDAGOGY</div>
+            <h2>The 40/60 Execution Standard</h2>
+            <p>You will not sit and passively listen to lectures. In LH3, theory immediately transforms into hands-on keyboard action.</p>
+            
+            <div class="grid-2" style="margin-top: 24px;">
+              <div class="cyber-card" style="text-align: center; padding: 30px;">
+                <div style="font-family: var(--font-heading); font-size: 54px; font-weight: 700; color: var(--electric-blue);">40%</div>
+                <strong style="color: #FFF; font-size: 16px;">Architectural Framing & Live Demonstrations</strong>
+                <p style="font-size: 13px; margin-top: 8px;">First-principles theory, adversary tradecraft mechanics, whiteboard modeling, and step-by-step instructor demonstrations on the dual projection screens.</p>
+              </div>
+              <div class="cyber-card" style="text-align: center; padding: 30px; border-color: var(--cyber-cyan);">
+                <div style="font-family: var(--font-heading); font-size: 54px; font-weight: 700; color: var(--cyber-cyan);">60%</div>
+                <strong style="color: #FFF; font-size: 16px;">Hands-On Pod Investigation & Guided Labs</strong>
+                <p style="font-size: 13px; margin-top: 8px;">20-step structured execution on student workstations, real tool navigation, log queries, Sigma rule testing, forensic artifact triage, and peer review.</p>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] In LH3, we adhere strictly to the 40/60 rule: 40% architectural framing and live demonstrations, and 60% hands-on investigation on your lab machines. You will not sit and passively listen to lectures. You will be at the keyboard querying repositories, scoring source credibility, and dissecting authentic adversary infrastructure.
+          [PEDAGOGY:] Commit to the 40/60 rule early so students understand they are active investigators, not passive listeners.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 06: Opening Engagement Scenario -->
+      <section data-day="DAY 01" data-module="ICEBREAKER SCENARIO" data-session="1:00 PM – 5:00 PM" data-ref="Verbatim Script Opening Scenario">
+
+  <div style="text-align: left;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div class="cyber-badge badge-red">OPENING ENGAGEMENT SCENARIO</div>
+      <div id="mascot-opening-alert"></div>
+    </div>
+    <h2>The Unsanctioned Dormitory Hotspot & Lateral Pivot</h2>
+    <p>A Real-World Engineering Dilemma: Triage Under Time Pressure</p>
+    
+    <div class="grid-2" style="margin-top: 14px;">
+      <div class="cyber-card">
+        <strong style="color: var(--alert-crimson); font-size: 14px;">The Incident Telemetry</strong>
+        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px; line-height: 1.6;">
+          At 02:14 IST, the campus perimeter NIDS flags an outbound beacon from an IP registered to Student Hostel Block C. The user agent identifies as an outdated BitTorrent client, but the payload contains an encoded Cobalt Strike stager transmitting over Port 443 to a bulletproof server in Eastern Europe.
+        </p>
+        <div class="terminal-buffer" style="margin-top: 10px; font-size: 11px;">
+          <div class="terminal-body">
+[ALERT] 2026-10-26T02:14:09.112 IST<br>
+SRC: 10.14.22.109 (Hostel-C-Room-304) -&gt; DST: 185.220.101.5:443<br>
+SIG: ET MALWARE Cobalt Strike Beacon Observed (M2)<br>
+ACTION: Alert Logged (Unblocked)
+          </div>
+        </div>
+      </div>
+      
+      <div class="cyber-card">
+        <strong style="color: var(--neon-amber); font-size: 14px;">The Operational Choice</strong>
+        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px;">
+          You are the Tier-1 analyst on night shift. What is your immediate next move?
+        </p>
+        <div class="decision-options" style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+          <button class="decision-btn" onclick="selectDecision(this, false, 'Blackholing the IP alerts the threat actor that they are discovered and causes them to switch to dormant persistence mechanisms.')">
+            A) Immediately null-route the IP at the core firewall.
+          </button>
+          <button class="decision-btn" onclick="selectDecision(this, true, 'Correct! Query passive DNS and flow telemetry to map the full blast radius before executing coordinated containment.')">
+            B) Pivot into proxy logs and DHCP records to identify the infected host and map lateral movement.
+          </button>
+          <button class="decision-btn" onclick="selectDecision(this, false, 'Rebooting destroys the volatile memory containing the unencrypted Cobalt Strike beacon payload and inject keys.')">
+            C) Call the hostel warden and ask them to restart the floor router.
+          </button>
+          <div class="decision-explanation" style="font-size: 11px; margin-top: 4px; min-height: 24px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    setTimeout(() => {
+      const el = document.getElementById('mascot-opening-alert');
+      if (el && window.CyberCharacters) el.innerHTML = window.CyberCharacters.getAlertBot('alarm', 60, 60);
+    }, 100);
+  </script>
+
+        <aside class="notes">
+          [SAY:] Let me begin with a challenge for Pod 1 and Pod 2: If our firewall reports that an external IP address in Eastern Europe scanned port 443 on our corporate portal three times at 2:00 AM, is that a cyber threat, a security incident, or raw data? And should we immediately block it? Review the options and let's see your decision.
+          [PEDAGOGY:] Socratic Icebreaker: Engage students actively with a clickable choice. Shows why contextual enrichment is the difference between knee-jerk panic and professional threat intelligence.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 07: Day 1 Launch & Objectives -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Module 1">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">MODULE 01 LAUNCH</div>
+            <h2>Cyber Threat Intelligence Fundamentals & Diamond Modeling</h2>
+            <p>Session ID: SES-01 | Scheduled Net Teaching: 220 Minutes | Refreshment Break: 3:00 PM (20 min)</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">Target Learning Outcomes (PLO-1)</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 10px; line-height: 1.7;">
+                  <li><strong>DIKW Hierarchy:</strong> Transform raw telemetry numbers into executive intelligence.</li>
+                  <li><strong>Four CTI Tiers:</strong> Map Strategic, Operational, Tactical, and Technical consumers.</li>
+                  <li><strong>Threat Actor Profiling:</strong> Contrast nation-state APTs, RaaS, Hacktivists, and Insiders.</li>
+                  <li><strong>Intelligence Cycle:</strong> Execute the 6-phase cycle from Planning to Feedback.</li>
+                  <li><strong>NATO Admiralty Code:</strong> Objectively score source reliability and credibility.</li>
+                  <li><strong>Diamond Model:</strong> Deconstruct intrusions across 4 mathematical vertices.</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 15px;">Hands-On Milestone: LAB-01</strong>
+                <p style="font-size: 13px; margin-top: 10px;">
+                  Every analyst will evaluate unverified threat bulletins using the NATO Admiralty Rubric, query Certificate Transparency via <code>crt.sh</code>, ingest indicators via AlienVault OTX, and construct a verified 4-vertex Diamond Model artifact for threat actor <strong>UNC-PHOENIX</strong>.
+                </p>
+                <div style="margin-top: 16px; padding: 10px; background: rgba(0, 242, 254, 0.08); border-radius: 6px; border: 1px dashed var(--cyber-cyan); font-family: var(--font-mono); font-size: 12px; color: var(--cyber-cyan);">
+                  TARGET FILE: evaluation_worksheet.docx // LAB-01 COMPLETE
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Our objective this afternoon in Module 1 is to build our foundational analytical toolkit. By 5:00 PM today, you will transform raw data into actionable intelligence, classify consumers across the four tiers, score unverified threat bulletins with the Admiralty Code, and deconstruct attacks using the Diamond Model.
+          [PEDAGOGY:] State clear, measurable session objectives. Highlight the concrete deliverable for Lab 1.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 08: The DIKW Hierarchy in Cybersecurity -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Concept 1">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">ANALYTICAL FOUNDATION</div>
+            <h2>The DIKW Hierarchy: Raw Data to Actionable CTI</h2>
+            <p>Intelligence is not just more data—it is data refined through context, analysis, and decision enablement.</p>
+            
+            <div class="grid-4" style="margin-top: 24px;">
+              <div class="cyber-card">
+                <span class="cyber-badge badge-blue">LEVEL 1: DATA</span>
+                <div style="font-size: 20px; font-weight: 700; color: #FFF; margin: 12px 0 6px 0;">198.51.100.45</div>
+                <p style="font-size: 12px;">Raw, discrete 32-bit integer. No context, no timestamp, no meaning. Cannot justify security action.</p>
+              </div>
+              <div class="cyber-card">
+                <span class="cyber-badge badge-cyan">LEVEL 2: INFORMATION</span>
+                <div style="font-size: 14px; font-weight: 700; color: #FFF; margin: 12px 0 6px 0;">Outbound TLS at 02:14 AM</div>
+                <p style="font-size: 12px;">Data processed with context: Who, What, When. 45 MB payload from internal Host 10.0.4.12.</p>
+              </div>
+              <div class="cyber-card">
+                <span class="cyber-badge badge-amber">LEVEL 3: KNOWLEDGE</span>
+                <div style="font-size: 14px; font-weight: 700; color: #FFF; margin: 12px 0 6px 0;">Correlated Baseline</div>
+                <p style="font-size: 12px;">Host 10.0.4.12 is an unpatched staging server; 198.51.100.45 was registered 4 hours ago via crt.sh.</p>
+              </div>
+              <div class="cyber-card" style="border-color: var(--cyber-cyan);">
+                <span class="cyber-badge badge-crimson">LEVEL 4: INTELLIGENCE</span>
+                <div style="font-size: 14px; font-weight: 700; color: #FFF; margin: 12px 0 6px 0;">UNC-PHOENIX C2 Node</div>
+                <p style="font-size: 12px;">Actionable: isolate host, null-route IP, revoke Kerberos cache. Directly enables decision advantage.</p>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] What is this string of numbers: 198.51.100.45? You cannot tell me if it is malicious. Right now, it is raw data—like your raw internal assessment marks before moderation! When we add timestamp and port, it becomes Information. When we correlate with baseline host roles, it becomes Knowledge. When we tie it to UNC-PHOENIX and know we must isolate Host 10.0.4.12, that is actionable Cyber Threat Intelligence.
+          [PEDAGOGY:] HUMOR ANCHOR: Raw numbers are like raw marks before moderation—meaningless without the class average! Highlight the decision enablement standard of intelligence.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 09: The Four Tiers of CTI -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Concept 2">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-blue">TARGET AUDIENCE ALIGNMENT</div>
+            <h2>The Four Tiers of Cyber Threat Intelligence</h2>
+            <p>Intelligence is not one-size-fits-all. Tailor the message to the exact decision-maker consuming it.</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--purple-intel);">STRATEGIC INTELLIGENCE</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Audience: Board, CEO, CISO | Lifespan: Months to Years</div>
+                <p style="font-size: 13px;">Executive briefings, geopolitical risk trends, loss models. Answers: <em>"Are competitors in our sector being hit by BlackCat? Do we need $2M for cloud defense?"</em></p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-highlight);">Metric: Financial risk exposure & regulatory compliance</div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber);">OPERATIONAL INTELLIGENCE</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Audience: SOC Managers, Incident Commanders | Lifespan: Weeks to Months</div>
+                <p style="font-size: 13px;">Adversary profiling, campaign staging, infrastructure shifts. Answers: <em>"Which threat groups are actively scanning our supply chain this quarter?"</em></p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-highlight);">Metric: Campaign tracking & defensive resource allocation</div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue);">TACTICAL INTELLIGENCE</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Audience: SOC Tier-2/3, Threat Hunters | Lifespan: Days to Weeks</div>
+                <p style="font-size: 13px;">Adversary TTPs, MITRE ATT&CK techniques, Sigma rules. Answers: <em>"How does UNC-PHOENIX achieve lateral movement? Pass-the-Hash and WMI execution."</em></p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-highlight);">Metric: Detection rule coverage & hunting hypothesis success</div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan);">TECHNICAL INTELLIGENCE</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Audience: SIEM parsers, Firewalls, SOAR | Lifespan: Hours to Days</div>
+                <p style="font-size: 13px;">Raw IoCs: SHA-256 hashes, IP addresses, domains, STIX JSON. Answers: <em>"Is this specific file hash present on any workstation in subnet 10.0.4.0/24?"</em></p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-highlight);">Metric: Automated ingestion rate, blocklist precision & false-positive ratio</div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Imagine you walk into the boardroom of your Chief Information Security Officer and hand them a printout of 10,000 MD5 hashes. What will happen? The CISO will politely show you the door! The CISO manages business risk and capital budgets, not hash tables. Notice the inverse relationship: as you go UP, technical detail drops, but lifespan and business value soar.
+          [PEDAGOGY:] Emphasize audience alignment. Never hand an executive a list of hashes, and never hand a tier-1 analyst a 40-page policy whitepaper.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 10: Threat Actor Categorization -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Concept 3">
+
+  <div style="text-align: left;">
+    <div class="cyber-badge badge-blue">ADVERSARY TYPOLOGY</div>
+    <h2>Threat Actor Spectrum & Geopolitical Motivation</h2>
+    <p>Categorizing Motivation, Resources, Sophistication, and Attribution Confidence</p>
+    
+    <div class="grid-2" style="margin-top: 14px;">
+      <div class="cyber-card">
+        <strong style="color: var(--cyber-cyan); font-size: 14px;">The 4 Adversary Archetypes</strong>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+          <div style="background: rgba(255,255,255,0.03); padding: 6px 10px; border-left: 3px solid var(--text-muted); border-radius: 4px; font-size: 11px;">
+            <strong style="color: #FFF;">1. Opportunistic / Script Kiddies:</strong> Commodity malware, public exploits, zero operational security.
+          </div>
+          <div style="background: rgba(255,179,0,0.05); padding: 6px 10px; border-left: 3px solid var(--neon-amber); border-radius: 4px; font-size: 11px;">
+            <strong style="color: var(--neon-amber);">2. Cybercriminal Syndicates (FIN):</strong> Financial extortion, Ransomware-as-a-Service (RaaS), fast ROI.
+          </div>
+          <div style="background: rgba(179,136,255,0.05); padding: 6px 10px; border-left: 3px solid var(--purple-intel); border-radius: 4px; font-size: 11px;">
+            <strong style="color: var(--purple-intel);">3. Hacktivists:</strong> Politically motivated defacements, DDoS, disruptive leaks, high visibility.
+          </div>
+          <div style="background: rgba(255,75,75,0.05); padding: 6px 10px; border-left: 3px solid var(--alert-crimson); border-radius: 4px; font-size: 11px;">
+            <strong style="color: var(--alert-crimson);">4. Nation-State APTs:</strong> Multi-year persistence, custom zero-days, supply-chain infiltration.
+          </div>
+        </div>
+      </div>
+      
+      <!-- 3D Globe Interactive Viewport -->
+      <div>
+        <div class="three-canvas-container" id="globe-3d-canvas">
+          <div class="three-canvas-overlay">🌐 3D GLOBAL THREAT TELEMETRY // DRAG TO ROTATE</div>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 6px; text-align: center;">
+          Active C2 telemetry arcs into Bangalore SOC Pod from Frankfurt & Virginia nodes.
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <aside class="notes">
+          [SAY:] Not all adversaries are created equal. If you treat a teenage script kiddie with the same defensive response model as a foreign military cyber unit, your SOC will collapse under operational exhaustion. Notice APTs use Living-off-the-Land tools like Certutil and PowerShell so their commands blend right in with your system administrators.
+          [PEDAGOGY:] Explain the three pillars: Intent, Capability, and Opportunity. Emphasize why APTs love Living-off-the-Land Binaries.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 11: The Traditional Intelligence Cycle -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Concept 4">
+
+  <div style="text-align: left;">
+    <div class="cyber-badge badge-cyan">INTELLIGENCE OPERATIONS</div>
+    <h2>The 6-Stage Intelligence Cycle in Motion</h2>
+    <p>From Tactical Consumer Requirements to Disseminated Threat Defense</p>
+    
+    <!-- Interactive 6-Stage Pipeline -->
+    <div class="intel-cycle-container" id="intel-cycle-demo">
+      <div class="intel-stages-grid">
+        <div class="intel-stage-node active" onclick="activateIntelStage(0)">🎯 1. Direction</div>
+        <div class="intel-stage-node" onclick="activateIntelStage(1)">📡 2. Collection</div>
+        <div class="intel-stage-node" onclick="activateIntelStage(2)">⚙️ 3. Processing</div>
+        <div class="intel-stage-node" onclick="activateIntelStage(3)">🔍 4. Analysis</div>
+        <div class="intel-stage-node" onclick="activateIntelStage(4)">📤 5. Dissemination</div>
+        <div class="intel-stage-node" onclick="activateIntelStage(5)">🔄 6. Feedback</div>
+      </div>
+      <div class="intel-progress-track"><div class="intel-progress-bar"></div></div>
+      <div class="intel-stage-desc">Click any stage above to inspect operational intelligence flow.</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+        <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">
+          Click stages or button to advance through the intelligence lifecycle.
+        </span>
+        <button onclick="nextIntelStage()" style="padding: 6px 16px; background: var(--gradient-cyber); border: none; border-radius: 4px; font-weight: bold; cursor: pointer; color: #050814; font-size: 11px;">
+          ADVANCE STAGE ▶
+        </button>
+      </div>
+    </div>
+  </div>
+
+        <aside class="notes">
+          [SAY:] [SHOW:] Display the interactive 6-stage Intelligence Cycle pipeline.
+[SAY:] 'Look at the pipeline on screen. Traditional training shows you a static circle with six words and expects you to memorize it. In reality, intelligence is a dynamic conveyor belt.'
+[DO:] Click on Stage 1 (Direction) and advance to Stage 3 (Processing).
+[OBSERVE:] The animated progress bar moves, highlighting how raw PCAPs and certificates are translated into structured data.
+[ASK:] 'If an analyst skips Stage 3 (Processing) and feeds raw un-normalized logs directly into their SIEM, what happens?'
+[EXPECTED ANSWER:] 'The SIEM chokes on format mismatches, false positive alerts explode, and analysts burn out.'
+[REVEAL:] Click Stage 4 (Analysis) to show how structured Admiralty scoring synthesizes actionable hypotheses.
+[EXPLAIN:] Connect this to our canteen coffee analogy: grinding and filtering beans produces coffee; dumping raw beans into boiling water produces chaos.
+          [PEDAGOGY:] Highlight Phase 1 (PIRs) and Phase 6 (Feedback) as the two areas where security teams either succeed or fail.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 12: NATO Admiralty Code Source Scoring -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Concept 5">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">OBJECTIVE EVALUATION</div>
+            <h2>NATO Admiralty Code: Source Reliability × Information Credibility</h2>
+            <p>Never panic over rumors. Score source pedigree independently from technical evidence.</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan);">SOURCE RELIABILITY (A to F)</strong>
+                <table class="lab-steps-compact" style="margin-top: 8px;">
+                  <tr><th>Code</th><th>Assessment Standard</th></tr>
+                  <tr><td><strong>A</strong></td><td>Completely Reliable (No doubt of authenticity or competence)</td></tr>
+                  <tr><td><strong>B</strong></td><td>Usually Reliable (Past reports consistently verified)</td></tr>
+                  <tr><td><strong>C</strong></td><td>Fairly Reliable (Past track record mostly accurate)</td></tr>
+                  <tr><td><strong>D</strong></td><td>Not Usually Reliable (Past history of inaccuracies)</td></tr>
+                  <tr><td><strong>E</strong></td><td>Unreliable (Past reports routinely false or manipulated)</td></tr>
+                  <tr><td><strong>F</strong></td><td>Reliability Cannot Be Judged (Brand-new source, unverified)</td></tr>
+                </table>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber);">INFORMATION CREDIBILITY (1 to 6)</strong>
+                <table class="lab-steps-compact" style="margin-top: 8px;">
+                  <tr><th>Code</th><th>Assessment Standard</th></tr>
+                  <tr><td><strong>1</strong></td><td>Confirmed by other independent sources (Empirical proof)</td></tr>
+                  <tr><td><strong>2</strong></td><td>Probably True (Matches known adversary TTPs)</td></tr>
+                  <tr><td><strong>3</strong></td><td>Possibly True (Plausible but uncorroborated)</td></tr>
+                  <tr><td><strong>4</strong></td><td>Doubtful (Inconsistent with known baselines)</td></tr>
+                  <tr><td><strong>5</strong></td><td>Improbable (Defies physical/technical possibility)</td></tr>
+                  <tr><td><strong>6</strong></td><td>Truth Cannot Be Judged (Zero corroborating evidence)</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] When an unverified post on Telegram claims your bank has been breached, what is its Admiralty rating? The source is F: unknown. The credibility is 6: unverified. You do not wake up your CEO for an F6! But if your internal proxy logs corroborate traffic to that exact C2 domain, credibility leaps to 1, giving you an actionable F1 rating.
+          [PEDAGOGY:] Teach the separation of Source (pedigree) and Information (empirical evidence). Crucial foundation for Lab 1.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 13: The Diamond Model of Intrusion Analysis -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Concept 6">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">MATHEMATICAL MODELING</div>
+            <h2>The Diamond Model: 4 Core Vertices & Meta-Features</h2>
+            <p>Sergio Caltagirone's model deconstructs every malicious event into four interrelated vertices.</p>
+            
+            <div class="grid-2" style="margin-top: 16px;">
+              <div style="text-align: center; background: rgba(15, 23, 42, 0.6); padding: 24px; border-radius: 12px; border: 1px solid var(--border-subtle);">
+                <div style="display: inline-block; position: relative; width: 260px; height: 260px;">
+                  <!-- Diamond Visual -->
+                  <div onclick="inspectDiamondVertex('Adversary')" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); cursor: pointer;" class="cyber-badge badge-crimson">ADVERSARY (Top)</div>
+                  <div onclick="inspectDiamondVertex('Capability')" style="position: absolute; top: 50%; left: 0; transform: translateY(-50%); cursor: pointer;" class="cyber-badge badge-blue">CAPABILITY (Left)</div>
+                  <div onclick="inspectDiamondVertex('Infrastructure')" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); cursor: pointer;" class="cyber-badge badge-amber">INFRASTRUCTURE (Right)</div>
+                  <div onclick="inspectDiamondVertex('Victim')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); cursor: pointer;" class="cyber-badge badge-cyan">VICTIM (Bottom)</div>
+                  
+                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140px; height: 140px; border: 1px dashed var(--cyber-cyan); transform: translate(-50%, -50%) rotate(45deg); pointer-events: none;"></div>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">Click any vertex to inspect operational telemetry</div>
+              </div>
+              
+              <div class="cyber-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <strong style="color: #FFF; font-size: 15px;">Vertex Operational Details:</strong>
+                  <div id="diamond-vertex-desc" style="margin-top: 10px; font-size: 13px; color: var(--text-secondary); min-height: 90px; padding: 10px; background: rgba(5,8,20,0.5); border-radius: 6px; border: 1px solid var(--border-subtle);">
+                    Click any vertex on the left to inspect its operational role, evidence types, and pivoting relationships.
+                  </div>
+                </div>
+                
+                <div style="margin-top: 14px; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
+                  <strong style="color: var(--neon-amber); font-size: 12px;">Essential Meta-Features:</strong>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                    • <strong>Timestamp:</strong> Start / End time of intrusion phase<br>
+                    • <strong>Phase:</strong> Cyber Kill Chain step (e.g., Installation)<br>
+                    • <strong>Result:</strong> Success, Failure, or Unknown<br>
+                    • <strong>Direction:</strong> Adversary-to-Victim, Victim-to-Infra (C2)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] The Diamond Model treats an intrusion as a mathematical event. If an attacker changes their IP address, you don't panic. You pivot from the Infrastructure vertex to the Capability vertex to identify their staging tools, and then pivot to the Adversary vertex to determine their campaign objective.
+          [PEDAGOGY:] Demonstrate the interactive Diamond Model widget. Show how pivoting across vertices exposes adversary infrastructure.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 14: Demonstration 1: Admiralty Source Scoring -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Demonstration 1">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">TRAINER DEMONSTRATION</div>
+            <h2>Demo 1: Evaluating Threat Advisory UNC-PHOENIX</h2>
+            <p>Comparing an anonymous Telegram dump (F6) against an authenticated DFIR bulletin (B2).</p>
+            
+            <div class="grid-2" style="margin-top: 16px;">
+              <div class="terminal-buffer">
+                <div class="terminal-header">
+                  <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                  <span>SOURCE A: TELEGRAM DUMP @DarkLeaks</span>
+                </div>
+                <div class="terminal-body" style="font-size: 12px;">
+"CRITICAL ZERO-DAY! BlackCat Ransomware group 
+UNC-PHOENIX is attacking energy portals right now! 
+IP: 198.51.100.45 // Domain: internal-sync[.]com 
+Cert issued via crt.sh! All SOCs must block!"
+<br><span style="color: var(--alert-crimson); font-weight: 700;">ADMIRALTY RATING: F6 (Unverified rumor)</span>
+                </div>
+              </div>
+              
+              <div class="terminal-buffer">
+                <div class="terminal-header">
+                  <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                  <span>SOURCE B: CISA / MANDIANT ADVISORY</span>
+                </div>
+                <div class="terminal-body" style="font-size: 12px;">
+"Advisory: UNC-PHOENIX actively targeting power grids. 
+Observed Certutil downloads from 198.51.100.45 
+matching SHA-256 hash e3b0c44298fc1c149afbf4... 
+Corroborated by 3 energy sector incident teams."
+<br><span style="color: var(--emerald-pass); font-weight: 700;">ADMIRALTY RATING: B2 (Usually reliable, probably true)</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="cyber-card" style="margin-top: 14px; font-size: 13px;">
+              <strong style="color: var(--cyber-cyan);">Instructor Demonstration Takeaway:</strong>
+              Never assign an 'A' rating to an external vendor unless you have verified empirical packet captures inside your own network. Source B receives B2—high confidence, actionable, but still requires internal sensor verification.
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Notice the stark difference on screen. Source A is noisy, emotional, and completely unverified—an F6 rating. Source B gives us hashes, command-line staging, and corroboration—a B2 rating. Watch how we pivot into crt.sh to verify the certificate SANs.
+          [PEDAGOGY:] Guide students to observe technical differences between hype and actionable intelligence.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 15: LAB 01 (Part 1/7): Introduction & Objectives -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 1 — Section 1.1">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-blue">LAB-01: STEP 1 OF 7 // SPECIFICATION & OBJECTIVES</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Threat Intelligence Source Evaluation & OSINT Analysis</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Assessing multi-tier threat feeds, NATO Admiralty scoring, and passive certificate reconnaissance.</p>
+                
+                <div class="grid-3" style="margin-top: 18px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">🎯 Core Learning Objectives</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Evaluate public & commercial CTI sources across strategic, operational, and tactical tiers.</li>
+                      <li>Apply NATO Admiralty Code: Source Reliability (A–F) and Credibility (1–6).</li>
+                      <li>Model intrusion infrastructure using the Diamond Model of Intrusion Analysis.</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⏱️ Parameters & Scope</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Estimated Duration:</strong> 80 Minutes (Dedicated Lab Window).</li>
+                      <li><strong>Instructional Framework:</strong> IBM ICE & NATO STANAG 2198.</li>
+                      <li><strong>PLO Mapping:</strong> PLO-1 (Evaluating CTI sources, reliability & bias).</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">📦 Required Deliverables</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Completed Admiralty Code Matrix with analytical justification.</li>
+                      <li>SSL/TLS Certificate history table from crt.sh query.</li>
+                      <li>Constructed 4-Vertex Diamond Model markdown artifact.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Welcome to our first hands-on lab. In this exercise, you will put aside theoretical definitions and act as junior CTI analysts receiving an unverified intelligence advisory regarding an attack against renewable energy infrastructure.
+          [PEDAGOGY:] Establish the mindset of defensive skepticism. Emphasize that raw intelligence is assumed incomplete until corroborated.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 16: LAB 01 (Part 2/7): Environment Preparation -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 1 — Section 1.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-01: STEP 2 OF 7 // WORKSTATION PREPARATION</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Workstation Verification & Target Datasets</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Verify local workspace paths, network connectivity, and pre-cached threat dossiers.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">💻 Workstation Specifications</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Operating System:</td><td>Windows 11 Enterprise (LH3 SOC Pod Workstation)</td></tr>
+                      <tr><td style="color: #FFF;">Browser:</td><td>Google Chrome / Firefox (Private/Incognito Mode)</td></tr>
+                      <tr><td style="color: #FFF;">Lab Root:</td><td><code>C:\ThreatIntel_Labs\Lab01_OSINT\</code></td></tr>
+                      <tr><td style="color: #FFF;">Target Dossier:</td><td><code>stix_bundle_apt_example.json</code> (UNC-PHOENIX)</td></tr>
+                    </table>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⚡ Pre-Flight Verification Commands</strong>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Run in PowerShell to confirm directory structure and tools:</p>
+                    <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># 1. Test directory existence and target files</span>
+Test-Path "C:\ThreatIntel_Labs\Lab01_OSINT\stix_bundle_apt_example.json"
+<span class="terminal-cmd"># 2. Verify curl/browser connectivity to OSINT portals</span>
+curl.exe -I https://crt.sh
+                      </div>
+                    </div>
+                    <div style="font-size: 10px; color: var(--emerald-pass); margin-top: 4px;">✓ Expected response: 'True' and HTTP 200/302 status</div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Before running any analysis, execute the pre-flight checks in PowerShell. Ensure your local directory exists and you can reach crt.sh.
+          [PEDAGOGY:] Ensure all 24 workstations across the 6 pods have confirmed directory access before starting the timer.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 17: LAB 01 (Part 3/7): Step-by-Step Procedure -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 1 — Section 1.4">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-amber">LAB-01: STEP 3 OF 7 // EXECUTION PROTOCOL</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">3-Phase Practical Investigation Workflow</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Execute the 3 phases sequentially to evaluate the source, verify infrastructure, and build the Diamond Model.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">PHASE 1: NATO Admiralty Code Evaluation (Minutes 00–25)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Open <code>advisory_unc_phoenix.pdf</code> in your workstation PDF viewer.</li>
+                      <li>Evaluate reporting entity: Commercial vendor feed with multi-customer telemetry -> Rate Reliability as <strong>B (Usually Reliable)</strong>.</li>
+                      <li>Corroborate claims with public CERT bulletins -> Rate Credibility as <strong>2 (Probably True)</strong> -> Assign Score <strong>B2</strong>.</li>
+                    </ol>
+                  </div>
+                  
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--electric-blue); font-size: 12px;">PHASE 2: Passive Certificate Transparency Reconnaissance (Minutes 25–55)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Navigate browser to <code>https://crt.sh/?q=internal-sync.com</code>.</li>
+                      <li>Filter log entries for Certificate Authority issuer (Let's Encrypt / ZeroSSL) and validity window.</li>
+                      <li>Extract all Subject Alternative Names (SANs) to identify adversary staging infrastructure.</li>
+                    </ol>
+                  </div>
+
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">PHASE 3: Diamond Model Vertex Construction (Minutes 55–80)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Open template <code>lab01_diamond_model_template.md</code> in VS Code.</li>
+                      <li>Map the 4 vertices: Adversary (UNC-PHOENIX), Capability (Spearphishing/Certutil), Infrastructure (Fast-Flux VPS <code>198.51.100.45</code>), Victim (AeroGrid).</li>
+                      <li>Save completed analysis as <code>lab01_diamond_model_&lt;student_id&gt;.md</code>.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Follow the three phases in order. Do not jump straight to the Diamond Model without completing the Admiralty evaluation first.
+          [PEDAGOGY:] Circulate among the pods during Phase 2 to verify that students understand how Certificate Transparency logs expose staging subdomains.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 18: LAB 01 (Part 4/7): Expected Output & Logs -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 1 — Section 1.5">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-green">LAB-01: STEP 4 OF 7 // VERIFIED ARTIFACTS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Expected OSINT Query Results & Output Schema</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Verify your findings against this baseline Certificate Transparency log extract.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div>
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">CRT.SH Log Output Format:</strong>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px; max-height: 240px; overflow-y: auto;">
+                      <div class="terminal-body">
+[crt.sh Query Results: internal-sync.com]
+crt.sh ID  | Logged At   | Not Before  | Matching Identities
+-----------+-------------+-------------+---------------------------------------
+1489201941 | 2026-10-21  | 2026-10-21  | vpn-auth.internal-sync.com
+1489201942 | 2026-10-21  | 2026-10-21  | update-cdn.internal-sync.com
+1489201943 | 2026-10-21  | 2026-10-21  | telemetry.internal-sync.com
+Issuer: C=US, O=Let's Encrypt, CN=R3
+Status: ACTIVE VALID CERTIFICATE
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">What to Inspect & Confirm:</strong>
+                    <div class="cyber-card" style="margin-top: 6px; font-size: 11px; line-height: 1.6;">
+                      <ul style="color: var(--text-secondary); padding-left: 16px;">
+                        <li><strong>Cluster Creation:</strong> All 3 certificates were issued on <code>2026-10-21</code> within 4 minutes of each other — indicates automated staging.</li>
+                        <li><strong>Typosquatting / Masquerading:</strong> Subdomain <code>vpn-auth</code> indicates intent to impersonate enterprise SSO gateways.</li>
+                        <li><strong>Admiralty Matrix Score:</strong> Must be recorded as <code>B2</code> with reference to multi-source verification.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Look closely at the timestamps on those certificates. When you see three hostnames certified within seconds of each other using automated Let's Encrypt API calls, that is weaponization in progress.
+          [PEDAGOGY:] Ask the room: 'Why would an adversary register three subdomains instead of just one?' Solicit answers on C2 redundancy.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 19: LAB 01 (Part 5/7): Technical Interpretation -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 1 — Section 1.5.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-01: STEP 5 OF 7 // ANALYTICAL SYNTHESIS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Analytical Synthesis & Intelligence Grounding</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Distinguishing verified facts from uncorroborated assumptions.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">✅ What This Evidence Establishes</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>The domain <code>internal-sync.com</code> and its subdomains were weaponized on 21 October 2026.</li>
+                      <li>The TLS certificates match the SHA-256 fingerprints cited in the commercial threat bulletin.</li>
+                      <li>Adversary infrastructure utilizes cloud-based automated SSL issuance to bypass reputation filters.</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 13px;">❌ What This Evidence Does NOT Establish</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>It does <em>not</em> prove that your enterprise network has already been breached.</li>
+                      <li>It does <em>not</em> prove nation-state attribution without non-repudiated operator keystroke telemetry.</li>
+                      <li>It does <em>not</em> eliminate the possibility of a shared bulletproof VPS host harboring benign neighbors.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Analytic humility is the hallmark of an exceptional CTI analyst. We have proven infrastructure staging; we have not yet proven compromise of our internal assets.
+          [PEDAGOGY:] Reinforce the difference between an Indicator of Compromise (observed on internal network) vs Indicator of Threat (observed staging outside).
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 20: LAB 01 (Part 6/7): Troubleshooting & Recovery -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 1 — Section 1.7">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-red">LAB-01: STEP 6 OF 7 // ERROR RESOLUTION & RECOVERY</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Common Lab Errors & Diagnostic Commands</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Rapid recovery procedures for common network and file issues.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 12px;">Issue 1: crt.sh Rate Limiting or 504 Gateway Timeout</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Public CT logs often experience throttling during batch campus queries.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Recovery: Query pre-cached local JSON mirror</span>
+Get-Content "C:\ThreatIntel_Labs\Lab01_OSINT\cache\crtsh_dump.json" | ConvertFrom-Json
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 12px;">Issue 2: Target File Not Found or Permission Denied</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Student profile directory permission conflict on shared SOC workstation.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Recovery: Re-initialize lab directory from master cache</span>
+Copy-Item -Path "D:\SOC_Master\Lab01\*" -Destination "C:\ThreatIntel_Labs\Lab01_OSINT\" -Recurse -Force
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] If crt.sh gives you a 504 timeout, do not panic. Use the local pre-cached mirror script in your Lab01 directory.
+          [PEDAGOGY:] Ensure students know where fallback data lives so network hiccups don't halt classroom momentum.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 21: LAB 01 (Part 7/7): Completion & Assessment -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 1 — Section 1.6">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-01: STEP 7 OF 7 // VERIFICATION & GRADING</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Deliverable Checklist & Assessment Rubric</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Confirm all deliverables are saved before session adjournment.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">📋 Completion Checklist</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.8;">
+                      <li>[ ] Written justification for Admiralty Score <code>B2</code> recorded in evaluation worksheet.</li>
+                      <li>[ ] List of 3 Certificate SANs extracted and defanged (<code>[.]</code> syntax).</li>
+                      <li>[ ] File <code>lab01_diamond_model_&lt;student_id&gt;.md</code> saved in workspace root.</li>
+                      <li>[ ] Lead pod instructor has signed off on the Diamond Model vertex alignment.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">⚖️ Assessment Rubric (100 Points)</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Admiralty Scoring Accuracy:</td><td><strong>40 Pts</strong> (Correct B2 rating + rational justification)</td></tr>
+                      <tr><td style="color: #FFF;">OSINT Certificate Extraction:</td><td><strong>30 Pts</strong> (Correct SANs and validity window)</td></tr>
+                      <tr><td style="color: #FFF;">Diamond Model Mapping:</td><td><strong>30 Pts</strong> (Clean 4-vertex causal link)</td></tr>
+                      <tr><td style="color: var(--cyber-cyan);">Total Passing Standard:</td><td><strong>75% or higher</strong></td></tr>
+                    </table>
+                  </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 16px;">
+                  <span class="cyber-badge badge-green" style="font-size: 12px; padding: 6px 18px;">LAB-01 OFFICIAL COMPLETION VERIFIED // PROCEED TO KNOWLEDGE CHECK</span>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Ensure your markdown file is saved with your student ID. Pod leads, please verify that every workstation in your row has completed the Admiralty evaluation.
+          [PEDAGOGY:] Check off student completion against the pod roster. Give specific verbal feedback on the clarity of their Admiralty justifications.
+        </aside>
+      </section>
+
+      <!-- DAY 01 - SLIDE 22: Day 1 Knowledge Check -->
+      <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Trainer Handbook Section 1.7">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">END-OF-DAY CHECKPOINT</div>
+            <h2>Day 1 Knowledge Check: Analytical Verification</h2>
+            <p>Test your understanding before we bridge into Day 2 behavioral modeling.</p>
+            
+            <div class="interactive-decision-box" style="margin-top: 20px;">
+              <strong style="color: #FFF; font-size: 15px;">Question for Pod 3 & Pod 4:</strong>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 8px 0 14px 0;">
+                A threat intelligence vendor bulletin claims that an IP address is malicious with 99% confidence. However, passive DNS reveals that this same IP currently hosts 600 distinct legitimate corporate customer domains on a multi-tenant cloud CDN. What action should the SOC take?
+              </p>
+              <div class="decision-options">
+                <button class="decision-btn" onclick="selectDecision(this, false, 'Blocking this IP would inadvertently block hundreds of legitimate customer applications and cause major business disruption.')">
+                  <span>A) Add the IP to the perimeter firewall blocklist immediately because vendor confidence is 99%.</span>
+                  <span>➔</span>
+                </button>
+                <button class="decision-btn" onclick="selectDecision(this, true, 'Correct! On shared cloud infrastructure, blocking the IP causes massive collateral damage. Analysts must filter by domain/Host header or inspect endpoint process execution.')">
+                  <span>B) Do not block the IP. Pivot to domain/URL filtering and inspect local host process execution.</span>
+                  <span>➔</span>
+                </button>
+              </div>
+              <div class="decision-explanation" style="margin-top: 12px; font-size: 13px; font-family: var(--font-mono);"></div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Look at the question on screen. A vendor says 99% confidence, but passive DNS reveals 600 domains on that IP. What do you do? Pod 3, what's your verdict? Exactly! If you block that IP, you take down your own customer portals. Context prevents defense from destroying business operations.
+          [PEDAGOGY:] Reinforce the multi-tenant cloud IP dilemma. Bridge cleanly to Day 2: moving beyond fragile IP addresses to behavioral modeling.
+        </aside>
+      </section>
+
+
+      <!-- DAY 01 - CONCLUSION & PORTAL RETURN -->
+      <section data-day="DAY 01" data-module="WRAP-UP & ADJOURNMENT" data-session="1:00 PM – 5:00 PM" data-ref="Course Syllabus">
+        <div style="text-align: center; padding: 30px 10px;">
+          <div class="cyber-badge badge-cyan" style="margin-bottom: 15px;">DAY 01 ADJOURNMENT</div>
+          <h2>Session Concluded: CTI Fundamentals, Threat Actor Profiling & The Diamond Model</h2>
+          <p style="color: var(--text-secondary); max-width: 780px; margin: 0 auto 25px auto; font-size: 15px;">
+            You have completed all planned instructional milestones, practical demonstrations, and lab exercises for Monday, 26 October 2026.
+          </p>
+          
+          <div class="grid-2" style="max-width: 800px; margin: 0 auto 30px auto; text-align: left;">
+            <div class="cyber-card">
+              <strong style="color: var(--day-accent); font-size: 14px;">Today's Completed Practical Milestones</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                DEMO-01: NATO Admiralty Code | LAB-01: OTX & crt.sh Reconnaissance
+              </div>
+            </div>
+            <div class="cyber-card">
+              <strong style="color: var(--neon-amber); font-size: 14px;">Next Session Briefing</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                Threat Modeling, MITRE ATT&CK Matrix & Structured Threat Hunting
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: flex; justify-content: center; gap: 15px;">
+            <a href="../index.html" class="portal-home-btn" style="padding: 10px 24px; font-size: 13px;">⊞ RETURN TO MASTER PORTAL</a>
+            <a href="../day-02/index.html" class="nav-day-btn" style="padding: 10px 24px; font-size: 13px; background: var(--day-accent); color: #050814; font-weight: bold;">LAUNCH DAY 02 ▶</a>
+          </div>
+        </div>
+      </section>
+    
+    </div>
+  </div>
+
+  <!-- Shared Script Engines: Reveal.js, GSAP, Three.js, Mascots & Narratives -->
+  <script src="../shared/js/reveal.js"></script>
+  <script src="../shared/js/gsap.min.js"></script>
+  <script src="../shared/js/three.min.js"></script>
+  <script src="../shared/js/characters.js"></script>
+  <script src="../shared/js/cyber-3d.js"></script>
+  <script src="../shared/js/gsap-narratives.js"></script>
+  <script src="../shared/js/presentation-app.js"></script>
+  <script>
+    Reveal.on('slidechanged', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 01: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+    Reveal.on('ready', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 01: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+  </script>
+</body>
+</html>

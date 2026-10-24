@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DAY 02 — Threat Modeling, MITRE ATT&CK Matrix & Structured Threat Hunting | Threat Intelligence & Incident Response</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Stylesheets (Referenced from shared/) -->
+  <link rel="stylesheet" href="../shared/css/reset.css">
+  <link rel="stylesheet" href="../shared/css/reveal.css">
+  <link rel="stylesheet" href="../shared/css/theme-cyber-soc.css">
+  <link rel="stylesheet" href="../shared/css/animations.css">
+  <link rel="stylesheet" href="../shared/css/interactive-experiences.css">
+  
+  <style>
+    :root {
+      --day-accent: #4FACFE;
+    }
+    .telemetry-status-bar {
+      border-bottom: 2px solid var(--day-accent);
+    }
+    .nav-day-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFF;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .nav-day-btn:hover {
+      background: var(--day-accent);
+      color: #050814;
+      border-color: var(--day-accent);
+    }
+    .nav-day-btn.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: transparent;
+    }
+    .portal-home-btn {
+      background: rgba(0, 242, 254, 0.12);
+      border: 1px solid var(--cyber-cyan);
+      color: var(--cyber-cyan);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .portal-home-btn:hover {
+      background: var(--cyber-cyan);
+      color: #050814;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Real-Time Telemetry Bar -->
+  <div class="telemetry-status-bar">
+    <div class="status-left">
+      <a href="../index.html" class="portal-home-btn" title="Return to Course Master Portal">⊞ MASTER PORTAL</a>
+      <div class="status-pill">
+        <span class="live-indicator"></span>
+        <span style="color: var(--day-accent); font-weight: 700;">DAY 02</span>
+      </div>
+      <div class="status-pill">
+        <span>VENUE:</span> <strong style="color: #F8FAFC;">LH3 – 4TH FLOOR</strong>
+      </div>
+      <div class="status-pill">
+        <span>SESSION:</span> <strong style="color: #F8FAFC;">1:00 PM – 5:00 PM</strong>
+      </div>
+    </div>
+    
+    <div class="status-center">
+      <div class="status-pill">
+        <span>FOCUS:</span> <strong id="status-module" style="color: var(--day-accent);">Threat Modeling, MITRE ATT&CK Matrix...</strong>
+      </div>
+    </div>
+    
+    <div class="status-right">
+      <a href="../day-01/index.html" class="nav-day-btn" title="Go to DAY-01">◀ PREV DAY</a>
+      <a href="../day-03/index.html" class="nav-day-btn" title="Go to DAY-03">NEXT DAY ▶</a>
+      <button onclick="toggleShortcutModal()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">KEYS [?]</button>
+      <button onclick="toggleFullScreen()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">FULL [F]</button>
+    </div>
+  </div>
+
+  <!-- Bottom Custom Slide Counter -->
+  <div id="custom-slide-counter" class="custom-slide-counter">DAY 02: SLIDE <span>01</span> / 16</div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div id="shortcut-modal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,8,20,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center;" onclick="if(event.target===this) toggleShortcutModal()">
+    <div style="background: #0F172A; border: 1px solid var(--day-accent); border-radius: 12px; padding: 28px 36px; max-width: 500px; width: 90%; box-shadow: 0 0 40px rgba(0,242,254,0.3); text-align: left;">
+      <h3 style="margin-top: 0; color: #FFF; font-family: var(--font-heading);">⌨️ DAY 02 Navigation Shortcuts</h3>
+      <table style="width: 100%; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); border-collapse: collapse;">
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Space / Right Arrow</td><td>Next Slide / Fragment</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Left Arrow</td><td>Previous Slide</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">F</td><td>Toggle Full-Screen Mode</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Esc / ?</td><td>Close Modal / Help</td></tr>
+      </table>
+      <div style="margin-top: 15px; display: flex; gap: 10px;">
+        <a href="../index.html" style="display: block; text-align: center; flex: 1; padding: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #FFF; text-decoration: none; font-size: 12px;">RETURN TO PORTAL</a>
+        <button onclick="toggleShortcutModal()" style="flex: 1; padding: 8px; background: var(--day-accent); border: none; border-radius: 6px; font-weight: 700; color: #050814; cursor: pointer; font-size: 12px;">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reveal.js Container -->
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- DAY 02 - SLIDE 01: Day 2 Launch & Objectives -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Module 2">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-blue">MODULE 02 LAUNCH</div>
+            <h2>Threat Modeling, MITRE ATT&CK & Structured Threat Hunting</h2>
+            <p>Session ID: SES-02 | Scheduled Net Teaching: 220 Minutes | Refreshment Break: 3:00 PM (20 min)</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">Target Learning Outcomes (PLO-2)</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 10px; line-height: 1.7;">
+                  <li><strong>Cyber Kill Chain vs. Diamond Model:</strong> Contrast linear prevention vs. non-linear graph pivoting.</li>
+                  <li><strong>Pyramid of Pain:</strong> Calculate defensive ROI from hashes to adversary TTPs.</li>
+                  <li><strong>MITRE ATT&CK Matrix v15:</strong> Navigate 14 enterprise tactics and sub-techniques.</li>
+                  <li><strong>8 Core Enterprise Tactics:</strong> Initial Access through Impact deep-dive.</li>
+                  <li><strong>ATT&CK Navigator v5:</strong> Execute layer algebra to surface detection blind spots.</li>
+                  <li><strong>Threat Hunting & D3FEND:</strong> Hypothesize adversary tradecraft and map countermeasures.</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 15px;">Hands-On Milestone: LAB-03</strong>
+                <p style="font-size: 13px; margin-top: 10px;">
+                  Every analyst will build custom JSON layers in ATT&CK Navigator v5, perform layer arithmetic (<code style="color: var(--neon-amber);">Score = max(Threat, Detect)</code>) to isolate defensive visibility gaps for threat actor <strong>UNC-PHOENIX</strong>, and export a verified coverage matrix.
+                </p>
+                <div style="margin-top: 16px; padding: 10px; background: rgba(79, 172, 254, 0.08); border-radius: 6px; border: 1px dashed var(--electric-blue); font-family: var(--font-mono); font-size: 12px; color: var(--electric-blue);">
+                  TARGET FILE: unc_phoenix_coverage_layer.json // LAB-03 COMPLETE
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Good afternoon, colleagues, and welcome back to Day 2 in LH3. I hope everyone had a good evening and that your hostel Wi-Fi cooperated—or at least gave you enough bandwidth to download today's lab materials! Today we move from identifying threat actors to mapping their exact behavioral tradecraft.
+          [PEDAGOGY:] HUMOR ANCHOR: Friendly nod to hostel Wi-Fi. Bridge cleanly from Day 1 indicator identification to Day 2 behavioral modeling.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 02: Cyber Kill Chain vs. Diamond Model -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 2 Concept 1">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">MODEL COMPARISON</div>
+            <h2>Cyber Kill Chain vs. Diamond Model of Intrusion Analysis</h2>
+            <p>Two complementary lenses for deconstructing complex enterprise intrusions.</p>
+            
+            <div class="grid-2" style="margin-top: 24px;">
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber); font-size: 15px;">LOCKHEED MARTIN CYBER KILL CHAIN</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 10px; line-height: 1.7;">
+                  <li><strong>Philosophy:</strong> Strictly linear, sequential progression of 7 phases.</li>
+                  <li><strong>Defensive Goal:</strong> Break any single link to completely disrupt the attack.</li>
+                  <li><strong>Phases:</strong> Recon ➔ Weaponize ➔ Deliver ➔ Exploit ➔ Install ➔ C2 ➔ Actions on Objectives.</li>
+                  <li><strong>Limitation:</strong> Poorly models modern internal lateral movement, Living-off-the-Land tradecraft, and insider threats.</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">CALTAGIRONE DIAMOND MODEL</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 10px; line-height: 1.7;">
+                  <li><strong>Philosophy:</strong> Non-linear, relational graph of vertices and meta-features.</li>
+                  <li><strong>Defensive Goal:</strong> Mathematical pivoting to discover unknown adversary infrastructure.</li>
+                  <li><strong>Vertices:</strong> Adversary ➔ Capability ➔ Infrastructure ➔ Victim.</li>
+                  <li><strong>Strength:</strong> Excels at mapping supply-chain intrusions, cloud breaches, and multi-stage campaign evolutions.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] The Cyber Kill Chain is like an assembly line: break one link and the whole chain halts. But modern adversaries do not walk in a straight line! They loop, they pivot, they live off the land. That is why we combine the Kill Chain's temporal phases with the Diamond Model's relational graph.
+          [PEDAGOGY:] Use the assembly line analogy for Kill Chain, and the detective conspiracy board analogy for Diamond Model.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 03: David Bianco's Pyramid of Pain -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 2 Concept 2">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-crimson">DEFENSIVE ROI HIERARCHY</div>
+            <h2>David Bianco's Pyramid of Pain</h2>
+            <p>The higher you climb on the pyramid, the more operational pain you inflict on the adversary.</p>
+            
+            <div style="max-width: 800px; margin: 24px auto 0 auto;">
+              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--alert-crimson); background: rgba(255,75,75,0.12);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: var(--alert-crimson);">TTPs (Tactics, Techniques & Procedures)</strong>
+                  <span class="cyber-badge badge-crimson">TOUGH (Pain: Severe)</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Adversary behavior (Pass-the-Hash, Certutil staging). Forces adversary to completely retrain operators and rewrite tooling.</div>
+              </div>
+              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--neon-amber); background: rgba(255,179,0,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: var(--neon-amber);">Tools (Mimikatz, Cobalt Strike, PsExec)</strong>
+                  <span class="cyber-badge badge-amber">CHALLENGING (Pain: High)</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Specific utilities dropped to disk. Adversary must re-engineer or find alternative bypass tools.</div>
+              </div>
+              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--electric-blue); background: rgba(79,172,254,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: var(--electric-blue);">Network / Host Artifacts & Domain Names</strong>
+                  <span class="cyber-badge badge-blue">ANNOYING / SIMPLE (Pain: Moderate)</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">URI patterns, registry run keys, registered domains. Costs $10 and 2 minutes to register a new domain.</div>
+              </div>
+              <div class="cyber-card" style="border-color: var(--cyber-cyan); background: rgba(0,242,254,0.06);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: var(--cyber-cyan);">IP Addresses & Hash Values (MD5, SHA-256)</strong>
+                  <span class="cyber-badge badge-cyan">TRIVIAL (Pain: Negligible)</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Changing a hash takes 1 benign byte. Changing an IP takes 15 seconds on a cloud instance. Zero adversary pain.</div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] David Bianco gave us the Pyramid of Pain. Look at the bottom: Hashes and IP addresses. Changing a hash is as easy as changing your WhatsApp DP—takes three seconds, zero effort. Changing an IP is like buying a ten-rupee prepaid SIM card. But changing a TTP at the top? That is like asking an engineering student to stop studying at 2:00 AM the night before exams! It requires complete rewiring of their operational muscle memory.
+          [PEDAGOGY:] HUMOR ANCHOR: Changing hash = changing WhatsApp DP. Changing TTPs = breaking engineering student exam habits. Explains why behavioral defense matters.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 04: MITRE ATT&CK Matrix Architecture -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 2 Concept 3">
+
+  <div style="text-align: left;">
+    <div class="cyber-badge badge-blue">ADVERSARY BEHAVIOR</div>
+    <h2>MITRE ATT&CK Matrix Architecture & 3D Topology</h2>
+    <p>The Common Language of Defensive Engineering: 14 Enterprise Tactics & 3D Attack Paths</p>
+    
+    <div class="grid-2" style="margin-top: 14px;">
+      <div class="cyber-card">
+        <strong style="color: var(--cyber-cyan); font-size: 14px;">Tactics (Why) vs. Techniques (How)</strong>
+        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px; line-height: 1.6;">
+          MITRE ATT&CK organizes real-world adversary behavior into 14 sequential tactical objectives (from Reconnaissance to Impact). Each tactic contains granular techniques and sub-techniques.
+        </p>
+        <div class="terminal-buffer" style="margin-top: 10px; font-size: 11px;">
+          <div class="terminal-body">
+TACTIC: Credential Access [TA0006]<br>
+&nbsp;&nbsp;&boxur;&nbsp;TECHNIQUE: OS Credential Dumping [T1003]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&boxur;&nbsp;SUB-TECH: LSASS Memory [T1003.001]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&boxur;&nbsp;DETECTION: Sysmon Event ID 10 (ProcessAccess)
+          </div>
+        </div>
+      </div>
+      
+      <!-- 3D Defense Mesh Viewport -->
+      <div>
+        <div class="three-canvas-container" id="defense-mesh-3d">
+          <div class="three-canvas-overlay">🕸️ 3D ATTACK SURFACE TOPOLOGY // REAL-TIME MESH</div>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 6px; text-align: center;">
+          Active nodes: Gateway (Cyan), DC Server (Amber), Workstations (Green), SCADA PLC (Red).
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <aside class="notes">
+          [SAY:] Notice the hierarchy: Tactics are the WHY (Execution). Techniques are the HOW (PowerShell). Procedures are the WHAT (the exact base64 command). The adversary can change their IP, but they cannot hide their procedure.
+          [PEDAGOGY:] Establish the Tactic ➔ Technique ➔ Sub-technique ➔ Procedure hierarchy.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 05: 8 Core Enterprise Tactics in Depth -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 2 Concept 4">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-blue">TACTICAL BREAKDOWN</div>
+            <h2>The 8 Core Enterprise Tactics: Initial Access to Impact</h2>
+            <p>Understanding the standard kill chain progression through the ATT&CK lens.</p>
+            
+            <div class="grid-4" style="margin-top: 20px; font-size: 12px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan);">1. Initial Access</strong>
+                <p style="margin-top: 4px;">Spearphishing attachments (T1566), valid VPN credentials, public edge exploits.</p>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan);">2. Execution</strong>
+                <p style="margin-top: 4px;">PowerShell (T1059.001), Windows Command Shell, WMI process execution.</p>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue);">3. Persistence</strong>
+                <p style="margin-top: 4px;">Registry Run keys (T1547), Scheduled Tasks (T1053), service creation.</p>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue);">4. Privilege Escalation</strong>
+                <p style="margin-top: 4px;">Token impersonation, DLL search order hijacking, Kerberoasting (T1558).</p>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber);">5. Defense Evasion</strong>
+                <p style="margin-top: 4px;">Living-off-the-Land (LOLBins), process injection (T1055), log clearing.</p>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber);">6. Discovery</strong>
+                <p style="margin-top: 4px;">Network share scanning (T1135), AD enumeration (<code>nltest /dclist</code>).</p>
+              </div>
+              <div class="cyber-card">
+                <strong style="color: var(--alert-crimson);">7. Lateral Movement</strong>
+                <p style="margin-top: 4px;">Pass-the-Hash (T1550.002), Remote Desktop Protocol, SMB file execution.</p>
+              </div>
+              <div class="cyber-card" style="border-color: var(--alert-crimson);">
+                <strong style="color: var(--alert-crimson);">8. Exfiltration & Impact</strong>
+                <p style="margin-top: 4px;">Automated cloud sync exfil (T1567), data encryption for ransom (T1486).</p>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Walk through these eight core tactics. Notice how an attacker moves from Initial Access down to Exfiltration and Impact. Every tactic leaves telemetry behind.
+          [PEDAGOGY:] Guide students to view intrusions not as isolated events, but as a linked chain of tactical goals.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 06: ATT&CK Navigator v5 & Layer Algebra -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 2 Concept 5">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">VISUAL COVERAGE MATRIX</div>
+            <h2>ATT&CK Navigator v5: Visualizing Detection Blind Spots</h2>
+            <p>Layer Algebra transforms subjective security opinions into objective mathematical coverage.</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">Layer Arithmetic Formula:</strong>
+                <div class="terminal-buffer" style="margin: 10px 0; font-size: 12px;">
+                  <div class="terminal-body">
+<span class="terminal-cmd">Score(T)</span> = Threat Actor Activity (Score: 100, Red)
+<span class="terminal-cmd">Score(D)</span> = Internal SOC Detection Rule (Score: -100, Green)
+<br><span style="color: var(--neon-amber); font-weight: 700;">GAP MATRIX:</span> Score(Combine) = Score(T) + Score(D)
+* Red cells indicate critical detection blind spots!
+                  </div>
+                </div>
+                <p style="font-size: 12px; color: var(--text-secondary);">
+                  In Navigator v5, we export the combined layer JSON to identify which adversary techniques have zero detection coverage in our SIEM.
+                </p>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 15px;">Demonstration Takeaway:</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.7;">
+                  <li>Open <code>https://mitre-attack.github.io/attack-navigator/</code>.</li>
+                  <li>Load <code>threat_unc_phoenix.json</code> (Threat Layer).</li>
+                  <li>Load <code>internal_soc_detection.json</code> (Detection Layer).</li>
+                  <li>Click <strong>Create Layer from Other Layers</strong>.</li>
+                  <li>Formula: <code>b - a</code> ➔ surfaces unmonitored LOLBins!</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Layer algebra in Navigator v5 is pure mathematical threat modeling. Layer A is what the attacker does. Layer B is what your SIEM detects. When you subtract B from A, whatever remains in crimson is your blind spot. That tells you exactly which Sigma rule to write tomorrow.
+          [PEDAGOGY:] Prepare students for Lab 3 layer algebra calculations.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 07: Hypothesis-Driven Threat Hunting -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 2 Concept 6">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">PROACTIVE DEFENSE</div>
+            <h2>Structured Hypothesis-Driven Threat Hunting</h2>
+            <p>Threat hunting is not wandering around hoping to bump into an attacker. It is scientific inquiry.</p>
+            
+            <div class="grid-4" style="margin-top: 24px; font-size: 13px;">
+              <div class="cyber-card">
+                <span class="cyber-badge badge-blue">STEP 1: TRIGGER</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">CTI Advisory</div>
+                <p style="font-size: 12px;">Threat bulletin notes UNC-PHOENIX abuses scheduled tasks for persistence in energy firms.</p>
+              </div>
+              <div class="cyber-card">
+                <span class="cyber-badge badge-cyan">STEP 2: HYPOTHESIS</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Testable Statement</div>
+                <p style="font-size: 12px;"><em>"Adversaries have established scheduled tasks masquerading as edge updates on DMZ hosts."</em></p>
+              </div>
+              <div class="cyber-card">
+                <span class="cyber-badge badge-amber">STEP 3: INVESTIGATION</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Telemetry Query</div>
+                <p style="font-size: 12px;">Query Windows Event ID 4698 across all domain controllers. Stack-rank task paths and binaries.</p>
+              </div>
+              <div class="cyber-card" style="border-color: var(--emerald-pass);">
+                <span class="cyber-badge badge-crimson">STEP 4: AUTOMATION</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Sigma Rule Build</div>
+                <p style="font-size: 12px;">Deploy permanent detection rule into SIEM to convert hunt findings into automated 24/7 defense.</p>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Threat hunting is not like a first-year student wandering the campus trying to find free Wi-Fi without a password! Structured hunting starts with a testable hypothesis based on threat intelligence: 'Adversaries targeting South Indian energy firms use scheduled tasks for persistence. Let us inspect Event ID 4698 across all domain controllers.'
+          [PEDAGOGY:] HUMOR ANCHOR: Wandering campus for free Wi-Fi vs structured hunting. Emphasize the 4-step hunt model.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 08: MITRE D3FEND Countermeasures -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 2 Section 2.5">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-purple">DEFENSIVE ONTOLOGY</div>
+            <h2>MITRE D3FEND: The Countermeasure Knowledge Graph</h2>
+            <p>While ATT&CK catalogs offense, D3FEND catalogs precise defensive engineering countermeasures.</p>
+            
+            <div class="grid-3" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan);">MODEL & DETECT</strong>
+                <ul style="font-size: 12px; color: var(--text-secondary); margin-top: 8px; line-height: 1.7;">
+                  <li><strong>Process Lineage Analysis:</strong> Trace parent-child relationship (Word ➔ PowerShell).</li>
+                  <li><strong>File Access Pattern:</strong> Detect rapid mass file encryption signatures.</li>
+                  <li><strong>Identifier Activity Analysis:</strong> Detect pass-the-hash ticket reuse.</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue);">ISOLATE & DECEIVE</strong>
+                <ul style="font-size: 12px; color: var(--text-secondary); margin-top: 8px; line-height: 1.7;">
+                  <li><strong>Process Segment Execution:</strong> Constrain unsigned binaries in isolated containers.</li>
+                  <li><strong>Decoy Environment:</strong> Deploy honeypot Active Directory accounts (honeytokens).</li>
+                  <li><strong>Network Traffic Filtering:</strong> Null-route suspicious egress IP sockets.</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--emerald-pass);">EVICT & RESTORE</strong>
+                <ul style="font-size: 12px; color: var(--text-secondary); margin-top: 8px; line-height: 1.7;">
+                  <li><strong>Credential Invalidation:</strong> Force immediate Kerberos TGT double-reset.</li>
+                  <li><strong>Process Termination:</strong> Surgically kill injected memory threads.</li>
+                  <li><strong>Artifact Eviction:</strong> Remove malicious scheduled tasks and persistence keys.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] ATT&CK tells you how you get attacked; D3FEND tells you how to engineer the defense. Notice the categories: Model, Detect, Isolate, Deceive, and Evict.
+          [PEDAGOGY:] Introduce D3FEND as the engineering balance to ATT&CK offense.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 09: LAB 03 (Part 1/7): Introduction & Objectives -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING & ATT&CK" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 3 — Section 3.1">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-blue">LAB-03: STEP 1 OF 7 // SPECIFICATION & OBJECTIVES</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Mapping Multi-Stage Behaviors to MITRE ATT&CK v15</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Deconstructing Operation SolarPhish, technique mapping, and Navigator matrix generation.</p>
+                
+                <div class="grid-3" style="margin-top: 18px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">🎯 Core Learning Objectives</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Dissect a complex multi-stage intrusion narrative into behavioral components.</li>
+                      <li>Map observed evidence to exact ATT&CK v15 Tactics, Techniques & Sub-techniques.</li>
+                      <li>Build, score, and export visual threat matrices using MITRE ATT&CK Navigator v5.</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⏱️ Parameters & Scope</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Estimated Duration:</strong> 85 Minutes.</li>
+                      <li><strong>Instructional Framework:</strong> IBM ICE & MITRE ATT&CK v15.</li>
+                      <li><strong>PLO Mapping:</strong> PLO-3 (Adversary behavioral mapping & gap analysis).</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">📦 Required Deliverables</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Formal 5-Event Narrative Behavioral Mapping Table.</li>
+                      <li>Exported ATT&CK Navigator Layer: <code>operation_solarphish_layer.json</code>.</li>
+                      <li>MITRE D3FEND Defensive Countermeasure Matrix.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] In Lab 3, we move from atomic indicators to adversary behavior. You will take the raw incident narrative of Operation SolarPhish and map every action into MITRE ATT&CK Enterprise Matrix v15.
+          [PEDAGOGY:] Emphasize that techniques are behaviors, not tools. PowerShell is an interpreter; using it to download tools is Ingress Tool Transfer.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 10: LAB 03 (Part 2/7): Environment Preparation -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING & ATT&CK" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 3 — Section 3.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-03: STEP 2 OF 7 // WORKSTATION PREPARATION</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Workstation Setup & Navigator Initialization</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Launching local ATT&CK Navigator v5 and verifying offline template layers.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">💻 Environment & Tools</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Tool:</td><td>MITRE ATT&CK Navigator v5 (Local Offline Instance)</td></tr>
+                      <tr><td style="color: #FFF;">Matrix Version:</td><td>Enterprise ATT&CK v15 (October 2026 Release)</td></tr>
+                      <tr><td style="color: #FFF;">Dossier Path:</td><td><code>C:\Threat_Intel_IR_2026\06_Datasets\dossier_solarphish.md</code></td></tr>
+                      <tr><td style="color: #FFF;">Base Template:</td><td><code>attack_layer_template.json</code></td></tr>
+                    </table>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⚡ Pre-Flight Verification Commands</strong>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Launch local Navigator and confirm JSON template syntax:</p>
+                    <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># 1. Verify JSON template syntax in PowerShell</span>
+python -m json.tool "C:\Threat_Intel_IR_2026\attack_layer_template.json" | Select-Object -First 6
+<span class="terminal-cmd"># 2. Launch Navigator offline portal in Chrome</span>
+Start-Process "chrome.exe" "C:\Tools\attack-navigator\index.html"
+                      </div>
+                    </div>
+                    <div style="font-size: 10px; color: var(--emerald-pass); margin-top: 4px;">✓ Expected response: Valid JSON header and Navigator UI rendered</div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Start the offline ATT&CK Navigator instance in Chrome. Do not use the live internet portal if your pod is operating in local sandbox mode.
+          [PEDAGOGY:] Confirm every student has a clean, empty Enterprise v15 matrix tab open before reviewing Event A.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 11: LAB 03 (Part 3/7): Step-by-Step Procedure -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING & ATT&CK" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 3 — Section 3.4">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-amber">LAB-03: STEP 3 OF 7 // EXECUTION PROTOCOL</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">3-Phase Practical Mapping Protocol</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Deconstruct narrative events A through E into precise ATT&CK v15 sub-techniques.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">PHASE 1: Incident Narrative Deconstruction (Minutes 00–30)</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li><strong>Event A:</strong> Phishing email with weaponized Excel <code>benefits.xlsm</code> -> <strong>T1566.001 (Spearphishing Attachment)</strong>.</li>
+                      <li><strong>Event B:</strong> VBA Macro spawns PowerShell & Certutil download -> <strong>T1059.001</strong> & <strong>T1105 (Ingress Tool Transfer)</strong>.</li>
+                      <li><strong>Event C:</strong> Scheduled task <code>OneDriveHealthSync</code> set to 03:00 AM -> <strong>T1053.005 (Scheduled Task)</strong>.</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--electric-blue); font-size: 12px;">PHASE 2: Credential & Lateral Movement Mapping (Minutes 30–60)</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li><strong>Event D:</strong> Memory dumping from <code>lsass.exe</code> via MiniDump -> <strong>T1003.001 (LSASS Memory)</strong>.</li>
+                      <li><strong>Event E:</strong> Lateral execution to <code>DC-01</code> via WMI and SMB -> <strong>T1047 (WMI)</strong> & <strong>T1021.002 (SMB/Windows Admin Shares)</strong>.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">PHASE 3: Building & Color-Coding ATT&CK Navigator Layer (Minutes 60–85)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>In Navigator, multi-select identified techniques and set Scores (1 to 5) reflecting adversary dwell time.</li>
+                      <li>Color-code: Initial Access (Yellow <code>#FDE047</code>), Persistence (Orange <code>#FB923C</code>), Lateral/Creds (Red <code>#EF4444</code>).</li>
+                      <li>Export layer as <code>operation_solarphish_layer.json</code> and capture SVG matrix visual.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Notice that Event B involves two distinct techniques: PowerShell as the execution interpreter, and certutil as the ingress tool transfer. Be rigorous with multi-action events.
+          [PEDAGOGY:] Circulate among the pods during Phase 2 to ensure students do not confuse LSASS memory dumping with credential access via browser cache.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 12: LAB 03 (Part 4/7): Expected Output & Layer Schema -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING & ATT&CK" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 3 — Section 3.5">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-green">LAB-03: STEP 4 OF 7 // VERIFIED ARTIFACTS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Expected Navigator JSON Layer Schema</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Validate exported JSON structure and technique score assignments.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div>
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">Exported JSON Layer Structure:</strong>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px; max-height: 240px; overflow-y: auto;">
+                      <div class="terminal-body">
+{
+  "name": "Operation SolarPhish Incident Coverage",
+  "versions": { "attack": "15", "navigator": "5.0.0", "layer": "4.5" },
+  "domain": "enterprise-attack",
+  "techniques": [
+    { "techniqueID": "T1566.001", "score": 2, "color": "#FDE047", "comment": "Event A: benefits.xlsm attachment" },
+    { "techniqueID": "T1059.001", "score": 3, "color": "#FDE047", "comment": "Event B: Obfuscated PowerShell execution" },
+    { "techniqueID": "T1105",     "score": 3, "color": "#FB923C", "comment": "Event B: Certutil payload download" },
+    { "techniqueID": "T1053.005", "score": 4, "color": "#FB923C", "comment": "Event C: OneDriveHealthSync task" },
+    { "techniqueID": "T1003.001", "score": 5, "color": "#EF4444", "comment": "Event D: LSASS memory injection" },
+    { "techniqueID": "T1047",     "score": 5, "color": "#EF4444", "comment": "Event E: WMI lateral movement to DC-01" }
+  ]
+}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">What to Inspect & Verify:</strong>
+                    <div class="cyber-card" style="margin-top: 6px; font-size: 11px; line-height: 1.6;">
+                      <ul style="color: var(--text-secondary); padding-left: 16px;">
+                        <li><strong>v15 Schema Conformance:</strong> <code>versions.attack</code> must be <code>"15"</code>. Sub-techniques must use dot notation (<code>T1566.001</code>).</li>
+                        <li><strong>Analytical Comments:</strong> Each technique must include a specific event reference in the comment field.</li>
+                        <li><strong>MITRE D3FEND Countermeasure:</strong> Pair <code>T1059.001</code> with D3FEND <strong>Process Spawning Analysis (D3-PSA)</strong>.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Inspect your exported JSON layer. If you opened the file and see 'T1566' without the sub-technique '.001', you mapped the broad technique instead of the specific action.
+          [PEDAGOGY:] Explain that v15 enforces hierarchical sub-techniques to prevent ambiguous defensive engineering.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 13: LAB 03 (Part 5/7): Technical Interpretation -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING & ATT&CK" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 3 — Section 3.5.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-03: STEP 5 OF 7 // ANALYTICAL SYNTHESIS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Defensive Gap Analysis & D3FEND Countermeasures</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Translating adversary heatmaps into concrete defensive engineering priorities.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">🛡️ Identified Defensive Chokepoints</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Chokepoint 1 (Execution):</strong> Blocking Office macro child-process spawning (Attack Surface Reduction Rule <code>D3-ASR</code>) prevents Event B entirely.</li>
+                      <li><strong>Chokepoint 2 (Credential Access):</strong> Enabling Windows Defender Credential Guard isolates LSASS memory into a virtualized container, neutralizing <code>T1003.001</code>.</li>
+                      <li><strong>Chokepoint 3 (Lateral Movement):</strong> Enforcing Host-based RPC filtering restricts unauthorized WMI pivots across workstation VLANs.</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 13px;">⚠️ Critical Gaps Exposed by Matrix</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Zero detection rules currently monitor <code>certutil.exe -urlcache</code> ingress downloads in perimeter proxies.</li>
+                      <li>Scheduled tasks created under standard user privileges do not trigger high-priority alerts in the current SIEM configuration.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] A heatmap is useless if it sits in a drawer. The entire purpose of ATT&CK mapping is identifying where our defensive chokepoints must be established.
+          [PEDAGOGY:] Guide students to realize that stopping Event B (macro child process) prevents Events C, D, and E from ever happening.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 14: LAB 03 (Part 6/7): Troubleshooting & Recovery -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING & ATT&CK" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 3 — Section 3.7">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-red">LAB-03: STEP 6 OF 7 // ERROR RESOLUTION & RECOVERY</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Common Navigator Errors & Diagnostic Fixes</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Rapid recovery procedures for Navigator rendering and schema validation issues.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 12px;">Issue 1: Navigator Displays 'Invalid Layer Schema' on JSON Upload</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Occurs when version tag mismatches or syntax error is present.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Recovery: Validate JSON schema against standard validator</span>
+python -c "import json; json.load(open('operation_solarphish_layer.json'))"
+<span class="terminal-cmd"># Verify: Ensure 'versions' block contains 'attack': '15'</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 12px;">Issue 2: Color Gradient Not Displaying on Scored Cells</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Navigator color configuration range does not span assigned score range (1 to 5).</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Recovery: In Navigator UI -> Click 'Color Setup' (palette icon)</span>
+<span class="terminal-cmd"># Set Low Value = 1 (Yellow), High Value = 5 (Red) -> Click Apply</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] If Navigator rejects your JSON file, run the quick Python validation one-liner shown on screen. It will tell you the exact line number of any syntax error.
+          [PEDAGOGY:] Remind students that JSON does not permit trailing commas after the final list element.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 15: LAB 03 (Part 7/7): Completion & Assessment -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING & ATT&CK" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 3 — Section 3.6">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-03: STEP 7 OF 7 // VERIFICATION & GRADING</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Deliverable Checklist & Assessment Rubric</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Verify all deliverables are saved before session wrap-up.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">📋 Completion Checklist</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.8;">
+                      <li>[ ] Table mapping Events A–E to exact ATT&CK v15 sub-techniques completed.</li>
+                      <li>[ ] Validated JSON layer file <code>operation_solarphish_layer.json</code> saved.</li>
+                      <li>[ ] Exported PNG/SVG heatmap showing Yellow/Orange/Red score gradients.</li>
+                      <li>[ ] At least two MITRE D3FEND defensive countermeasures articulated.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">⚖️ Assessment Rubric (100 Points)</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Mapping Precision (Events A–E):</td><td><strong>40 Pts</strong> (Exact v15 sub-techniques identified)</td></tr>
+                      <tr><td style="color: #FFF;">Navigator Layer Quality:</td><td><strong>30 Pts</strong> (Valid schema, scores 1–5, color gradient)</td></tr>
+                      <tr><td style="color: #FFF;">D3FEND Defensive Articulation:</td><td><strong>30 Pts</strong> (Concrete architectural mitigations)</td></tr>
+                      <tr><td style="color: var(--cyber-cyan);">Total Passing Standard:</td><td><strong>75% or higher</strong></td></tr>
+                    </table>
+                  </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 16px;">
+                  <span class="cyber-badge badge-green" style="font-size: 12px; padding: 6px 18px;">LAB-03 OFFICIAL COMPLETION VERIFIED // PROCEED TO KNOWLEDGE CHECK</span>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Save your JSON layer file. Pod leads, review each workstation's heatmap gradient to confirm that all 6 techniques are colored and annotated.
+          [PEDAGOGY:] Ensure students understand how this ATT&CK layer will directly feed tomorrow's STIX bundling exercise.
+        </aside>
+      </section>
+
+      <!-- DAY 02 - SLIDE 16: Day 2 Knowledge Check -->
+      <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING" data-session="1:00 PM – 5:00 PM" data-ref="Trainer Handbook Section 2.7">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">END-OF-DAY CHECKPOINT</div>
+            <h2>Day 2 Knowledge Check: Threat Modeling Mastery</h2>
+            <p>Evaluate your defensive reasoning before we transition into Day 3 OSINT standards.</p>
+            
+            <div class="interactive-decision-box" style="margin-top: 20px;">
+              <strong style="color: #FFF; font-size: 15px;">Question for Pod 5 & Pod 6:</strong>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 8px 0 14px 0;">
+                Why does David Bianco place TTPs at the apex of the Pyramid of Pain, and what makes TTP detection fundamentally different from file hash detection?
+              </p>
+              <div class="decision-options">
+                <button class="decision-btn" onclick="selectDecision(this, false, 'Incorrect: TTPs are actually harder to detect than hashes, but they inflict vastly greater operational disruption on the adversary.')">
+                  <span>A) Because TTPs are easier to detect in firewalls than file hashes, so detection costs are lower.</span>
+                  <span>➔</span>
+                </button>
+                <button class="decision-btn" onclick="selectDecision(this, true, 'Correct! Changing a hash costs an adversary 1 second. Breaking a TTP forces the adversary to retrain operators, rewrite malware frameworks, and redesign their entire attack methodology.')">
+                  <span>B) Because changing a hash costs zero effort, whereas changing TTPs forces the adversary to completely reinvent their operational tradecraft.</span>
+                  <span>➔</span>
+                </button>
+              </div>
+              <div class="decision-explanation" style="margin-top: 12px; font-size: 13px; font-family: var(--font-mono);"></div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Pod 5 and Pod 6, review the question. Why are TTPs at the top? Excellent choice! Hashes cost nothing to change. Breaking TTPs forces the adversary to burn time, money, and tooling.
+          [PEDAGOGY:] Solidify the Pyramid of Pain lesson before moving into STIX/TAXII standards.
+        </aside>
+      </section>
+
+
+      <!-- DAY 02 - CONCLUSION & PORTAL RETURN -->
+      <section data-day="DAY 02" data-module="WRAP-UP & ADJOURNMENT" data-session="1:00 PM – 5:00 PM" data-ref="Course Syllabus">
+        <div style="text-align: center; padding: 30px 10px;">
+          <div class="cyber-badge badge-blue" style="margin-bottom: 15px;">DAY 02 ADJOURNMENT</div>
+          <h2>Session Concluded: Threat Modeling, MITRE ATT&CK Matrix & Structured Threat Hunting</h2>
+          <p style="color: var(--text-secondary); max-width: 780px; margin: 0 auto 25px auto; font-size: 15px;">
+            You have completed all planned instructional milestones, practical demonstrations, and lab exercises for Tuesday, 27 October 2026.
+          </p>
+          
+          <div class="grid-2" style="max-width: 800px; margin: 0 auto 30px auto; text-align: left;">
+            <div class="cyber-card">
+              <strong style="color: var(--day-accent); font-size: 14px;">Today's Completed Practical Milestones</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                DEMO-02: ATT&CK Heatmap | LAB-03: ATT&CK Navigator Layer Algebra
+              </div>
+            </div>
+            <div class="cyber-card">
+              <strong style="color: var(--neon-amber); font-size: 14px;">Next Session Briefing</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                Defensive OSINT, Indicator Lifecycle & STIX 2.1 / TAXII 2.1 Protocols
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: flex; justify-content: center; gap: 15px;">
+            <a href="../index.html" class="portal-home-btn" style="padding: 10px 24px; font-size: 13px;">⊞ RETURN TO MASTER PORTAL</a>
+            <a href="../day-03/index.html" class="nav-day-btn" style="padding: 10px 24px; font-size: 13px; background: var(--day-accent); color: #050814; font-weight: bold;">LAUNCH DAY 03 ▶</a>
+          </div>
+        </div>
+      </section>
+    
+    </div>
+  </div>
+
+  <!-- Shared Script Engines: Reveal.js, GSAP, Three.js, Mascots & Narratives -->
+  <script src="../shared/js/reveal.js"></script>
+  <script src="../shared/js/gsap.min.js"></script>
+  <script src="../shared/js/three.min.js"></script>
+  <script src="../shared/js/characters.js"></script>
+  <script src="../shared/js/cyber-3d.js"></script>
+  <script src="../shared/js/gsap-narratives.js"></script>
+  <script src="../shared/js/presentation-app.js"></script>
+  <script>
+    Reveal.on('slidechanged', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 02: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+    Reveal.on('ready', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 02: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+  </script>
+</body>
+</html>

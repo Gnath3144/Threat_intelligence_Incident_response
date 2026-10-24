@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DAY 05 — NIST Incident Response, RFC 3227 Volatility & Forensic Triage Acquisition | Threat Intelligence & Incident Response</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Stylesheets (Referenced from shared/) -->
+  <link rel="stylesheet" href="../shared/css/reset.css">
+  <link rel="stylesheet" href="../shared/css/reveal.css">
+  <link rel="stylesheet" href="../shared/css/theme-cyber-soc.css">
+  <link rel="stylesheet" href="../shared/css/animations.css">
+  <link rel="stylesheet" href="../shared/css/interactive-experiences.css">
+  
+  <style>
+    :root {
+      --day-accent: #FFB300;
+    }
+    .telemetry-status-bar {
+      border-bottom: 2px solid var(--day-accent);
+    }
+    .nav-day-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFF;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .nav-day-btn:hover {
+      background: var(--day-accent);
+      color: #050814;
+      border-color: var(--day-accent);
+    }
+    .nav-day-btn.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: transparent;
+    }
+    .portal-home-btn {
+      background: rgba(0, 242, 254, 0.12);
+      border: 1px solid var(--cyber-cyan);
+      color: var(--cyber-cyan);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .portal-home-btn:hover {
+      background: var(--cyber-cyan);
+      color: #050814;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Real-Time Telemetry Bar -->
+  <div class="telemetry-status-bar">
+    <div class="status-left">
+      <a href="../index.html" class="portal-home-btn" title="Return to Course Master Portal">⊞ MASTER PORTAL</a>
+      <div class="status-pill">
+        <span class="live-indicator"></span>
+        <span style="color: var(--day-accent); font-weight: 700;">DAY 05</span>
+      </div>
+      <div class="status-pill">
+        <span>VENUE:</span> <strong style="color: #F8FAFC;">LH3 – 4TH FLOOR</strong>
+      </div>
+      <div class="status-pill">
+        <span>SESSION:</span> <strong style="color: #F8FAFC;">2:00 PM – 5:00 PM</strong>
+      </div>
+    </div>
+    
+    <div class="status-center">
+      <div class="status-pill">
+        <span>FOCUS:</span> <strong id="status-module" style="color: var(--day-accent);">NIST Incident Response, RFC 3227 Vol...</strong>
+      </div>
+    </div>
+    
+    <div class="status-right">
+      <a href="../day-04/index.html" class="nav-day-btn" title="Go to DAY-04">◀ PREV DAY</a>
+      <a href="../day-06/index.html" class="nav-day-btn" title="Go to DAY-06">NEXT DAY ▶</a>
+      <button onclick="toggleShortcutModal()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">KEYS [?]</button>
+      <button onclick="toggleFullScreen()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">FULL [F]</button>
+    </div>
+  </div>
+
+  <!-- Bottom Custom Slide Counter -->
+  <div id="custom-slide-counter" class="custom-slide-counter">DAY 05: SLIDE <span>01</span> / 17</div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div id="shortcut-modal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,8,20,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center;" onclick="if(event.target===this) toggleShortcutModal()">
+    <div style="background: #0F172A; border: 1px solid var(--day-accent); border-radius: 12px; padding: 28px 36px; max-width: 500px; width: 90%; box-shadow: 0 0 40px rgba(0,242,254,0.3); text-align: left;">
+      <h3 style="margin-top: 0; color: #FFF; font-family: var(--font-heading);">⌨️ DAY 05 Navigation Shortcuts</h3>
+      <table style="width: 100%; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); border-collapse: collapse;">
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Space / Right Arrow</td><td>Next Slide / Fragment</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Left Arrow</td><td>Previous Slide</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">F</td><td>Toggle Full-Screen Mode</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Esc / ?</td><td>Close Modal / Help</td></tr>
+      </table>
+      <div style="margin-top: 15px; display: flex; gap: 10px;">
+        <a href="../index.html" style="display: block; text-align: center; flex: 1; padding: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #FFF; text-decoration: none; font-size: 12px;">RETURN TO PORTAL</a>
+        <button onclick="toggleShortcutModal()" style="flex: 1; padding: 8px; background: var(--day-accent); border: none; border-radius: 6px; font-weight: 700; color: #050814; cursor: pointer; font-size: 12px;">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reveal.js Container -->
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- DAY 05 - SLIDE 01: Day 5 Launch & Objectives -->
+      <section data-day="DAY 05" data-module="MOD-05: TRIAGE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Module 5">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-crimson">MODULE 05 LAUNCH</div>
+            <h2>Incident Triage, Digital Forensics & Volatile Evidence Acquisition</h2>
+            <p>Session ID: SES-05 | Scheduled Net Teaching: 165 Minutes | Friday Schedule (2:00–5:00 PM)</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">Target Learning Outcomes (PLO-5)</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 10px; line-height: 1.7;">
+                  <li><strong>NIST SP 800-61r3:</strong> Navigate the 4-phase incident response lifecycle.</li>
+                  <li><strong>CSIRT Roles & Severity:</strong> Classify P1 Critical to P4 Low enterprise incidents.</li>
+                  <li><strong>RFC 3227 Volatility:</strong> Execute the order of volatile evidence preservation.</li>
+                  <li><strong>The Golden Rule:</strong> Prevent forensic contamination—never reboot live victim hosts!</li>
+                  <li><strong>KAPE Triage:</strong> Execute target and module collections for rapid artifact extraction.</li>
+                  <li><strong>Master Timelines:</strong> Detect timestomping across $STANDARD_INFO vs. $FILE_NAME.</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--alert-crimson); font-size: 15px;">Hands-On Milestone: LAB-06</strong>
+                <p style="font-size: 13px; margin-top: 10px;">
+                  Every analyst will execute a KAPE triage collection on a compromised host image, parse extracted MFT artifacts using Timeline Explorer, isolate timestomped binaries, and construct a verified forensic incident timeline for <strong>UNC-PHOENIX</strong>.
+                </p>
+                <div style="margin-top: 16px; padding: 10px; background: rgba(255, 75, 75, 0.08); border-radius: 6px; border: 1px dashed var(--alert-crimson); font-family: var(--font-mono); font-size: 12px; color: var(--alert-crimson);">
+                  TARGET FILE: forensic_triage_timeline.csv // LAB-06 COMPLETE
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Good afternoon, colleagues, and welcome to Day 5. Today is Friday, and we start at 2:00 PM. In enterprise security, Friday afternoon is the exact hour when adversaries love to strike—because they know the security team is dreaming about the weekend, traffic on the highway is building up, and the SOC is handing over to the skeleton weekend shift!
+          [PEDAGOGY:] HUMOR ANCHOR: Friday afternoon adversary strikes while everyone thinks of the weekend. Emphasize why rigor cannot slacken on Fridays.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 02: NIST SP 800-61r3 Lifecycle -->
+      <section data-day="DAY 05" data-module="MOD-05: TRIAGE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Day 5 Concept 1">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">INCIDENT FRAMEWORK</div>
+            <h2>NIST SP 800-61r3: The Incident Response Lifecycle</h2>
+            <p>The definitive global standard for structured enterprise incident handling.</p>
+            
+            <div class="grid-4" style="margin-top: 24px; font-size: 13px;">
+              <div class="cyber-card">
+                <span class="cyber-badge badge-blue">PHASE 1: PREPARATION</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Readiness Baseline</div>
+                <p style="font-size: 12px;">CSIRT contact lists, out-of-band comms, pre-deployed KAPE tools, retainers, and tabletop drills.</p>
+              </div>
+              <div class="cyber-card" style="border-color: var(--cyber-cyan);">
+                <span class="cyber-badge badge-cyan">PHASE 2: DETECTION</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Triage & Scoping</div>
+                <p style="font-size: 12px;">Validate precursors vs. indicators. Classify severity (P1–P4). Isolate patient zero and attack blast radius.</p>
+              </div>
+              <div class="cyber-card" style="border-color: var(--alert-crimson);">
+                <span class="cyber-badge badge-crimson">PHASE 3: CONTAINMENT</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Eradication & Recovery</div>
+                <p style="font-size: 12px;">Short-term network isolation, KRBTGT double-reset, wipe persistence, restore from clean golden backups.</p>
+              </div>
+              <div class="cyber-card" style="border-color: var(--neon-amber);">
+                <span class="cyber-badge badge-amber">PHASE 4: POST-INCIDENT</span>
+                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Lessons Learned</div>
+                <p style="font-size: 12px;">Post-mortem RCA meeting within 72 hours. Update detection rules, patch architectural gaps.</p>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] NIST SP 800-61r3 gives us our incident battle plan. Notice Phase 1: Preparation. You do not install forensic tools during a ransomware outbreak! You have them pre-staged in your forensic toolkit.
+          [PEDAGOGY:] Deconstruct the 4 phases of NIST SP 800-61r3.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 03: CSIRT Roles & Severity Matrix -->
+      <section data-day="DAY 05" data-module="MOD-05: TRIAGE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Day 5 Concept 2">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">INCIDENT GOVERNANCE</div>
+            <h2>CSIRT Operational Roles & Enterprise Severity Matrix</h2>
+            <p>Clear role boundaries prevent panic during high-stakes enterprise incidents.</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">CSIRT Role Hierarchy:</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.7;">
+                  <li><strong>Incident Commander (IC):</strong> Holds absolute authority over containment decisions. Shields technical analysts from executive interference.</li>
+                  <li><strong>Lead Investigator / DFIR:</strong> Directs forensic triage, memory dumps, and timeline analysis.</li>
+                  <li><strong>Containment Engineer:</strong> Executes firewall null-routes, AD account lockouts, and host network isolation.</li>
+                  <li><strong>Communications Lead:</strong> Manages legal counsel, regulatory disclosures (CERT-In), and customer PR.</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--alert-crimson); font-size: 15px;">Severity Classification:</strong>
+                <table class="lab-steps-compact" style="margin-top: 8px;">
+                  <tr><th>Level</th><th>Impact & SLA</th></tr>
+                  <tr><td><strong style="color: var(--alert-crimson);">P1 - Critical</strong></td><td>Active ransomware, domain controller breach (SLA: 15m)</td></tr>
+                  <tr><td><strong style="color: var(--neon-amber);">P2 - High</strong></td><td>Lateral movement, customer database compromised (SLA: 1h)</td></tr>
+                  <tr><td><strong style="color: var(--electric-blue);">P3 - Medium</strong></td><td>Single workstation malware, isolated C2 beacon (SLA: 4h)</td></tr>
+                  <tr><td><strong style="color: var(--cyber-cyan);">P4 - Low</strong></td><td>Phishing email blocked by filter, port scan (SLA: 24h)</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] The Incident Commander has one primary job: protect the technical analysts from panicking executives so the analysts can do their work! If the CEO walks in demanding answers every ten minutes, the IC steps in and manages the briefing.
+          [PEDAGOGY:] Emphasize the role of the Incident Commander as the operational shield.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 04: RFC 3227 Order of Volatility -->
+      <section data-day="DAY 05" data-module="MOD-05: TRIAGE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Day 5 Concept 3">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-crimson">EVIDENCE PRESERVATION</div>
+            <h2>RFC 3227: Order of Volatility & Legal Chain of Custody</h2>
+            <p>Evidence disappears at different rates. Capture the most volatile artifacts first.</p>
+            
+            <div style="max-width: 800px; margin: 20px auto 0 auto;">
+              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--alert-crimson); background: rgba(255,75,75,0.12);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: var(--alert-crimson);">1. CPU Registers & Cache</strong>
+                  <span class="cyber-badge badge-crimson">NANOSECONDS</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Vanishes instantly on context switch. Rarely captured in standard enterprise triage.</div>
+              </div>
+              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--neon-amber); background: rgba(255,179,0,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: var(--neon-amber);">2. Routing Tables, ARP Cache, Process Table, Kernel Memory (RAM)</strong>
+                  <span class="cyber-badge badge-amber">SECONDS TO MINUTES</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Decrypted malware binaries, active C2 network sockets, injected DLLs, unencrypted keys. <em>Vulnerable to power loss!</em></div>
+              </div>
+              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--electric-blue); background: rgba(79,172,254,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: var(--electric-blue);">3. Temporary File Systems & Swap Space</strong>
+                  <span class="cyber-badge badge-blue">MINUTES TO HOURS</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Virtual memory pagefile.sys, hiberfil.sys, staging folders (C:\Windows\Temp).</div>
+              </div>
+              <div class="cyber-card" style="border-color: var(--cyber-cyan); background: rgba(0,242,254,0.06);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: var(--cyber-cyan);">4. Non-Volatile Storage (Hard Disks, SSDs) & Remote Logging</strong>
+                  <span class="cyber-badge badge-cyan">DAYS TO YEARS</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">NTFS $MFT, Event Log EVTX files, prefetch, Amcache. Stable across power cycles.</div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] RFC 3227 dictates our preservation sequence. Notice RAM sits at Level 2. If you turn off the power, volatile RAM vanishes forever. Always capture memory before touching the hard drive.
+          [PEDAGOGY:] Drill the RFC 3227 order of volatility into memory. Direct bridge to the Golden Rule.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 05: The Golden Rule: Do Not Reboot! -->
+      <section data-day="DAY 05" data-module="MOD-05: TRIAGE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Day 5 Concept 4">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-crimson">FORENSIC CARDINAL SIN</div>
+            <h2>The Golden Rule of Incident Response: Do Not Reboot!</h2>
+            <p>Rebooting an infected system destroys the most critical evidence required for attribution.</p>
+            
+            <div class="grid-2" style="margin-top: 24px;">
+              <div class="cyber-card alert-card">
+                <strong style="color: var(--alert-crimson); font-size: 15px;">WHAT REBOOTING DESTROYS FOREVER:</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 10px; line-height: 1.8;">
+                  <li><strong>Volatile RAM:</strong> Injected fileless malware DLLs running in memory.</li>
+                  <li><strong>Decrypted Payloads:</strong> Ransomware keys stored in memory buffers.</li>
+                  <li><strong>Active Network Sockets:</strong> Live TCP connections to adversary C2 IP nodes.</li>
+                  <li><strong>Running Process Tree:</strong> Parent-child process IDs and command lines.</li>
+                  <li><strong>Logged-in Session Tokens:</strong> Stolen Kerberos tickets and NTLM hashes.</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card intel-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">CORRECT TRIAGE PROTOCOL:</strong>
+                <ul style="font-size: 13px; color: var(--text-secondary); margin-top: 10px; line-height: 1.8;">
+                  <li><strong>1. Network Isolation:</strong> Disconnect Ethernet or apply host firewall null-route.</li>
+                  <li><strong>2. Keep Power On:</strong> Prevent system shutdown or sleep mode.</li>
+                  <li><strong>3. Live Memory Dump:</strong> Execute WinPmem, DumpIt, or LiME memory acquisition.</li>
+                  <li><strong>4. Triage Collection:</strong> Run KAPE to extract $MFT, Prefetch, and Event Logs.</li>
+                  <li><strong>5. Chain of Custody:</strong> Calculate SHA-256 hash immediately on extraction!</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] When your laptop starts behaving strangely, the common campus instinct is: 'Sir, just restart it and hope the problem has graduated and left!' In incident response, restarting the machine is an unforgivable forensic crime! Rebooting dumps volatile RAM instantly—which is where the malware's decrypted payload and active C2 sockets live. It is like a detective arriving at a crime scene with a mop and disinfectant and washing the floor before taking fingerprints!
+          [PEDAGOGY:] HUMOR ANCHOR: The detective arriving at a crime scene with a mop and disinfectant! The classic 'problem graduated' joke. Unforgettable forensic lesson.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 06: Live Memory Acquisition Concepts -->
+      <section data-day="DAY 05" data-module="MOD-05: TRIAGE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Day 5 Section 5.3">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-blue">VOLATILITY ANALYSIS</div>
+            <h2>Live Memory Acquisition & Volatility 3 Analysis</h2>
+            <p>Extracting kernel memory to uncover stealth process injection and unencrypted payloads.</p>
+            
+            <div class="terminal-buffer" style="margin-top: 18px;">
+              <div class="terminal-header">
+                <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                <span>VOLATILITY 3 COMMAND LINE SUITE</span>
+              </div>
+              <div class="terminal-body" style="font-size: 12px;">
+<span style="color: #64748B;"># 1. Process Tree Inspection:</span>
+<span class="terminal-cmd">python3 vol.py -f memdump.raw windows.pstree</span>
+* Identifies hidden processes unlinked from the ActiveProcessLinks double-linked list.
+
+<span style="color: #64748B;"># 2. Injected Code Detection (Malfind):</span>
+<span class="terminal-cmd">python3 vol.py -f memdump.raw windows.malfind</span>
+* Scans VAD tree for memory pages marked PAGE_EXECUTE_READWRITE containing MZ/PE headers.
+
+<span style="color: #64748B;"># 3. Active Network Sockets:</span>
+<span class="terminal-cmd">python3 vol.py -f memdump.raw windows.netscan</span>
+* Recovers closed and active TCP connections, binding PID 4820 to C2 IP 198.51.100.45.
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Volatility 3 allows you to inspect the memory dump as if the operating system were still alive. Notice malfind: it looks for memory pages marked PAGE_EXECUTE_READWRITE. Legitimate software rarely needs write and execute permissions on the same memory page—that is the signature of process injection.
+          [PEDAGOGY:] Explain the concept of memory protections (W^X) and how malfind catches stealth injected threads.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 07: KAPE Forensic Triage Acquisition -->
+      <section data-day="DAY 05" data-module="MOD-05: TRIAGE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Day 5 Concept 5">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">RAPID TRIAGE</div>
+            <h2>KAPE: Kroll Artifact Parser and Extractor</h2>
+            <p>Eric Zimmerman's triage tool acquires 95% of forensic value in under 5 minutes.</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 15px;">TARGETS (--targets)</strong>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Specifies WHAT files to copy</p>
+                <ul style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+                  <li><code>KapeTriage</code>: Compound target collection</li>
+                  <li><code>$MFT</code>: Master File Table metadata</li>
+                  <li><code>RegistryHives</code>: SYSTEM, SOFTWARE, SAM, NTUSER.dat</li>
+                  <li><code>EventLogs</code>: All *.evtx operational logs</li>
+                  <li><code>Prefetch</code>: Evidence of program execution</li>
+                </ul>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 15px;">MODULES (--modules)</strong>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Specifies HOW to parse artifacts</p>
+                <ul style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+                  <li><code>MFTECmd</code>: Parses $MFT into CSV timeline</li>
+                  <li><code>PECmd</code>: Parses Prefetch execution run counts</li>
+                  <li><code>EvtxECmd</code>: Parses and normalizes Event Logs</li>
+                  <li><code>RECmd</code>: Extracts registry persistence keys</li>
+                  <li><em>Outputs normalized CSV for Timeline Explorer!</em></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] In the old days of forensics, capturing an image of a 2 TB hard drive took 14 hours. In incident response, you don't have 14 hours! KAPE copies only the forensic crown jewels: the MFT, prefetch, registry, and event logs. It finishes in 4 minutes and gives you 95% of the evidence.
+          [PEDAGOGY:] Contrast full physical bitstream imaging with surgical forensic triage via KAPE.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 08: Timestomping & $MFT Anomaly Analysis -->
+      <section data-day="DAY 05" data-module="MOD-05: TRIAGE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Day 5 Concept 6">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">ANTI-FORENSICS EXPOSED</div>
+            <h2>Timestomping: $STANDARD_INFORMATION vs. $FILE_NAME</h2>
+            <p>Adversaries modify file timestamps to blend in with legitimate system software.</p>
+            
+            <div class="grid-2" style="margin-top: 20px;">
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber); font-size: 15px;">The NTFS Dual-Timestamp Mechanism:</strong>
+                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.7;">
+                  • <strong>$STANDARD_INFORMATION ($SI):</strong> The timestamp shown in Windows Explorer. User-mode APIs can freely backdate this attribute.<br>
+                  • <strong>$FILE_NAME ($FN):</strong> The kernel-level timestamp recorded when the file name is created/renamed. Only the Windows operating system kernel can update this attribute!
+                </div>
+              </div>
+              
+              <div class="terminal-buffer" style="font-size: 11px;">
+                <div class="terminal-header">
+                  <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                  <span>TIMELINE EXPLORER // ANOMALY EXPOSED</span>
+                </div>
+                <div class="terminal-body">
+<span class="terminal-cmd">File Name:</span> C:\Windows\Temp\calc_updater.exe
+<span class="terminal-cmd">$SI Created:</span> 2021-04-12 08:14:02 (Falsified!)
+<span class="terminal-cmd">$FN Created:</span> 2026-10-30 02:14:15 (REAL KERNEL RECEIPT!)
+<br><span style="color: var(--alert-crimson); font-weight: 700;">VERDICT: TIMESTOMPED MALWARE (UNC-PHOENIX)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Adversaries try to hide by modifying file timestamps—timestomping. They take their malware and change its creation date to match calc.exe from 2021. It's like a student who forgot to submit an assignment on Monday, so they change the date on the front page to 'Last Friday' and hope the professor doesn't notice! But NTFS keeps two receipts: $STANDARD_INFORMATION and $FILE_NAME. When we compare them in Timeline Explorer, the lie is exposed instantly!
+          [PEDAGOGY:] HUMOR ANCHOR: Backdating an assignment submission to last Friday! Explains why $FILE_NAME kernel timestamps catch anti-forensics.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 09: Demonstration 5: KAPE & Timeline Explorer -->
+      <section data-day="DAY 05" data-module="MOD-05: TRIAGE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Demonstration 5">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">TRAINER DEMONSTRATION</div>
+            <h2>Demo 5: Live Triage Acquisition & MFT Parsing</h2>
+            <p>Extracting artifacts via KAPE CLI and isolating timestomping in Timeline Explorer.</p>
+            
+            <div class="terminal-buffer" style="margin-top: 18px;">
+              <div class="terminal-header">
+                <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                <span>KAPE TRIAGE EXECUTION SYNTAX</span>
+              </div>
+              <div class="terminal-body" style="font-size: 12px;">
+<span class="terminal-cmd"># Execute KAPE Compound Triage Extraction:</span>
+kape.exe --tsource C: --target KapeTriage --tdest E:\Triage\Target --vhdx TriageEvidence
+<br><span class="terminal-cmd"># Parse Extracted $MFT into Normalized CSV Timeline:</span>
+MFTECmd.exe -f "E:\Triage\Target\C\$MFT" --csv "E:\Triage\Parsed" --csvf mft_timeline.csv
+<br><span style="color: var(--emerald-pass);">// Extraction finished in 3m 42s. 14,820 artifacts parsed into mft_timeline.csv.</span>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Watch the speed of KAPE on screen. In less than four minutes, it mounted the volume shadow copy, extracted the MFT, prefetch, and registry hives, and MFTECmd generated our master timeline CSV.
+          [PEDAGOGY:] Demonstrate the KAPE CLI command syntax. Show that forensic triage is fast and automated.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 10: LAB 06 (Part 1/7): Introduction & Objectives -->
+      <section data-day="DAY 05" data-module="MOD-05: INCIDENT RESPONSE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 6 — Section 6.1">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-blue">LAB-06: STEP 1 OF 7 // SPECIFICATION & OBJECTIVES</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Incident Triage & Forensic Timeline Reconstruction</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">NIST SP 800-61r3 severity scoring, UTC chronology normalization, and chain-of-custody.</p>
+                
+                <div class="grid-3" style="margin-top: 18px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">🎯 Core Learning Objectives</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Execute incident triage and severity classification conforming to NIST SP 800-61r3.</li>
+                      <li>Merge multi-source logs across disparate timezones into a unified UTC chronology.</li>
+                      <li>Establish formal, legally defensible Chain of Custody records for forensic disk images.</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⏱️ Parameters & Scope</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Estimated Duration:</strong> 60 Minutes.</li>
+                      <li><strong>Instructional Framework:</strong> NIST SP 800-61r3 & RFC 3227.</li>
+                      <li><strong>PLO Mapping:</strong> PLO-5 (Incident scoping, triage, and forensic chronology).</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">📦 Required Deliverables</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>NIST Severity Triage Matrix with justified SEV-1 rating.</li>
+                      <li>Master Incident Chronology containing 8 normalized UTC events.</li>
+                      <li>Completed Chain of Custody form <code>EVD-20261026-001</code>.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] When an enterprise incident strikes, the first hour decides whether you contain the breach or end up on the news. Today you will apply NIST SP 800-61r3 to triage a critical breach and build an indisputable forensic timeline.
+          [PEDAGOGY:] Emphasize that timestamps from different logs are rarely in the same timezone. Normalizing to UTC is mandatory.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 11: LAB 06 (Part 2/7): Environment Preparation -->
+      <section data-day="DAY 05" data-module="MOD-05: INCIDENT RESPONSE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 6 — Section 6.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-06: STEP 2 OF 7 // WORKSTATION PREPARATION</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Triage Worksheet & Evidence Package Setup</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Preparing spreadsheet templates, forensic evidence extracts, and hashing utilities.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">💻 Environment & Evidence Files</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Workstation:</td><td>LH3 SOC Pod Workstation</td></tr>
+                      <tr><td style="color: #FFF;">Software:</td><td>Excel / LibreOffice / VS Code</td></tr>
+                      <tr><td style="color: #FFF;">Template:</td><td><code>nist_incident_triage_template.xlsx</code></td></tr>
+                      <tr><td style="color: #FFF;">Evidence Package:</td><td><code>evidence_manifest_20261026.json</code></td></tr>
+                    </table>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⚡ Pre-Flight Verification Commands</strong>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Confirm evidence files and calculate verification hash in PowerShell:</p>
+                    <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># 1. Test presence of evidence files</span>
+Test-Path "C:\Threat_Intel_IR_2026\06_Datasets\nist_incident_triage_template.xlsx"
+<span class="terminal-cmd"># 2. Verify evidence package SHA-256 integrity</span>
+Get-FileHash "C:\Threat_Intel_IR_2026\06_Datasets\evidence_manifest_20261026.json" -Algorithm SHA256
+                      </div>
+                    </div>
+                    <div style="font-size: 10px; color: var(--emerald-pass); margin-top: 4px;">✓ Expected response: 'True' and valid SHA-256 hash string</div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Before touching any evidence file, verify its cryptographic hash. In a court of law or regulatory audit, an unbroken hash verification is what makes your findings admissible.
+          [PEDAGOGY:] Confirm every student understands that SHA-256 ensures evidence has not been tampered with or corrupted.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 12: LAB 06 (Part 3/7): Step-by-Step Procedure -->
+      <section data-day="DAY 05" data-module="MOD-05: INCIDENT RESPONSE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 6 — Section 6.4">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-amber">LAB-06: STEP 3 OF 7 // EXECUTION PROTOCOL</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">3-Phase Triage & Investigation Protocol</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Classify incident severity, synchronize timestamps, and document chain of custody.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">PHASE 1: NIST SP 800-61r3 Severity Classification (Minutes 00–20)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Review SOC Tier-1 alert: <em>Simultaneous privilege escalation on DC-01 and mass file modifications on FS-02.</em></li>
+                      <li>Rate Functional Impact: <strong>High</strong> (core services degraded); Information Impact: <strong>High</strong>; Recoverability: <strong>Extended</strong>.</li>
+                      <li>Assign formal rating: <strong>SEV-1 (Critical Enterprise Incident)</strong>. Document justification in worksheet.</li>
+                    </ol>
+                  </div>
+                  
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--electric-blue); font-size: 12px;">PHASE 2: Master Chronology Reconstruction (Minutes 20–45)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Normalize disparate log timestamps to UTC: Endpoint (IST -> UTC -5:30), Firewall (EST -> UTC +5:00).</li>
+                      <li>Reconstruct causal progression: WS-22 Phishing Link -> Outbound TLS Session -> Mimikatz Injection -> Rogue Admin Account.</li>
+                    </ol>
+                  </div>
+
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">PHASE 3: Chain of Custody Record Execution (Minutes 45–60)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Complete evidence form for workstation <code>WS-22</code> disk image (Evidence ID: <code>EVD-20261026-001</code>).</li>
+                      <li>Record tool version (FTK Imager v4.7.1), acquiring investigator ID, and SHA-256 verification hash.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Look at the timezone offsets in Phase 2. The endpoint logged in Indian Standard Time, but the perimeter firewall logged in UTC. If you don't normalize them, it looks like the firewall connected before the link was clicked!
+          [PEDAGOGY:] Guide students through the math of timezone normalization to ensure proper chronological order.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 13: LAB 06 (Part 4/7): Expected Output & Chronology -->
+      <section data-day="DAY 05" data-module="MOD-05: INCIDENT RESPONSE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 6 — Section 6.5">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-green">LAB-06: STEP 4 OF 7 // VERIFIED ARTIFACTS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Unified Master Incident Chronology Table</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Verify your normalized timestamps and sequence of events.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div>
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">Normalized UTC Master Chronology:</strong>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px; max-height: 240px; overflow-y: auto;">
+                      <div class="terminal-body">
+[MASTER INCIDENT CHRONOLOGY: SEV-1 ENTERPRISE BREACH]
+Timestamp (UTC)      | Sensor Source     | Artifact Description & Causal Link
+---------------------+-------------------+--------------------------------------------
+2026-10-26 14:12:05  | Endpoint WS-22    | Phishing link clicked in Outlook (benefits.xlsm)
+2026-10-26 14:14:22  | Firewall FW-01    | Outbound TLS initiated to 198.51.100.45:8443
+2026-10-26 14:18:50  | Sysmon EID 10     | Mimikatz process injection into lsass.exe
+2026-10-26 14:25:10  | Active Directory  | Rogue Domain Admin account 'admin_temp' created
+2026-10-26 14:32:00  | FileServer FS-02  | Mass file rename (*.aerocrypt) begins
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">Chain of Custody Form Artifact:</strong>
+                    <div class="cyber-card" style="margin-top: 6px; font-size: 11px; line-height: 1.6;">
+                      <table style="width: 100%; font-size: 10px; color: var(--text-secondary);">
+                        <tr><td style="color: #FFF;">Item ID:</td><td>EVD-20261026-001</td></tr>
+                        <tr><td style="color: #FFF;">Source Host:</td><td>WS-22 (Engineering Workstation)</td></tr>
+                        <tr><td style="color: #FFF;">Acquisition Tool:</td><td>FTK Imager v4.7.1 Raw DD Image</td></tr>
+                        <tr><td style="color: #FFF;">SHA-256 Hash:</td><td><code>a1b2c3d4e5f6...verified</code></td></tr>
+                        <tr><td style="color: #FFF;">Custody Transfer:</td><td>Secured in SOC Evidence Safe Locker #3</td></tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Notice how the narrative flows seamlessly once all timestamps are locked to UTC. 20 minutes from phishing click to ransomware deployment — that is modern adversary velocity.
+          [PEDAGOGY:] Emphasize dwell time: 20 minutes between initial access and domain dominance.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 14: LAB 06 (Part 5/7): Technical Interpretation -->
+      <section data-day="DAY 05" data-module="MOD-05: INCIDENT RESPONSE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 6 — Section 6.5.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-06: STEP 5 OF 7 // ANALYTICAL SYNTHESIS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Analytical Synthesis & Breach Scope Containment</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Evaluating enterprise blast radius and triggering immediate containment gates.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">🎯 Breach Scoping Determinations</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Patient Zero Identified:</strong> Workstation <code>WS-22</code> confirmed as the single initial access point.</li>
+                      <li><strong>Compromised Identity Boundary:</strong> Domain Admin tier breached via <code>admin_temp</code> creation on <code>DC-01</code>.</li>
+                      <li><strong>Impact Containment:</strong> Subnet segmentation prevents ransomware propagation to core industrial SCADA VLANs.</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 13px;">🚨 Mandatory Containment Triggers</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Immediate network quarantine of <code>WS-22</code> and <code>FS-02</code> via EDR management channel.</li>
+                      <li>Emergency Active Directory KRBTGT account double-reset authorization request dispatched to CISO.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Because we know Patient Zero is WS-22 and the lateral pivot moved to FS-02, we can perform targeted surgical isolation rather than shutting down the entire company's power.
+          [PEDAGOGY:] Highlight the balance between containment speed and preserving business continuity.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 15: LAB 06 (Part 6/7): Troubleshooting & Recovery -->
+      <section data-day="DAY 05" data-module="MOD-05: INCIDENT RESPONSE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 6 — Section 6.7">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-red">LAB-06: STEP 6 OF 7 // ERROR RESOLUTION & RECOVERY</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Common Triage Mistakes & Recovery</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Correcting timestamp inversion bugs and evidence custody record omissions.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 12px;">Issue 1: Chronological Inversion Caused by Local Timezone Offsets</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Occurs if logs recorded in IST (+5:30) are sorted alphabetically against UTC logs.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Recovery: In Excel/Python, convert all timestamps to ISO-8601 UTC</span>
+datetime.fromisoformat('2026-10-26T19:42:05+05:30').astimezone(timezone.utc)
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 12px;">Issue 2: Verification Hash Mismatch on Raw Evidence Image</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Occurs if evidence file was mounted or modified during initial analysis.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Golden Forensic Rule: NEVER analyze live evidence</span>
+<span class="terminal-cmd"># Recovery: Make a working copy -> work ONLY on working copy!</span>
+Copy-Item "EVD-001.raw" "EVD-001_working.raw" -ReadOnly
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Never analyze original evidence directly. If you modify a single byte or change a file access timestamp, you break the hash and invalidate the evidence.
+          [PEDAGOGY:] Reinforce RFC 3227 Order of Volatility and the golden rule: work only on forensic clones.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 16: LAB 06 (Part 7/7): Completion & Assessment -->
+      <section data-day="DAY 05" data-module="MOD-05: INCIDENT RESPONSE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Lab Manual 6 — Section 6.6">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-06: STEP 7 OF 7 // VERIFICATION & GRADING</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Deliverable Checklist & Assessment Rubric</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Verify that all triage matrices and custody records are recorded.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">📋 Completion Checklist</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.8;">
+                      <li>[ ] NIST SP 800-61r3 severity worksheet scored and justified as SEV-1.</li>
+                      <li>[ ] Master Chronology containing at least 8 normalized UTC events saved.</li>
+                      <li>[ ] Completed and signed Chain of Custody form <code>EVD-20261026-001</code>.</li>
+                      <li>[ ] Lead instructor signature on the incident containment authorization gate.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">⚖️ Assessment Rubric (100 Points)</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">NIST Severity Triage Justification:</td><td><strong>40 Pts</strong> (Correct SEV-1 classification)</td></tr>
+                      <tr><td style="color: #FFF;">Chronology Accuracy & UTC Normalization:</td><td><strong>40 Pts</strong> (Flawless causal ordering)</td></tr>
+                      <tr><td style="color: #FFF;">Chain of Custody Rigor:</td><td><strong>20 Pts</strong> (Complete provenance documentation)</td></tr>
+                      <tr><td style="color: var(--cyber-cyan);">Total Passing Standard:</td><td><strong>75% or higher</strong></td></tr>
+                    </table>
+                  </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 16px;">
+                  <span class="cyber-badge badge-green" style="font-size: 12px; padding: 6px 18px;">LAB-06 OFFICIAL COMPLETION VERIFIED // PROCEED TO KNOWLEDGE CHECK</span>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Submit your completed triage workbook. Tomorrow is Day 6 — our grand finale featuring email forensics, SOAR automation, and the AeroGrid APT tabletop crisis.
+          [PEDAGOGY:] Review pod submissions to ensure every student has mastered UTC timeline construction before the capstone.
+        </aside>
+      </section>
+
+      <!-- DAY 05 - SLIDE 17: Day 5 Knowledge Check -->
+      <section data-day="DAY 05" data-module="MOD-05: TRIAGE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Trainer Handbook Section 5.7">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">END-OF-DAY CHECKPOINT</div>
+            <h2>Day 5 Knowledge Check: Forensic Integrity</h2>
+            <p>Verify your understanding before our marathon Saturday Capstone.</p>
+            
+            <div class="interactive-decision-box" style="margin-top: 20px;">
+              <strong style="color: #FFF; font-size: 15px;">Question for Pod 5 & Pod 6:</strong>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 8px 0 14px 0;">
+                During an active intrusion, a junior system administrator notices suspicious network activity and immediately pulls the power cord from the wall to stop the attack. What catastrophic forensic consequence just occurred?
+              </p>
+              <div class="decision-options">
+                <button class="decision-btn" onclick="selectDecision(this, false, 'The hard drive remains intact, but the critical volatile evidence is lost.')">
+                  <span>A) The hard drive was physically damaged and all non-volatile files are now permanently corrupted.</span>
+                  <span>➔</span>
+                </button>
+                <button class="decision-btn" onclick="selectDecision(this, true, 'Correct! Pulling the power dumps volatile memory (RAM) instantly, permanently destroying running process trees, unencrypted ransomware keys, injected fileless malware DLLs, and live C2 network sockets.')">
+                  <span>B) Volatile RAM was completely wiped, destroying running process trees, unencrypted keys, injected DLLs, and live C2 socket evidence.</span>
+                  <span>➔</span>
+                </button>
+              </div>
+              <div class="decision-explanation" style="margin-top: 12px; font-size: 13px; font-family: var(--font-mono);"></div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Pod 5 and Pod 6, what happened when the admin pulled the power cord? Exactly! Volatile RAM was wiped clean. Never pull the plug unless you are facing destructive disk wiper malware with zero other options.
+          [PEDAGOGY:] Reinforce the volatile memory destruction principle. Bridge to Day 6: the Saturday Capstone.
+        </aside>
+      </section>
+
+
+      <!-- DAY 05 - CONCLUSION & PORTAL RETURN -->
+      <section data-day="DAY 05" data-module="WRAP-UP & ADJOURNMENT" data-session="2:00 PM – 5:00 PM" data-ref="Course Syllabus">
+        <div style="text-align: center; padding: 30px 10px;">
+          <div class="cyber-badge badge-amber" style="margin-bottom: 15px;">DAY 05 ADJOURNMENT</div>
+          <h2>Session Concluded: NIST Incident Response, RFC 3227 Volatility & Forensic Triage Acquisition</h2>
+          <p style="color: var(--text-secondary); max-width: 780px; margin: 0 auto 25px auto; font-size: 15px;">
+            You have completed all planned instructional milestones, practical demonstrations, and lab exercises for Friday, 30 October 2026.
+          </p>
+          
+          <div class="grid-2" style="max-width: 800px; margin: 0 auto 30px auto; text-align: left;">
+            <div class="cyber-card">
+              <strong style="color: var(--day-accent); font-size: 14px;">Today's Completed Practical Milestones</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                DEMO-05: Timeline Explorer | LAB-06: Triage Acquisition & Timestomping
+              </div>
+            </div>
+            <div class="cyber-card">
+              <strong style="color: var(--neon-amber); font-size: 14px;">Next Session Briefing</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                Phishing Triage, Containment, SOAR Automation & AeroGrid APT Crisis
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: flex; justify-content: center; gap: 15px;">
+            <a href="../index.html" class="portal-home-btn" style="padding: 10px 24px; font-size: 13px;">⊞ RETURN TO MASTER PORTAL</a>
+            <a href="../day-06/index.html" class="nav-day-btn" style="padding: 10px 24px; font-size: 13px; background: var(--day-accent); color: #050814; font-weight: bold;">LAUNCH DAY 06 ▶</a>
+          </div>
+        </div>
+      </section>
+    
+    </div>
+  </div>
+
+  <!-- Shared Script Engines: Reveal.js, GSAP, Three.js, Mascots & Narratives -->
+  <script src="../shared/js/reveal.js"></script>
+  <script src="../shared/js/gsap.min.js"></script>
+  <script src="../shared/js/three.min.js"></script>
+  <script src="../shared/js/characters.js"></script>
+  <script src="../shared/js/cyber-3d.js"></script>
+  <script src="../shared/js/gsap-narratives.js"></script>
+  <script src="../shared/js/presentation-app.js"></script>
+  <script>
+    Reveal.on('slidechanged', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 05: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+    Reveal.on('ready', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 05: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+  </script>
+</body>
+</html>

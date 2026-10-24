@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DAY 06 — Phishing Triage, Containment, SOAR Automation & AeroGrid APT Crisis | Threat Intelligence & Incident Response</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Stylesheets (Referenced from shared/) -->
+  <link rel="stylesheet" href="../shared/css/reset.css">
+  <link rel="stylesheet" href="../shared/css/reveal.css">
+  <link rel="stylesheet" href="../shared/css/theme-cyber-soc.css">
+  <link rel="stylesheet" href="../shared/css/animations.css">
+  <link rel="stylesheet" href="../shared/css/interactive-experiences.css">
+  
+  <style>
+    :root {
+      --day-accent: #FF4B4B;
+    }
+    .telemetry-status-bar {
+      border-bottom: 2px solid var(--day-accent);
+    }
+    .nav-day-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFF;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .nav-day-btn:hover {
+      background: var(--day-accent);
+      color: #050814;
+      border-color: var(--day-accent);
+    }
+    .nav-day-btn.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: transparent;
+    }
+    .portal-home-btn {
+      background: rgba(0, 242, 254, 0.12);
+      border: 1px solid var(--cyber-cyan);
+      color: var(--cyber-cyan);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .portal-home-btn:hover {
+      background: var(--cyber-cyan);
+      color: #050814;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Real-Time Telemetry Bar -->
+  <div class="telemetry-status-bar">
+    <div class="status-left">
+      <a href="../index.html" class="portal-home-btn" title="Return to Course Master Portal">⊞ MASTER PORTAL</a>
+      <div class="status-pill">
+        <span class="live-indicator"></span>
+        <span style="color: var(--day-accent); font-weight: 700;">DAY 06</span>
+      </div>
+      <div class="status-pill">
+        <span>VENUE:</span> <strong style="color: #F8FAFC;">LH3 – 4TH FLOOR</strong>
+      </div>
+      <div class="status-pill">
+        <span>SESSION:</span> <strong style="color: #F8FAFC;">9:30 AM – 5:00 PM</strong>
+      </div>
+    </div>
+    
+    <div class="status-center">
+      <div class="status-pill">
+        <span>FOCUS:</span> <strong id="status-module" style="color: var(--day-accent);">Phishing Triage, Containment, SOAR A...</strong>
+      </div>
+    </div>
+    
+    <div class="status-right">
+      <a href="../day-05/index.html" class="nav-day-btn" title="Go to DAY-05">◀ PREV DAY</a>
+      <span class="nav-day-btn disabled">END ▶</span>
+      <button onclick="toggleShortcutModal()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">KEYS [?]</button>
+      <button onclick="toggleFullScreen()" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">FULL [F]</button>
+    </div>
+  </div>
+
+  <!-- Bottom Custom Slide Counter -->
+  <div id="custom-slide-counter" class="custom-slide-counter">DAY 06: SLIDE <span>01</span> / 32</div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div id="shortcut-modal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,8,20,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center;" onclick="if(event.target===this) toggleShortcutModal()">
+    <div style="background: #0F172A; border: 1px solid var(--day-accent); border-radius: 12px; padding: 28px 36px; max-width: 500px; width: 90%; box-shadow: 0 0 40px rgba(0,242,254,0.3); text-align: left;">
+      <h3 style="margin-top: 0; color: #FFF; font-family: var(--font-heading);">⌨️ DAY 06 Navigation Shortcuts</h3>
+      <table style="width: 100%; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); border-collapse: collapse;">
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Space / Right Arrow</td><td>Next Slide / Fragment</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Left Arrow</td><td>Previous Slide</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">F</td><td>Toggle Full-Screen Mode</td></tr>
+        <tr><td style="padding: 6px 0; color: var(--day-accent);">Esc / ?</td><td>Close Modal / Help</td></tr>
+      </table>
+      <div style="margin-top: 15px; display: flex; gap: 10px;">
+        <a href="../index.html" style="display: block; text-align: center; flex: 1; padding: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #FFF; text-decoration: none; font-size: 12px;">RETURN TO PORTAL</a>
+        <button onclick="toggleShortcutModal()" style="flex: 1; padding: 8px; background: var(--day-accent); border: none; border-radius: 6px; font-weight: 700; color: #050814; cursor: pointer; font-size: 12px;">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reveal.js Container -->
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- DAY 06 - SLIDE 01: Day 6 Launch & Capstone Marathon -->
+      <section data-day="DAY 06" data-module="MOD-06: CAPSTONE MARATHON" data-session="9:30 AM – 5:00 PM" data-ref="Course Syllabus Day 6; Handbook Chapter 7">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-red animate-pulse">DAY 06 CAPSTONE CRUCIBLE</div>
+            <h2>Day 6: Advanced Triage, Containment, SOAR & AeroGrid APT Crisis</h2>
+            <p>Saturday Marathon | Scheduled Net Teaching: 390 Minutes | 3 Sessions, 3 Guided Labs, 1 Enterprise Crisis</p>
+            
+            <div class="grid-3" style="margin-top: 16px;">
+              <div class="cyber-card" style="border-top: 2px solid var(--cyber-cyan);">
+                <div style="color: var(--cyber-cyan); font-family: var(--font-mono); font-size: 11px; font-weight: 700;">08:30 – 11:00 (150 MIN)</div>
+                <div style="font-size: 15px; font-weight: 700; color: #FFF; margin: 6px 0;">SES-06A: Phishing Triage</div>
+                <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+                  Dissecting email headers under RFC 5322, bypassing spoofing with SPF/DKIM/DMARC analysis, and weaponized CyberChef recipe pipelines.
+                </p>
+                <div style="margin-top: 10px; padding: 6px 10px; background: rgba(0,242,254,0.08); border-radius: 4px; font-family: var(--font-mono); font-size: 11px; color: var(--cyber-cyan);">
+                  LAB-05: RFC 5322 & CyberChef
+                </div>
+              </div>
+              
+              <div class="cyber-card" style="border-top: 2px solid var(--neon-amber);">
+                <div style="color: var(--neon-amber); font-family: var(--font-mono); font-size: 11px; font-weight: 700;">11:15 – 13:45 (150 MIN)</div>
+                <div style="font-size: 15px; font-weight: 700; color: #FFF; margin: 6px 0;">SES-06B: Containment & SOAR</div>
+                <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+                  Active Directory forest isolation, the delicate 10-hour KRBTGT double reset dance, and automated orchestration via Shuffle SOAR.
+                </p>
+                <div style="margin-top: 10px; padding: 6px 10px; background: rgba(255,179,0,0.08); border-radius: 4px; font-family: var(--font-mono); font-size: 11px; color: var(--neon-amber);">
+                  LAB-07: Shuffle SOAR Playbooks
+                </div>
+              </div>
+              
+              <div class="cyber-card" style="border-top: 2px solid var(--alert-crimson);">
+                <div style="color: var(--alert-crimson); font-family: var(--font-mono); font-size: 11px; font-weight: 700;">14:30 – 17:00 (150 MIN)</div>
+                <div style="font-size: 15px; font-weight: 700; color: #FFF; margin: 6px 0;">SES-06C: AeroGrid Crisis</div>
+                <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+                  Live tabletop crisis: State-sponsored APT infiltration of a regional power grid SCADA telemetry network. Triage under extreme operational pressure.
+                </p>
+                <div style="margin-top: 10px; padding: 6px 10px; background: rgba(255,75,75,0.08); border-radius: 4px; font-family: var(--font-mono); font-size: 11px; color: var(--alert-crimson);">
+                  LAB-08: AeroGrid APT Defense
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Welcome to Day 6 — Saturday morning in LH3. If you look around the room, nobody is yawning because today is what you have trained for all week. Today is the SOC Crucible. 450 minutes of pure operational execution. No theoretical introductions, no generic slides. We start with weaponized email triage, advance into Active Directory forest recovery and SOAR automation, and conclude with the AeroGrid APT tabletop crisis simulation. By 17:00 today, you are no longer students; you are certified operational defenders.
+          [PEDAGOGY:] Outline the strict time gates and high energy expectations for the Saturday marathon session.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 02: RFC 5322 Email Telemetry & Header Analysis -->
+      <section data-day="DAY 06" data-module="SES-06A: PHISHING TRIAGE" data-session="9:30 AM – 5:00 PM" data-ref="RFC 5322; RFC 7208; RFC 7489; Handbook Section 7.2">
+
+  <div style="text-align: left;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div class="cyber-badge badge-cyan">EMAIL TELEMETRY</div>
+      <div id="mascot-phish-impostor"></div>
+    </div>
+    <h2>SES-06A: Deconstructing RFC 5322 Email Telemetry</h2>
+    <p>Never Trust the Display Name: Dissecting Mail Transfer Agent (MTA) Hops & Authentication Records</p>
+    
+    <div id="phishing-dissector-demo" class="phish-dissector-container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-family: var(--font-mono); font-size: 11px; color: #FF8A8A; font-weight: bold;">
+          🔍 INTERACTIVE PHISHING EMAIL DISSECTOR (CLICK RED DASHED HOTSPOTS)
+        </span>
+        <div class="phish-mascot-reaction" style="height: 35px; display: flex; align-items: center;"></div>
+      </div>
+      <div class="phish-email-mockup">
+        <div><strong>From:</strong> <span class="phish-hotspot" onclick="inspectPhishHotspot('display-name', this)">"Dr. K. Narayanan, Director" &lt;director@recipient-corp.com&gt;</span></div>
+        <div><strong>MTA Received:</strong> <span class="phish-hotspot" onclick="inspectPhishHotspot('auth-results', this)">from mail.attacker-infra.xyz (198.51.100.44) [SPF=FAIL / DMARC=FAIL]</span></div>
+        <div><strong>Subject:</strong> <span class="phish-hotspot" onclick="inspectPhishHotspot('urgency-lure', this)">URGENT: MANDATORY EXECUTIVE COMPENSATION REVIEW BEFORE 11:00 AM</span></div>
+        <div style="margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px;">
+          Please download and verify your updated payroll breakdown here: 
+          <span class="phish-hotspot" onclick="inspectPhishHotspot('encoded-url', this)">hxxps[://]auth-portal[.]xyz/verify?token=aHR0cHM6Ly9...</span>
+        </div>
+      </div>
+      <div class="phish-callout-box">Click any red dashed hotspot above to launch Threat Detective forensic analysis.</div>
+    </div>
+  </div>
+  <script>
+    setTimeout(() => {
+      const p = document.getElementById('mascot-phish-impostor');
+      if (p && window.CyberCharacters) p.innerHTML = window.CyberCharacters.getPhishingImpostor('luring', 55, 55);
+    }, 100);
+  </script>
+
+        <aside class="notes">
+          [SAY:] [SHOW:] Display the interactive Phishing Email Dissector.
+[SAY:] 'Notice the email on screen. The display name says Dr. K. Narayanan, Director. But examine the red hotspots.'
+[DO:] Click on the 'From' hotspot, then the 'MTA Received' hotspot.
+[OBSERVE:] Threat Detective springs into action, highlighting the SPF and DMARC failures and the spoofed envelope.
+[ASK:] 'If an employee receives this email and only looks at the display name, what happens?'
+[EXPECTED ANSWER:] 'They assume authority, panic over the 11:00 AM deadline, and enter their credentials into the harvester.'
+[REVEAL:] Click the Base64 link hotspot to show the decoded destination URL.
+[EXPLAIN:] This is why automated MTA header verification and CyberChef defanging recipes are mandatory in modern SOC operations.
+          [PEDAGOGY:] Walk through the difference between RFC 5321 (Envelope From) and RFC 5322 (Header From) spoofing vulnerabilities.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 03: Weaponized CyberChef Pipelines for Phishing Triage -->
+      <section data-day="DAY 06" data-module="SES-06A: PHISHING TRIAGE" data-session="9:30 AM – 5:00 PM" data-ref="GCHQ CyberChef Documentation; Handbook Section 7.3">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-purple">INVESTIGATIVE TOOLKIT</div>
+            <h2>Weaponized CyberChef Pipelines for Phishing Triage</h2>
+            <p>Safe Defanging, Multilayer URL Decoding, Base64 Extraction, and XOR De-obfuscation</p>
+            
+            <div class="grid-2" style="margin-top: 16px;">
+              <div class="cyber-card">
+                <strong style="color: var(--purple-intel); font-size: 14px;">The Essential 4-Stage Defanging Pipeline</strong>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                  <div style="background: rgba(0,242,254,0.05); padding: 8px; border-radius: 4px;">
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">1. URL Decode (Multi-Pass)</strong>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Strips URL percent-encoding (<code>%68%74%74%70</code> &rarr; <code>http</code>) to expose raw obfuscated targets.</div>
+                  </div>
+                  <div style="background: rgba(79,172,254,0.05); padding: 8px; border-radius: 4px;">
+                    <strong style="color: var(--electric-blue); font-size: 12px;">2. From Base64 (RFC 4648)</strong>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Decodes embedded Base64 strings hiding secondary payloads or hidden HTTP redirects.</div>
+                  </div>
+                  <div style="background: rgba(255,179,0,0.05); padding: 8px; border-radius: 4px;">
+                    <strong style="color: var(--neon-amber); font-size: 12px;">3. Extract URLs / Extract IP Addresses</strong>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Uses RegEx parsers to isolate fully qualified domain names (FQDNs), IPv4 addresses, and URIs.</div>
+                  </div>
+                  <div style="background: rgba(0,230,118,0.05); padding: 8px; border-radius: 4px;">
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">4. Defang URL (Safety Guarantee)</strong>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Converts active links into safe tokens (<code>hxxps[://]evil[.]com/login</code>) preventing accidental clicks in tickets.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 14px;">Live Pipeline Demonstration (Input &rarr; Output)</strong>
+                <div class="terminal-buffer" style="margin-top: 10px; font-size: 11px;">
+                  <div class="terminal-body">
+<span style="color: var(--text-muted);">// INPUT OBFUSCATED STRING:</span>
+<span style="color: var(--neon-amber);">aHR0cHM6Ly9hdHRhY2tlci1pbmZyYS54eXovcGF5bG9hZC5leGU=</span>
+
+<span style="color: var(--cyber-cyan);">&gt; CyberChef Recipe: From_Base64('A-Za-z0-9+/=',true,false)</span>
+<span style="color: var(--cyber-cyan);">&gt; CyberChef Recipe: Defang_URL(true,true,true,'Valid domains and full URLs')</span>
+
+<span style="color: var(--text-muted);">// OUTPUT DEFANGED IOC:</span>
+<span style="color: var(--emerald-pass); font-weight: bold;">hxxps[://]attacker-infra[.]xyz/payload[.]exe</span>
+                  </div>
+                </div>
+                <div style="margin-top: 10px; padding: 8px; background: rgba(255,75,75,0.08); border-left: 3px solid var(--alert-crimson); border-radius: 4px;">
+                  <strong style="color: var(--alert-crimson); font-size: 11px;">Golden Safety Rule:</strong>
+                  <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Never share an un-defanged URL in Slack, Teams, or an incident ticket. One accidental misclick turns an investigation into an active breach.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] CyberChef is the Swiss Army knife of every SOC analyst. When an attacker sends a phishing link, they do not just send http://evil.com. They embed it in SafeLinks, wrap it in percent encoding, Base64 encode the parameter, and append tracking tokens. In CyberChef, we construct multi-step processing pipelines. And notice Step 4: Defanging. If you post a raw malicious URL in your team chat, someone will accidentally click it while looking for coffee. Always defang before documenting!
+          [PEDAGOGY:] Emphasize the defensive habit of defanging IOCs in incident management ticketing systems.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 04: LAB 05 (Part 1/7): Introduction & Objectives -->
+      <section data-day="DAY 06" data-module="MOD-06A: PHISHING & EMAIL FORENSICS" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 5 — Section 5.1">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-blue">LAB-05: STEP 1 OF 7 // SPECIFICATION & OBJECTIVES</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Phishing Header Forensics & Artifact Triage</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">RFC-5322 hop path analysis, SPF/DKIM/DMARC authentication, and CyberChef safe decoding.</p>
+                
+                <div class="grid-3" style="margin-top: 18px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">🎯 Core Learning Objectives</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Dissect RFC-5322 email headers and trace mail delivery hop paths.</li>
+                      <li>Evaluate SPF, DKIM, and DMARC alignment failure mechanisms.</li>
+                      <li>Safely extract and triage malicious attachments and links using CyberChef.</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⏱️ Parameters & Scope</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Estimated Duration:</strong> 90 Minutes.</li>
+                      <li><strong>Instructional Framework:</strong> IBM ICE & RFC 5322 / RFC 7489.</li>
+                      <li><strong>PLO Mapping:</strong> PLO-6 (Phishing triage & safe artifact analysis).</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">📦 Required Deliverables</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Completed Mail Hop Path Chronology Table.</li>
+                      <li>Technical DMARC alignment failure analysis report.</li>
+                      <li>Extracted SHA-256 hash & defanged URL dossier from CyberChef.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Good morning. We kick off Day 6 with email forensics. 91% of cyber attacks begin with phishing. You will dissect an actual weaponized executive impersonation email without executing a single line of malicious code.
+          [PEDAGOGY:] Emphasize static text-based analysis: we analyze the structure without launching binaries.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 05: LAB 05 (Part 2/7): Environment Preparation -->
+      <section data-day="DAY 06" data-module="MOD-06A: PHISHING & EMAIL FORENSICS" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 5 — Section 5.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-05: STEP 2 OF 7 // WORKSTATION PREPARATION</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Forensic Text Editor & CyberChef Setup</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Preparing offline CyberChef v10.19.4 and sanitizing sample email message files.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">💻 Environment & Tools</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Workstation:</td><td>LH3 SOC Pod Workstation</td></tr>
+                      <tr><td style="color: #FFF;">Tool 1:</td><td>CyberChef v10.19.4 (Local Offline Bundle)</td></tr>
+                      <tr><td style="color: #FFF;">Tool 2:</td><td>VS Code / Notepad++ (Text Mode)</td></tr>
+                      <tr><td style="color: #FFF;">Sample File:</td><td><code>sample_phishing_email.eml</code> (Sanitized)</td></tr>
+                    </table>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⚡ Pre-Flight Verification Commands</strong>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Confirm email sample existence and launch CyberChef in PowerShell:</p>
+                    <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># 1. Test presence of sample email file</span>
+Test-Path "C:\Threat_Intel_IR_2026\06_Datasets\sample_phishing_email.eml"
+<span class="terminal-cmd"># 2. Launch CyberChef in Google Chrome</span>
+Start-Process "chrome.exe" "C:\Tools\CyberChef\CyberChef_v10.19.4.html"
+                      </div>
+                    </div>
+                    <div style="font-size: 10px; color: var(--emerald-pass); margin-top: 4px;">✓ Expected response: 'True' and CyberChef UI ready in browser</div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Open sample_phishing_email.eml in your text editor. Do not double click to open in Outlook. We inspect the raw RFC-5322 ASCII headers.
+          [PEDAGOGY:] Check that students open .eml in a code editor rather than an email client.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 06: LAB 05 (Part 3/7): Step-by-Step Procedure -->
+      <section data-day="DAY 06" data-module="MOD-06A: PHISHING & EMAIL FORENSICS" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 5 — Section 5.4">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-amber">LAB-05: STEP 3 OF 7 // EXECUTION PROTOCOL</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">3-Phase Practical Phishing Triage Protocol</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Trace mail hops, analyze authentication headers, and decode attachments safely.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">PHASE 1: Hop Path Chronology Analysis (Minutes 00–30)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Extract headers: Compare <code>From: "CEO Office" &lt;ceo@external-spoof-relay.net&gt;</code> with display name.</li>
+                      <li>Trace <code>Received:</code> headers from bottom (originating client <code>198.51.100.99</code>) to top (AeroGrid MX gateway).</li>
+                      <li>Record timestamps and calculate routing transit delays between intermediate relays.</li>
+                    </ol>
+                  </div>
+                  
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--electric-blue); font-size: 12px;">PHASE 2: SPF / DKIM / DMARC Authentication (Minutes 30–55)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Inspect <code>Authentication-Results:</code> header: SPF=pass (for external relay), DKIM=none, DMARC=fail.</li>
+                      <li>Identify failure cause: DMARC alignment mismatch between <code>header.from</code> (aerogrid-corp.com) and <code>smtp.mailfrom</code>.</li>
+                    </ol>
+                  </div>
+
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">PHASE 3: CyberChef Safe Artifact Decoding (Minutes 55–90)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Extract base64 attachment: <code>Invoice_Payment_Urgent.pdf.iso</code> (Double extension evasion).</li>
+                      <li>In CyberChef, apply recipe: <code>From Base64</code> -> Check magic bytes (<code>43 44 30 30 31</code> = ISO Image).</li>
+                      <li>Generate SHA-256 hash. Extract embedded credential harvesting URL and defang to <code>hxxp://login-aerogrid-portal[.]com</code>.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Look at the double extension: Invoice_Payment_Urgent.pdf.iso. Windows hides known extensions by default, so an untrained user sees a PDF icon and clicks. That is why we teach artifact forensics.
+          [PEDAGOGY:] Walk students through reading Received headers bottom-up: bottom is initial sender, top is final recipient.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 07: LAB 05 (Part 4/7): Expected Output & Authentication -->
+      <section data-day="DAY 06" data-module="MOD-06A: PHISHING & EMAIL FORENSICS" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 5 — Section 5.5">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-green">LAB-05: STEP 4 OF 7 // VERIFIED ARTIFACTS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Expected Header Breakdown & CyberChef Output</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Verify your authentication evaluation and extracted IOC hashes.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div>
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">Authentication-Results Header Analysis:</strong>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px; max-height: 240px; overflow-y: auto;">
+                      <div class="terminal-body">
+Authentication-Results: mx.aerogrid.com;
+  spf=fail (sender IP 198.51.100.99 is not authorized by aerogrid-corp.com)
+  smtp.mailfrom=bounce@external-spoof-relay.net;
+  dkim=none (no cryptographic signature found);
+  dmarc=fail (p=reject, sp=reject) header.from=aerogrid-corp.com
+[VERDICT: SPOOFED EXECUTIVE WIRE TRANSFER PHISHING ATTEMPT]
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">Extracted Artifact Metadata:</strong>
+                    <div class="cyber-card" style="margin-top: 6px; font-size: 11px; line-height: 1.6;">
+                      <table style="width: 100%; font-size: 10px; color: var(--text-secondary);">
+                        <tr><td style="color: #FFF;">Attachment:</td><td>Invoice_Payment_Urgent.pdf.iso</td></tr>
+                        <tr><td style="color: #FFF;">Magic Bytes:</td><td>43 44 30 30 31 (ISO 9660 Container)</td></tr>
+                        <tr><td style="color: #FFF;">SHA-256:</td><td><code>d41d8cd98f00b204e9800998ecf8427e...</code></td></tr>
+                        <tr><td style="color: #FFF;">Defanged URL:</td><td><code>hxxp://login-aerogrid-portal[.]com/auth.php</code></td></tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Notice that SPF passed for the external bounce address, but DMARC failed because the header.from domain did not match. DMARC alignment is the defense that caught this spoof.
+          [PEDAGOGY:] Explain the concept of DMARC alignment: SPF passing alone is insufficient if the envelope domain differs from the visible From address.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 08: LAB 05 (Part 5/7): Technical Interpretation -->
+      <section data-day="DAY 06" data-module="MOD-06A: PHISHING & EMAIL FORENSICS" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 5 — Section 5.5.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-05: STEP 5 OF 7 // ANALYTICAL SYNTHESIS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Analytical Synthesis & Policy Hardening</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Translating phishing triage findings into enterprise email security policies.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">🛡️ Policy Enforcement Recommendations</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>DMARC Enforcement:</strong> Upgrade policy from <code>p=none</code> (monitoring) to <code>p=reject</code> across all enterprise domains.</li>
+                      <li><strong>Container File Blocking:</strong> Block inbound email attachments with extensions <code>.iso</code>, <code>.vhd</code>, and <code>.img</code> at the secure email gateway.</li>
+                      <li><strong>External Sender Tagging:</strong> Enforce visual [EXTERNAL] subject banners for emails originating outside corporate MX relays.</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--purple-intel); font-size: 13px;">🔗 Threat Intelligence Feedback Loop</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Feed extracted domain <code>login-aerogrid-portal.com</code> into MISP threat sharing feed.</li>
+                      <li>Update web proxy blocklists to prevent campus employees from reaching credential harvesting landing page.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] A good analyst solves the ticket. A great engineer ensures the same attack can never hit another employee by tuning the secure email gateway rules.
+          [PEDAGOGY:] Guide students to understand how CTI connects directly back to email gateway rule changes.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 09: LAB 05 (Part 6/7): Troubleshooting & Recovery -->
+      <section data-day="DAY 06" data-module="MOD-06A: PHISHING & EMAIL FORENSICS" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 5 — Section 5.7">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-red">LAB-05: STEP 6 OF 7 // ERROR RESOLUTION & RECOVERY</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Common Email Analysis Mistakes & Fixes</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Preventing accidental file execution and resolving CyberChef parsing errors.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 12px;">Issue 1: Accidental Double-Click Risk on Sample Files</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Never double-click attachments or open inside Microsoft Outlook.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Safety Rule: Open strictly within VS Code or Notepad++</span>
+code "C:\Threat_Intel_IR_2026\06_Datasets\sample_phishing_email.eml"
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 12px;">Issue 2: CyberChef 'Base64 Input Contains Invalid Characters'</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Occurs if email boundary strings or MIME headers were copied into the input pane.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Recovery: In VS Code, copy ONLY the raw base64 body between:</span>
+<span class="terminal-cmd">Content-Transfer-Encoding: base64</span>
+<span class="terminal-cmd">and the next MIME boundary string (--===============)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] If CyberChef complains about invalid base64 characters, you copied the MIME boundary markers. Copy only the clean alphanumeric base64 payload block.
+          [PEDAGOGY:] Walk around to verify students are copying only the body between the boundary tags.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 10: LAB 05 (Part 7/7): Completion & Assessment -->
+      <section data-day="DAY 06" data-module="MOD-06A: PHISHING & EMAIL FORENSICS" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 5 — Section 5.6">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-05: STEP 7 OF 7 // VERIFICATION & GRADING</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Deliverable Checklist & Assessment Rubric</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Verify that all email triage artifacts and defanged IOCs are saved.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">📋 Completion Checklist</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.8;">
+                      <li>[ ] Mail routing hop path recorded in chronological bottom-to-top order.</li>
+                      <li>[ ] Technical explanation of DMARC alignment failure documented.</li>
+                      <li>[ ] Extracted attachment SHA-256 hash and magic bytes recorded.</li>
+                      <li>[ ] Embedded phishing URL defanged and logged for proxy blocklisting.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">⚖️ Assessment Rubric (100 Points)</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Hop Path Chronology Accuracy:</td><td><strong>35 Pts</strong> (Correct origin IP & transit delays)</td></tr>
+                      <tr><td style="color: #FFF;">SPF/DKIM/DMARC Evaluation:</td><td><strong>35 Pts</strong> (Flawless alignment analysis)</td></tr>
+                      <tr><td style="color: #FFF;">CyberChef Static Artifact Triage:</td><td><strong>30 Pts</strong> (Accurate magic bytes & SHA-256)</td></tr>
+                      <tr><td style="color: var(--cyber-cyan);">Total Passing Standard:</td><td><strong>75% or higher</strong></td></tr>
+                    </table>
+                  </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 16px;">
+                  <span class="cyber-badge badge-green" style="font-size: 12px; padding: 6px 18px;">LAB-05 OFFICIAL COMPLETION VERIFIED // PROCEED TO SOAR PLAYBOOKS</span>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Great work on email forensics. Now take a brief 15-minute bio break. When we return, we engineer automated SOAR playbooks in Lab 7.
+          [PEDAGOGY:] Check off student completion against the pod roster before dismissing for the mid-morning break.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 11: Strategic Containment & Blast Radius Mitigation -->
+      <section data-day="DAY 06" data-module="SES-06B: CONTAINMENT & SOAR" data-session="9:30 AM – 5:00 PM" data-ref="NIST SP 800-61r3 Section 3.3.1; Handbook Section 7.5">
+
+  <div style="text-align: left;">
+    <div class="cyber-badge badge-amber">INCIDENT CONTAINMENT</div>
+    <h2>SES-06B: Strategic Containment & Blast Radius Mitigation</h2>
+    <p>Balancing Operational Continuity vs. Threat Isolation Under NIST SP 800-61 Criteria</p>
+    
+    <div class="grid-2" style="margin-top: 14px;">
+      <div class="cyber-card">
+        <strong style="color: var(--cyber-cyan); font-size: 14px;">NIST SP 800-61 Containment Triad</strong>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+          <div style="background: rgba(0,242,254,0.05); padding: 6px 10px; border-left: 3px solid var(--cyber-cyan); border-radius: 4px; font-size: 11px;">
+            <strong style="color: var(--cyber-cyan);">1. Network Isolation:</strong> 802.1X quarantine VLAN or host-based EDR isolation preserving memory while severing C2 beacons.
+          </div>
+          <div style="background: rgba(255,179,0,0.05); padding: 6px 10px; border-left: 3px solid var(--neon-amber); border-radius: 4px; font-size: 11px;">
+            <strong style="color: var(--neon-amber);">2. Identity Revocation:</strong> Disable compromised AD accounts, revoke Kerberos TGT tickets, terminate OAuth tokens.
+          </div>
+          <div style="background: rgba(255,75,75,0.05); padding: 6px 10px; border-left: 3px solid var(--alert-crimson); border-radius: 4px; font-size: 11px;">
+            <strong style="color: var(--alert-crimson);">3. Endpoint Nullification:</strong> Process suspension (freezing ransomware encryption threads without killing RAM).
+          </div>
+        </div>
+      </div>
+      
+      <!-- 3D Security Shield Viewport -->
+      <div>
+        <div class="three-canvas-container" id="shield-3d-canvas">
+          <div class="three-canvas-overlay">🛡️ 3D CRYPTOGRAPHIC DEFENSE SHIELD // ACTIVE CONTAINMENT</div>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 6px; text-align: center;">
+          Active cryptographic boundary isolating infected subnet 10.0.4.0/24.
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <aside class="notes">
+          [SAY:] Containment is the supreme balancing act in cybersecurity. If an attacker breaches the payroll database on the 31st of the month, and you immediately disconnect the servers, 10,000 employees do not get paid. The business executive will be at your SOC desk asking why you shut down operations without authorization. On the other hand, if you wait, the attacker exfiltrates all banking records. NIST SP 800-61 Section 3.3 mandates a structured containment strategy based on business impact, evidence preservation, and blast radius control.
+          [PEDAGOGY:] Contrast naive containment (pulling the plug) with professional defensive containment (EDR isolation, token revocation, process suspension).
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 12: Active Directory Recovery: The KRBTGT Double Reset -->
+      <section data-day="DAY 06" data-module="SES-06B: CONTAINMENT & SOAR" data-session="9:30 AM – 5:00 PM" data-ref="Microsoft Active Directory Forest Recovery Guide; Handbook Section 7.6">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-red">KERBEROS DEFENSE</div>
+            <h2>Active Directory Recovery: The KRBTGT Double Reset</h2>
+            <p>Eradicating Golden Ticket Persistence Without Inducing Enterprise Kerberos Outages</p>
+            
+            <div class="grid-2" style="margin-top: 16px;">
+              <div class="cyber-card">
+                <strong style="color: var(--alert-crimson); font-size: 14px;">The Golden Ticket Vulnerability (T1558.001)</strong>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px; line-height: 1.5;">
+                  When an adversary extracts the NTLM hash or AES-256 key of the <code>krbtgt</code> account (via DCSync / Mimikatz), they can forge arbitrary Kerberos Ticket Granting Tickets (TGTs) granting unlimited Domain Admin rights for up to 10 years.
+                </p>
+                <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+                  <div class="terminal-body">
+<span style="color: var(--alert-crimson);">// Mimikatz DCSync Attack:</span>
+lsadump::dcsync /domain:corp.local /user:krbtgt
+<span style="color: var(--neon-amber);">Hash NTLM:</span> b28c413e3fa041b80d7c71d6438a2e05
+<span style="color: var(--cyber-cyan);">Forged Golden Ticket Valid Until:</span> 2036-10-31
+                  </div>
+                </div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber); font-size: 14px;">The Mandatory 10-Hour Two-Phase Protocol</strong>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                  <div style="background: rgba(255,179,0,0.05); padding: 8px; border-left: 3px solid var(--neon-amber); border-radius: 4px;">
+                    <strong style="color: var(--neon-amber); font-size: 12px;">Step 1: First Reset & Forest Replication</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0;">Reset KRBTGT password once using Microsoft PowerShell script. Replicate across all Domain Controllers. Wait maximum Kerberos ticket lifetime (default: 10 hours) so legitimate tickets expire naturally.</p>
+                  </div>
+                  <div style="background: rgba(0,230,118,0.05); padding: 8px; border-left: 3px solid var(--emerald-pass); border-radius: 4px;">
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">Step 2: Second Reset & Complete Purge</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0;">Reset KRBTGT password a second time. This invalidates the previous password history, permanently severing all adversary-forged Golden Tickets while preserving domain service continuity.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Why must we reset the KRBTGT password TWICE? This is a favorite question in senior cybersecurity interviews. Active Directory stores the current password and the previous password of the krbtgt account. If you reset it once, the attacker can still authenticate using their forged ticket because AD accepts tickets signed with the previous key! But if you reset it twice back-to-back immediately, all valid Kerberos tickets in your entire company become invalid instantly — users cannot log in, services fail, and the CEO cannot access email. You reset it once, wait 10 hours for replication and ticket expiry, and then reset it the second time. Precision engineering under pressure.
+          [PEDAGOGY:] Demystify the Kerberos authentication architecture and highlight why incident recovery requires rigorous scheduling.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 13: Shuffle SOAR: Orchestrating Automated Threat Response -->
+      <section data-day="DAY 06" data-module="SES-06B: CONTAINMENT & SOAR" data-session="9:30 AM – 5:00 PM" data-ref="Shuffle SOAR Documentation; Handbook Section 7.7">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-teal">SOAR AUTOMATION</div>
+            <h2>Shuffle SOAR: Orchestrating Automated Threat Response</h2>
+            <p>From Alert Webhook to Automated Firewall Null-Route in Under 850 Milliseconds</p>
+            
+            <div class="grid-2" style="margin-top: 16px;">
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 14px;">Event-Driven SOAR Execution Flow (Sub-Second Response)</strong>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                  <div style="background: rgba(0,242,254,0.05); padding: 6px 10px; border-left: 3px solid var(--cyber-cyan); font-size: 11px;">
+                    <strong>1. Webhook Ingestion:</strong> Suricata alerts trigger an HTTP POST webhook containing EVE.json alert payload to Shuffle.
+                  </div>
+                  <div style="background: rgba(79,172,254,0.05); padding: 6px 10px; border-left: 3px solid var(--electric-blue); font-size: 11px;">
+                    <strong>2. Threat Intel Query:</strong> Shuffle queries VirusTotal and MISP APIs concurrently to extract reputation score and malicious tags.
+                  </div>
+                  <div style="background: rgba(255,179,0,0.05); padding: 6px 10px; border-left: 3px solid var(--neon-amber); font-size: 11px;">
+                    <strong>3. Conditional Logic:</strong> If VT Malicious &gt; 15 AND Confidence &gt; 80%, branch to containment workflow; else log to ticket queue.
+                  </div>
+                  <div style="background: rgba(255,75,75,0.05); padding: 6px 10px; border-left: 3px solid var(--alert-crimson); font-size: 11px;">
+                    <strong>4. Automated Action:</strong> Dispatch API call to Edge Firewall to null-route C2 IP and isolate infected workstation via Wazuh EDR.
+                  </div>
+                </div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 14px;">Shuffle Execution Node Architecture</strong>
+                <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+                  <div class="terminal-body">
+<span style="color: var(--cyber-cyan);">{</span>
+  <span style="color: var(--neon-amber);">"workflow_id"</span>: "wf-phish-contain-001",
+  <span style="color: var(--neon-amber);">"execution_state"</span>: "SUCCESS",
+  <span style="color: var(--neon-amber);">"execution_time_ms"</span>: 742,
+  <span style="color: var(--neon-amber);">"nodes_executed"</span>: [
+    {"node": "Webhook_Receiver", "status": "200 OK"},
+    {"node": "MISP_Attribute_Lookup", "status": "MATCH_FOUND"},
+    {"node": "Wazuh_Host_Quarantine", "status": "AGENT_ISOLATED"},
+    {"node": "TheHive_Alert_Create", "status": "TICKET_#4891"}
+  ]
+<span style="color: var(--cyber-cyan);">}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] In modern SOC operations, human analysts cannot manually type firewall commands for 500 alerts an hour. If a human analyst takes 15 minutes to respond, ransomware encrypts 5,000 servers in that time. Shuffle is an open-source SOAR platform that connects your SIEM, threat intelligence, and endpoints through automated API execution nodes. An alert arrives, intel is checked, threshold is verified, and the endpoint is quarantined in 742 milliseconds. The analyst reviews the completed containment rather than scrambling to execute it.
+          [PEDAGOGY:] Explain the difference between manual SOC triage and Automated SOAR Playbooks.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 14: LAB 07 (Part 1/7): Introduction & Objectives -->
+      <section data-day="DAY 06" data-module="MOD-06B: SOAR PLAYBOOK ENGINEERING" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 7 — Section 7.1">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-blue">LAB-07: STEP 1 OF 7 // SPECIFICATION & OBJECTIVES</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">IR Playbook Engineering & SOAR Workflow Design</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Designing automated ransomware response playbooks with mandatory human authorization gates.</p>
+                
+                <div class="grid-3" style="margin-top: 18px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">🎯 Core Learning Objectives</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Engineer structured incident response playbooks for high-impact ransomware outbreaks.</li>
+                      <li>Design SOAR workflows integrating automated triage and surgical containment.</li>
+                      <li>Implement mandatory human-in-the-loop gates for destructive enterprise actions.</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⏱️ Parameters & Scope</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Estimated Duration:</strong> 90 Minutes.</li>
+                      <li><strong>Instructional Framework:</strong> IBM Security SOAR Design Patterns.</li>
+                      <li><strong>PLO Mapping:</strong> PLO-7 (Formulating automated containment playbooks).</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">📦 Required Deliverables</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Complete Mermaid / Draw.io Playbook Architecture Flowchart.</li>
+                      <li>Validated JSON Playbook Schema: <code>PB-RANSOMWARE-001.json</code>.</li>
+                      <li>Human Approval Gate Risk Matrix & Rollback Procedure.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Automation without authorization is a catastrophe waiting to happen. In Lab 7, you will engineer a modern SOAR playbook that isolates infected hosts automatically while requiring human approval before resetting corporate Kerberos keys.
+          [PEDAGOGY:] Frame the central problem: full automation can cause self-inflicted denial-of-service if false positives occur.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 15: LAB 07 (Part 2/7): Environment Preparation -->
+      <section data-day="DAY 06" data-module="MOD-06B: SOAR PLAYBOOK ENGINEERING" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 7 — Section 7.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-07: STEP 2 OF 7 // WORKSTATION PREPARATION</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Diagramming Tools & JSON Schema Environment</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Preparing diagramming tools (Draw.io / Mermaid.js) and playbook schema validators.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">💻 Environment & Tools</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Workstation:</td><td>LH3 SOC Pod Workstation</td></tr>
+                      <tr><td style="color: #FFF;">Modeling:</td><td>Draw.io (Offline) / Mermaid.js / VS Code</td></tr>
+                      <tr><td style="color: #FFF;">Schema Standard:</td><td>OASIS CACAO / IBM SOAR Compatible JSON</td></tr>
+                      <tr><td style="color: #FFF;">Template:</td><td><code>soar_playbook_schema.json</code></td></tr>
+                    </table>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⚡ Pre-Flight Verification Commands</strong>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Confirm playbook template in PowerShell:</p>
+                    <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># 1. Test presence of SOAR playbook schema template</span>
+Test-Path "C:\Threat_Intel_IR_2026\06_Datasets\soar_playbook_schema.json"
+<span class="terminal-cmd"># 2. Verify JSON schema validation tool</span>
+python -m json.tool "C:\Threat_Intel_IR_2026\06_Datasets\soar_playbook_schema.json" | Select-Object -First 5
+                      </div>
+                    </div>
+                    <div style="font-size: 10px; color: var(--emerald-pass); margin-top: 4px;">✓ Expected response: 'True' and valid schema JSON header</div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Open Draw.io or VS Code with Mermaid preview. You will build both the visual operational flowchart and the underlying machine-readable JSON schema.
+          [PEDAGOGY:] Confirm every pod has chosen their diagramming environment before explaining Phase 1 logic.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 16: LAB 07 (Part 3/7): Step-by-Step Procedure -->
+      <section data-day="DAY 06" data-module="MOD-06B: SOAR PLAYBOOK ENGINEERING" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 7 — Section 7.4">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-amber">LAB-07: STEP 3 OF 7 // EXECUTION PROTOCOL</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">3-Phase Playbook Engineering Workflow</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Structure response phases, render decision logic, and serialize machine-readable schemas.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">PHASE 1: Playbook Logic Architecture (Minutes 00–30)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li><strong>Trigger:</strong> EDR alerts on Shadow Copy deletion: <code>vssadmin delete shadows /all /quiet</code>.</li>
+                      <li><strong>Automated Step 1:</strong> Immediate host network quarantine (block lateral SMB/RDP; maintain EDR tunnel).</li>
+                      <li><strong>Automated Step 2:</strong> Query Threat Intel feed and capture live volatile memory dump of parent PID.</li>
+                    </ol>
+                  </div>
+                  
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--electric-blue); font-size: 12px;">PHASE 2: Human Approval Checkpoints & Flowcharting (Minutes 30–60)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Insert <strong>Human Gate 1:</strong> Enterprise-wide Active Directory KRBTGT password double-reset authorization.</li>
+                      <li>Require dual sign-off: Incident Commander + Lead Identity Architect.</li>
+                      <li>Draw complete flowchart in Mermaid.js detailing decision diamonds and fallback stasis branches.</li>
+                    </ol>
+                  </div>
+
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">PHASE 3: SOAR JSON Schema Formalization (Minutes 60–90)</strong>
+                    <ol style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>Encode playbook into <code>PB-RANSOMWARE-001.json</code> following IBM SOAR / OASIS CACAO format.</li>
+                      <li>Define action blocks with explicit timeout thresholds and rollback commands.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Notice Automated Step 1: we quarantine the host by cutting off SMB and RDP, but we keep the EDR management port open. If you pull the physical plug, you blind your own security team.
+          [PEDAGOGY:] Emphasize surgical quarantine vs physical disconnection.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 17: LAB 07 (Part 4/7): Expected Output & Flowchart -->
+      <section data-day="DAY 06" data-module="MOD-06B: SOAR PLAYBOOK ENGINEERING" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 7 — Section 7.5">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-green">LAB-07: STEP 4 OF 7 // VERIFIED ARTIFACTS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Validated Mermaid Flowchart & JSON Schema</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Verify your visual decision logic and machine-readable playbook schema.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div>
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">Mermaid Playbook Architecture:</strong>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px; max-height: 240px; overflow-y: auto;">
+                      <div class="terminal-body">
+graph TD
+  A[EDR Alert: Shadow Copy Deletion] --> B[Automated Host Network Quarantine]
+  B --> C[Extract Process Hash & Capture Volatile RAM]
+  C --> D{Threat Score > 80?}
+  D -- Yes --> E[Terminate PID & Isolate Subnet]
+  D -- No --> F[Dispatch SOC Analyst Tier-2 Ticket]
+  E --> G{Human Gate: Authorize KRBTGT Reset?}
+  G -- Approved by Incident Commander --> H[Execute KRBTGT Double Rotation]
+  G -- Denied --> I[Maintain Monitored Network Stasis]
+  H --> J[Begin Verified Offline Backup Restore]
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">Exported JSON Schema:</strong>
+                    <div class="cyber-card" style="margin-top: 6px; font-size: 11px; line-height: 1.6;">
+                      <table style="width: 100%; font-size: 10px; color: var(--text-secondary);">
+                        <tr><td style="color: #FFF;">Playbook ID:</td><td>PB-RANSOMWARE-001</td></tr>
+                        <tr><td style="color: #FFF;">Trigger Type:</td><td>EDR EID 4688 vssadmin match</td></tr>
+                        <tr><td style="color: #FFF;">Approval Gate:</td><td>Human-in-the-loop (Incident_Commander)</td></tr>
+                        <tr><td style="color: #FFF;">Automated Actions:</td><td>4 (Isolate, Dump, Sinkhole, Kill)</td></tr>
+                        <tr><td style="color: #FFF;">Rollback Plan:</td><td>Restore network adapter routing rule</td></tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Review the decision diamond marked Human Gate. That gate is the difference between an orderly enterprise containment and shutting down the payroll database on a false positive.
+          [PEDAGOGY:] Ask the room: 'Who in the organization has the authority to approve a KRBTGT double reset?' Solicit answers on CISO vs Incident Commander.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 18: LAB 07 (Part 5/7): Technical Interpretation -->
+      <section data-day="DAY 06" data-module="MOD-06B: SOAR PLAYBOOK ENGINEERING" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 7 — Section 7.5.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-07: STEP 5 OF 7 // ANALYTICAL SYNTHESIS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Analytical Synthesis: Blast Radius vs Velocity</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Balancing algorithmic containment speed against enterprise operational continuity.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">⚡ Actions Safe for Full Automation</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Capturing live volatile RAM dump to forensic network share.</li>
+                      <li>Querying CTI databases for hash reputation and domain registration age.</li>
+                      <li>Quarantining a single non-critical endpoint via EDR host isolation.</li>
+                      <li>Sinkholing verified malicious C2 domains at internal DNS resolvers.</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 13px;">✋ Actions Requiring Mandatory Human Gates</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Rotating enterprise Active Directory KRBTGT password (invalidates all Kerberos tickets).</li>
+                      <li>Severing BGP routing peering links between data centers.</li>
+                      <li>Shutting down primary operational SCADA / ICS controllers.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] If a security automation tool shuts down an electric power grid on a false positive alert, the security team did more damage than the attacker. Human-in-the-loop engineering is non-negotiable.
+          [PEDAGOGY:] Reinforce the governance principle: automation accelerates decisions, it does not replace executive accountability.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 19: LAB 07 (Part 6/7): Troubleshooting & Recovery -->
+      <section data-day="DAY 06" data-module="MOD-06B: SOAR PLAYBOOK ENGINEERING" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 7 — Section 7.7">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-red">LAB-07: STEP 6 OF 7 // ERROR RESOLUTION & RECOVERY</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Common Playbook Design Mistakes & Fixes</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Correcting circular dependency deadlocks and schema validation failures.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 12px;">Issue 1: Automated Isolation Cuts Off SOAR Communication</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Occurs if host isolation blocks all outbound ports including the SOAR agent port.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Architectural Rule: EDR/SOAR management channel MUST be whitelisted</span>
+Set-NetFirewallRule -DisplayName "EDR-Management" -Action Allow -RemotePort 8443
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 12px;">Issue 2: Mermaid.js Syntax Error on Special Characters</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Labels containing brackets or slashes cause parser to abort rendering.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># INCORRECT: D{Threat Score > 80?}</span>
+<span class="terminal-cmd"># CORRECT: Wrap complex label text in double quotes:</span>
+D{"Threat Score &gt; 80?"}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] If your Mermaid diagram fails to render, check for angle brackets or slashes in your node labels. Wrap any complex text in quotes.
+          [PEDAGOGY:] Walk students through validating their Mermaid code in the live preview.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 20: LAB 07 (Part 7/7): Completion & Assessment -->
+      <section data-day="DAY 06" data-module="MOD-06B: SOAR PLAYBOOK ENGINEERING" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 7 — Section 7.6">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-07: STEP 7 OF 7 // VERIFICATION & GRADING</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Deliverable Checklist & Assessment Rubric</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Verify that all playbook schemas and flowcharts are saved.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">📋 Completion Checklist</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.8;">
+                      <li>[ ] Flowchart diagram with decision diamonds and automated branches completed.</li>
+                      <li>[ ] Human approval gate for KRBTGT reset clearly modeled with approver roles.</li>
+                      <li>[ ] Machine-readable JSON playbook schema <code>PB-RANSOMWARE-001.json</code> saved.</li>
+                      <li>[ ] Documented rollback procedure for false positive de-isolation.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">⚖️ Assessment Rubric (100 Points)</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Playbook Flowchart Completeness:</td><td><strong>40 Pts</strong> (Clean logic from trigger to restore)</td></tr>
+                      <tr><td style="color: #FFF;">Human Approval Gate Rigor:</td><td><strong>30 Pts</strong> (Appropriate role authorization & stasis)</td></tr>
+                      <tr><td style="color: #FFF;">JSON Schema Validity:</td><td><strong>30 Pts</strong> (OASIS CACAO / IBM SOAR compliance)</td></tr>
+                      <tr><td style="color: var(--cyber-cyan);">Total Passing Standard:</td><td><strong>75% or higher</strong></td></tr>
+                    </table>
+                  </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 16px;">
+                  <span class="cyber-badge badge-green" style="font-size: 12px; padding: 6px 18px;">LAB-07 OFFICIAL COMPLETION VERIFIED // PROCEED TO CAPSTONE SIMULATION</span>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Save your JSON playbook schema. You now have the defensive engineering foundation needed for our final exercise: Lab 8, the AeroGrid APT Capstone Simulation.
+          [PEDAGOGY:] Verify student readiness before initiating the capstone injection clock.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 21: SES-06C: AeroGrid Critical Infrastructure Tabletop Crisis -->
+      <section data-day="DAY 06" data-module="SES-06C: CAPSTONE CRISIS" data-session="9:30 AM – 5:00 PM" data-ref="AeroGrid Simulation Briefing; Handbook Section 7.9">
+
+  <div style="text-align: left;">
+    <div class="cyber-badge badge-red animate-pulse">CRISIS SIMULATION</div>
+    <h2>SES-06C: AeroGrid Critical Infrastructure Tabletop Crisis</h2>
+    <p>150 Minutes of High-Stakes Incident Response: Regional Power Grid SCADA Network Breach</p>
+    
+    <div id="aerogrid-breaker-demo" class="aerogrid-breaker-panel">
+      <div class="aerogrid-status-badge" style="background: rgba(255,75,75,0.15); color: #FF4B4B; border: 1px solid #FF4B4B;">
+        BREACH ACTIVE: OT AT RISK
+      </div>
+      <div class="aerogrid-telemetry-text" style="font-family: var(--font-mono); font-size: 12px; margin-bottom: 12px; color: #CBD5E1;">
+        <span style="color:#FF4B4B;">[ALERT TRIGGERED]</span> Unauthorized Modbus Function 05 (Write Single Coil) attempting to trip distribution grid!
+      </div>
+      <button class="aerogrid-switch-btn" style="background: #FF4B4B;" onclick="toggleAirGapBreaker()">
+        EXECUTE EMERGENCY AIR-GAP SEVERANCE
+      </button>
+      <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 8px;">
+        Click to sever the DMZ bridge (Port 502 Modbus & Port 3389 RDP) protecting Substation 4 turbines.
+      </div>
+    </div>
+    
+    <div class="grid-3" style="margin-top: 12px;">
+      <div class="cyber-card" style="border-top: 2px solid var(--alert-crimson);">
+        <strong style="color: var(--alert-crimson); font-size: 12px;">PHASE 1 (14:30 - 15:15)</strong>
+        <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Alert Triage & Incursion: OT Gateway telemetry spikes.</p>
+      </div>
+      <div class="cyber-card" style="border-top: 2px solid var(--neon-amber);">
+        <strong style="color: var(--neon-amber); font-size: 12px;">PHASE 2 (15:15 - 16:00)</strong>
+        <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Lateral Movement: Mimikatz DCSync on IT-OT jump host.</p>
+      </div>
+      <div class="cyber-card" style="border-top: 2px solid var(--cyber-cyan);">
+        <strong style="color: var(--cyber-cyan); font-size: 12px;">PHASE 3 (16:00 - 17:00)</strong>
+        <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Post-Mortem & CERT-In 6-hour regulatory debrief.</p>
+      </div>
+    </div>
+  </div>
+
+        <aside class="notes">
+          [SAY:] [SHOW:] Display the AeroGrid Critical Infrastructure Tabletop Crisis & Emergency Air-Gap Breaker.
+[SAY:] 'At 14:12, automated alarms triggered in Substation 4. Turbine telemetry sensors are reporting unauthorized Modbus commands.'
+[DO:] Click 'EXECUTE EMERGENCY AIR-GAP SEVERANCE'.
+[OBSERVE:] The breaker switches off, status turns emerald green, and Modbus command flow is dropped at the DMZ firewall.
+[ASK:] 'What would happen if we hesitated for 15 minutes before severing this connection?'
+[EXPECTED ANSWER:] 'The adversary trips distribution breakers, causing physical turbine equipment damage and cascading blackout.'
+[REVEAL:] Emergency containment protocol confirmed.
+[EXPLAIN:] In OT/ICS incident response, human safety and grid stability take absolute precedence.
+          [PEDAGOGY:] Set a serious, high-intensity operational tone to simulate a Tier-3 SOC emergency room.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 22: AeroGrid Breach Timeline: 72-Hour Infiltration Sequence -->
+      <section data-day="DAY 06" data-module="SES-06C: CAPSTONE CRISIS" data-session="9:30 AM – 5:00 PM" data-ref="MITRE ATT&CK for ICS; Handbook Section 7.10">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-cyan">ATTACK TIMELINE</div>
+            <h2>AeroGrid Breach Timeline: 72-Hour Infiltration Sequence</h2>
+            <p>Chronological Reconstruction of State-Sponsored APT Incursion via Spear-Phishing to SCADA Gateway</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+              <div class="cyber-card" style="border-left: 3px solid var(--cyber-cyan); padding: 8px 14px;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong style="color: var(--cyber-cyan); font-size: 13px;">T-72h (Wednesday 10:14) — Initial Access [T1566.001]</strong>
+                  <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">SPEAR-PHISHING ATTACHMENT</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-secondary); margin: 2px 0;">Engineering contractor opens <code>Turbine_Spec_Update.xlsx</code> containing malicious macro executing Certutil download.</p>
+              </div>
+              
+              <div class="cyber-card" style="border-left: 3px solid var(--electric-blue); padding: 8px 14px;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong style="color: var(--electric-blue); font-size: 13px;">T-48h (Thursday 16:30) — Credential Access & Discovery [T1003.001 / T1087]</strong>
+                  <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">LSASS DUMP & AD ENUMERATION</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-secondary); margin: 2px 0;">Procdump invoked against <code>lsass.exe</code>. Service account credentials harvested; BloodHound run to map domain trusts.</p>
+              </div>
+              
+              <div class="cyber-card" style="border-left: 3px solid var(--neon-amber); padding: 8px 14px;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong style="color: var(--neon-amber); font-size: 13px;">T-12h (Friday 22:15) — Lateral Movement to Dual-Homed Jump Box [T1021.001]</strong>
+                  <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">RDP PIVOT TO OT JUMP HOST</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-secondary); margin: 2px 0;">Adversary uses stolen OT-Admin credentials to establish RDP session into Dual-Homed Jump Host bridging IT (10.0.1.0/24) and SCADA OT (192.168.100.0/24).</p>
+              </div>
+              
+              <div class="cyber-card" style="border-left: 3px solid var(--alert-crimson); padding: 8px 14px;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong style="color: var(--alert-crimson); font-size: 13px;">T-0 (Saturday 14:12) — ICS/SCADA Manipulation [T0855]</strong>
+                  <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">UNAUTHORIZED MODBUS COMMANDS</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-secondary); margin: 2px 0;">Adversary issues unauthorized Modbus Function Code 05 (Write Single Coil) attempting to trip distribution breakers.</p>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Examine this attack timeline carefully. Notice how the adversary operated over 72 hours. Initial compromise happened on Wednesday via a spear-phishing spreadsheet. Thursday night, they dumped LSASS. Friday night, when IT staff was off-duty, they pivoted through the dual-homed jump host into the OT network. And today, Saturday afternoon, they attempted to trigger Modbus commands to trip electrical breakers. This is not a random script kiddie; this is a patient, structured Advanced Persistent Threat.
+          [PEDAGOGY:] Walk through the Purdue Model of ICS/SCADA networks to show how attackers cross from Level 3 (IT) to Level 2/1 (OT).
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 23: AeroGrid Attack Graph: Diamond Model & Attack Path Synthesis -->
+      <section data-day="DAY 06" data-module="SES-06C: CAPSTONE CRISIS" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Section 7.11; CISA ICS Defense Guidelines">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-purple">INTELLIGENCE SYNTHESIS</div>
+            <h2>AeroGrid Attack Graph: Diamond Model & Attack Path Synthesis</h2>
+            <p>Synthesizing Adversary Infrastructure, Capabilities, Victims, and Systemic Vulnerabilities</p>
+            
+            <div class="grid-2" style="margin-top: 16px;">
+              <div class="cyber-card">
+                <strong style="color: var(--purple-intel); font-size: 14px;">Diamond Model Synthesis for AeroGrid Incursion</strong>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                  <div style="background: rgba(255,75,75,0.05); padding: 8px; border-left: 3px solid var(--alert-crimson); border-radius: 4px;">
+                    <strong style="color: var(--alert-crimson); font-size: 12px;">ADVERSARY:</strong>
+                    <div style="font-size: 11px; color: var(--text-secondary);">UNC3886 / APT41 Hybrid Nexus (State-Sponsored Espionage)</div>
+                  </div>
+                  <div style="background: rgba(0,242,254,0.05); padding: 8px; border-left: 3px solid var(--cyber-cyan); border-radius: 4px;">
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">CAPABILITY:</strong>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Certutil LOLBin, Cobalt Strike Beacon, Custom Modbus Scraper</div>
+                  </div>
+                  <div style="background: rgba(255,179,0,0.05); padding: 8px; border-left: 3px solid var(--neon-amber); border-radius: 4px;">
+                    <strong style="color: var(--neon-amber); font-size: 12px;">INFRASTRUCTURE:</strong>
+                    <div style="font-size: 11px; color: var(--text-secondary);">Compromised WordPress C2 Proxy &rarr; Bulletproof Fast-Flux IPs</div>
+                  </div>
+                  <div style="background: rgba(0,230,118,0.05); padding: 8px; border-left: 3px solid var(--emerald-pass); border-radius: 4px;">
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">VICTIM:</strong>
+                    <div style="font-size: 11px; color: var(--text-secondary);">AeroGrid Substation 4 SCADA Telemetry & Power Distribution Network</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--electric-blue); font-size: 14px;">Purdue Model Zone Breakdown</strong>
+                <div style="font-size: 12px; line-height: 1.7; margin-top: 8px;">
+                  <p><strong style="color: var(--cyber-cyan);">Level 4 (Enterprise IT):</strong> Email gateway, Active Directory, Workstations (Compromised T-72h).</p>
+                  <p><strong style="color: var(--electric-blue);">Level 3.5 (DMZ):</strong> Dual-Homed Jump Box, Remote Access Gateway (Pivoted T-12h).</p>
+                  <p><strong style="color: var(--neon-amber);">Level 3 (OT Operations):</strong> SCADA HMI, Historian, Engineering Workstation (Breached T-4h).</p>
+                  <p><strong style="color: var(--alert-crimson);">Level 1/0 (Field Devices):</strong> PLCs, RTUs, Circuit Breakers (Target of T-0 Modbus attack).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Notice how the Diamond Model we learned on Day 1 now perfectly organizes our Day 6 crisis findings. The adversary is an APT espionage nexus. Their capability combines Windows Living-off-the-Land binaries with custom OT Modbus manipulation tools. Their infrastructure relies on fast-flux proxy nodes. And our victim is Substation 4. As an incident commander, this structured view allows you to brief both technical responders and executive directors with complete clarity.
+          [PEDAGOGY:] Reinforce the Purdue Model layers and show how IT-OT convergence increases attack surfaces.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 24: LAB 08 (Part 1/7): Introduction & Objectives -->
+      <section data-day="DAY 06" data-module="MOD-06C: CAPSTONE APT SIMULATION" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 8 — Section 8.1">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-red">LAB-08: STEP 1 OF 7 // CAPSTONE APT CRISIS SIMULATION</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Capstone Enterprise IR Tabletop Simulation</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Full-spectrum multi-stage APT crisis response against the fictional enterprise 'AeroGrid Dynamics'.</p>
+                
+                <div class="grid-3" style="margin-top: 18px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">🎯 Core Learning Objectives</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Synthesize all course skills: CTI triage, ATT&CK mapping, log correlation & containment.</li>
+                      <li>Handle live crisis injections: Initial beacon, lateral movement, exfiltration spike.</li>
+                      <li>Author and defend an executive-ready Incident Response Final Report with RCA.</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⏱️ Parameters & Scope</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Estimated Duration:</strong> 60 Minutes (Live Crisis Execution).</li>
+                      <li><strong>Instructional Framework:</strong> IBM ICE & Multi-Stage APT Tabletop.</li>
+                      <li><strong>PLO Mapping:</strong> PLO-8 (End-to-end investigation & reporting).</li>
+                    </ul>
+                  </div>
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">📦 Required Deliverables</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li>Completed 6-Section Executive Incident Response Final Report.</li>
+                      <li>Consolidated ATT&CK Navigator Layer mapping observed adversary TTPs.</li>
+                      <li>15-Minute Pod Defense of Root Cause Analysis and Hardening Roadmap.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] This is the moment everything comes together. You are no longer students; you are the CSIRT leadership team of AeroGrid Dynamics responding to an active nation-state intrusion against industrial grid controllers.
+          [PEDAGOGY:] Set a serious, immersive, professional tone. Announce that the simulation runs in real time across three sequential injections.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 25: LAB 08 (Part 2/7): Environment Preparation -->
+      <section data-day="DAY 06" data-module="MOD-06C: CAPSTONE APT SIMULATION" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 8 — Section 8.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-08: STEP 2 OF 7 // WORKSTATION PREPARATION</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Full Toolchain Integration & Master Dossier</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Arming the complete defensive workbench and verifying simulated telemetry packages.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">💻 Unified Defense Workbench</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Workstation:</td><td>LH3 SOC Pod Workstation (Collaborative Team Setup)</td></tr>
+                      <tr><td style="color: #FFF;">Tools:</td><td>CyberChef, ATT&CK Navigator, Python Pandas, VS Code</td></tr>
+                      <tr><td style="color: #FFF;">Dossier:</td><td><code>capstone_incident_dossier.md</code></td></tr>
+                      <tr><td style="color: #FFF;">Target:</td><td>AeroGrid Dynamics Renewable Energy Grid Network</td></tr>
+                    </table>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 13px;">⚡ Pre-Flight Verification Commands</strong>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Confirm all capstone datasets in PowerShell:</p>
+                    <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># 1. Verify existence of master capstone dossier</span>
+Test-Path "C:\Threat_Intel_IR_2026\06_Datasets\capstone_incident_dossier.md"
+<span class="terminal-cmd"># 2. Check full workbench tools availability</span>
+python -c "import pandas, stix2; print('Python Forensics Stack: OK')"
+                      </div>
+                    </div>
+                    <div style="font-size: 10px; color: var(--emerald-pass); margin-top: 4px;">✓ Expected response: 'True' and 'Python Forensics Stack: OK'</div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Designate roles within your pod: one analyst on telemetry logs, one on ATT&CK mapping, one on CTI enrichment, and the pod lead on the executive report.
+          [PEDAGOGY:] Ensure pods divide responsibilities cleanly to handle the timed injections effectively.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 26: LAB 08 (Part 3/7): Step-by-Step Procedure -->
+      <section data-day="DAY 06" data-module="MOD-06C: CAPSTONE APT SIMULATION" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 8 — Section 8.4">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-amber">LAB-08: STEP 3 OF 7 // CRISIS INJECTION PROTOCOL</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Sequential 4-Phase Crisis Execution</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Respond to three timed crisis injections and author the final investigation report.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">INJECTION 1: Initial Offense Triage (Minutes 00–15)</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>08:15 UTC: SIEM Offense #4410: PowerShell Beaconing on <code>WS-FIN-04</code> (IP <code>10.10.4.14</code>).</li>
+                      <li>Extract destination IP <code>198.51.100.45:8443</code>. Enrich using Lab 1 OSINT and Lab 2 STIX dossiers.</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--electric-blue); font-size: 12px;">INJECTION 2: Lateral Pivot & Credential Dumping (Minutes 15–30)</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>09:30 UTC: User <code>jdoe_fin</code> authenticates to FileServer <code>FS-01</code> via WMI.</li>
+                      <li>Memory dumping against <code>lsass.exe</code> observed. Map techniques to ATT&CK (T1047, T1003.001).</li>
+                    </ul>
+                  </div>
+
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--alert-crimson); font-size: 12px;">INJECTION 3: Data Exfiltration Attempt & Containment (Minutes 30–45)</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-left: 18px; margin-top: 4px; line-height: 1.5;">
+                      <li>10:45 UTC: 1.2 GB outbound encrypted stream detected leaving <code>FS-01</code> to external cloud storage.</li>
+                      <li>Execute immediate SOAR host network isolation. Sever outbound session via firewall drop rule.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cyber-card" style="padding: 12px 16px;">
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">PHASE 4: Executive Report & Debrief (Minutes 45–60)</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Compile 6-section report: Exec Summary, Timeline, Attribution/TTPs, Containment Actions, RCA, Lessons Learned.</p>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Injection 3 is the climax: 1.2 GB of confidential turbine telemetry is walking out the door. Trigger your containment playbook immediately.
+          [PEDAGOGY:] Keep time strictly: announce 15-minute marks clearly to simulate real incident command pressure.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 27: LAB 08 (Part 4/7): Expected Output & Report Schema -->
+      <section data-day="DAY 06" data-module="MOD-06C: CAPSTONE APT SIMULATION" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 8 — Section 8.5">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-green">LAB-08: STEP 4 OF 7 // VERIFIED ARTIFACTS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Executive Incident Report Structure</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Mandatory 6-section executive report outline required for final submission.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div>
+                    <strong style="color: var(--cyber-cyan); font-size: 12px;">Mandatory 6-Section Report Format:</strong>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px; max-height: 240px; overflow-y: auto;">
+                      <div class="terminal-body">
+# AEROGRID DYNAMICS — CSIRT FINAL INCIDENT REPORT
+INCIDENT ID: INC-20261031-APT | SEVERITY: SEV-1 CRITICAL
+
+1. EXECUTIVE SUMMARY
+   - Intrusion narrative, total dwell time (150 min), business impact rating.
+2. INCIDENT CHRONOLOGY (UTC)
+   - 08:15: Initial beacon | 09:30: WMI lateral move | 10:45: Exfiltration.
+3. ADVERSARY ATTRIBUTION & ATT&CK TTPs
+   - Actor: UNC-PHOENIX | T1566.001, T1059.001, T1047, T1003.001, T1048.
+4. CONTAINMENT & ERADICATION ACTIONS TAKEN
+   - EDR isolation of WS-FIN-04 & FS-01 | Firewall drop | KRBTGT rotation.
+5. ROOT CAUSE ANALYSIS (RCA)
+   - Phishing lure opened; lack of AppLocker macro restrictions and MFA.
+6. POSTURE HARDENING & STRATEGIC RECOMMENDATIONS
+   - Enforce FIDO2 MFA, attack surface reduction rules, EDR automated blocks.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <strong style="color: var(--emerald-pass); font-size: 12px;">Evaluation Checkpoints:</strong>
+                    <div class="cyber-card" style="margin-top: 6px; font-size: 11px; line-height: 1.6;">
+                      <ul style="color: var(--text-secondary); padding-left: 16px;">
+                        <li><strong>Root Cause Precision:</strong> Identifies unsegmented finance workstation as the initial foothold vector.</li>
+                        <li><strong>Dwell Time Calculation:</strong> 08:15 UTC to 10:45 UTC = <strong>150 Minutes</strong> total dwell time prior to containment.</li>
+                        <li><strong>Data Loss Assessment:</strong> Verifies whether the 1.2 GB exfiltration was completed or truncated by network isolation.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] When writing your Executive Summary, remember your audience: the Board of Directors does not need raw hex dumps. They need to know what happened, what was contained, and how we ensure it never happens again.
+          [PEDAGOGY:] Guide students to write for C-suite readability: clear, concise, actionable.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 28: LAB 08 (Part 5/7): Technical Interpretation -->
+      <section data-day="DAY 06" data-module="MOD-06C: CAPSTONE APT SIMULATION" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 8 — Section 8.5.2">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-cyan">LAB-08: STEP 5 OF 7 // ANALYTICAL SYNTHESIS</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Analytical Synthesis & Root Cause Analysis</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Extracting systemic defensive weaknesses and formulating strategic architecture roadmaps.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">🔍 Systemic Root Cause Analysis</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Architecture Failure:</strong> Lack of micro-segmentation allowed an unprivileged finance laptop to establish direct WMI RPC connections to core file storage.</li>
+                      <li><strong>Identity Vulnerability:</strong> Service accounts held interactive logon rights and lacked Credential Guard protection.</li>
+                      <li><strong>Egress Inspection Gap:</strong> High-port outbound traffic (Port 8443) bypassed default egress proxy filtering.</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="cyber-card">
+                    <strong style="color: var(--purple-intel); font-size: 13px;">🚀 90-Day Enterprise Posture Roadmap</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <li><strong>Days 1–30:</strong> Enforce FIDO2 hardware tokens for all privileged administrative accounts; rotate enterprise KRBTGT.</li>
+                      <li><strong>Days 31–60:</strong> Deploy Attack Surface Reduction (ASR) rules blocking Office child process creation across all endpoints.</li>
+                      <li><strong>Days 61–90:</strong> Implement automated SOAR host network quarantine for all EID 4688 vssadmin tamper alerts.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Notice that our 90-day roadmap addresses the root causes directly: identity, endpoint execution, and network egress. That is how a mature CSIRT operates.
+          [PEDAGOGY:] Encourage pods to present their 90-day roadmap with concrete timelines and vendor-neutral technologies.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 29: LAB 08 (Part 6/7): Troubleshooting & Recovery -->
+      <section data-day="DAY 06" data-module="MOD-06C: CAPSTONE APT SIMULATION" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 8 — Section 8.7">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-red">LAB-08: STEP 6 OF 7 // ERROR RESOLUTION & RECOVERY</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Crisis Management Pitfalls & Time Recovery</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Maintaining analytical focus and recovery under simulated incident response pressure.</p>
+                
+                <div class="grid-2" style="margin-top: 14px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--alert-crimson); font-size: 12px;">Issue 1: Pod Getting Bogged Down in Log Parsing During Live Injections</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Occurs if team members duplicate work rather than dividing investigative roles.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Incident Commander Protocol:</span>
+<span class="terminal-cmd">- Assign Analyst 1: Extract IOCs from Injection 1</span>
+<span class="terminal-cmd">- Assign Analyst 2: Map observed techniques in ATT&CK Navigator</span>
+<span class="terminal-cmd">- Assign Pod Lead: Synthesize timeline and draft report sections</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--neon-amber); font-size: 12px;">Issue 2: Incomplete Incident Report Due to Time Running Out</strong>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Teams often spend too much time on narrative and leave RCA blank.</p>
+                    <div class="terminal-buffer" style="margin-top: 6px; font-size: 10px;">
+                      <div class="terminal-body">
+<span class="terminal-cmd"># Recovery: Prioritize high-weight rubric sections:</span>
+<span class="terminal-cmd">Executive Summary (25%) + RCA & Recommendations (35%)</span>
+<span class="terminal-cmd">Use bulleted technical tables rather than lengthy prose</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] If your pod is falling behind on time, rely on bullet points and technical tables. An executive wants clear, bulleted answers, not a 40-page novel.
+          [PEDAGOGY:] Guide pods on time management during the final 15 minutes of report compilation.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 30: LAB 08 (Part 7/7): Completion & Assessment -->
+      <section data-day="DAY 06" data-module="MOD-06C: CAPSTONE APT SIMULATION" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Lab Manual 8 — Section 8.6">
+
+              <div style="text-align: left;">
+                <div class="cyber-badge badge-green">LAB-08: STEP 7 OF 7 // COURSE GRADUATION & FINAL AUDIT</div>
+                <h2 style="font-size: 1.8rem; margin: 8px 0 4px 0;">Capstone Deliverables & Program Graduation</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Final submission checklist and program completion verification.</p>
+                
+                <div class="grid-2" style="margin-top: 16px;">
+                  <div class="cyber-card">
+                    <strong style="color: var(--cyber-cyan); font-size: 13px;">📋 Capstone Submission Checklist</strong>
+                    <ul style="font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.8;">
+                      <li>[ ] Complete 6-section Executive Incident Response Final Report submitted.</li>
+                      <li>[ ] Consolidated ATT&CK Navigator JSON layer and heatmap image attached.</li>
+                      <li>[ ] Pod verbal defense of Root Cause Analysis and 90-day roadmap delivered.</li>
+                      <li>[ ] All 8 course lab manuals verified complete across all 6 training days.</li>
+                    </ul>
+                  </div>
+
+                  <div class="cyber-card">
+                    <strong style="color: var(--emerald-pass); font-size: 13px;">⚖️ Capstone Rubric (100 Points)</strong>
+                    <table style="width: 100%; font-size: 11px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6;">
+                      <tr><td style="color: #FFF;">Forensic Timeline & Indicator Accuracy:</td><td><strong>30 Pts</strong> (Flawless injection chronology)</td></tr>
+                      <tr><td style="color: #FFF;">ATT&CK Mapping & CTI Synthesis:</td><td><strong>30 Pts</strong> (Comprehensive technique coverage)</td></tr>
+                      <tr><td style="color: #FFF;">Executive Report Quality & RCA:</td><td><strong>40 Pts</strong> (C-suite readiness & actionable roadmap)</td></tr>
+                      <tr><td style="color: var(--cyber-cyan);">Capstone Passing Standard:</td><td><strong>80% or higher</strong></td></tr>
+                    </table>
+                  </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 16px;">
+                  <span class="cyber-badge badge-green" style="font-size: 13px; padding: 8px 24px; font-weight: bold;">
+                    🎓 COURSE REQUIREMENTS 100% COMPLETED // TRANSITION TO OPERATIONAL SOC DEFENDER
+                  </span>
+                </div>
+              </div>
+            
+        <aside class="notes">
+          [SAY:] Congratulations to every pod. You have successfully navigated 6 days, 26.5 gross hours, 8 intensive hands-on labs, and a full-spectrum APT tabletop simulation. You are ready to defend enterprise networks.
+          [PEDAGOGY:] Lead a classroom round of applause for all 24 students across the 6 pods. Celebrate their transformation from alert janitors to adversary-centric defenders.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 31: The Post-Mortem Defense Plan & Executive Briefing -->
+      <section data-day="DAY 06" data-module="SES-06C: CAPSTONE CRISIS" data-session="9:30 AM – 5:00 PM" data-ref="CERT-In Cyber Security Directions 2022; Handbook Section 7.13">
+
+          <div style="text-align: left;">
+            <div class="cyber-badge badge-amber">EXECUTIVE GOVERNANCE</div>
+            <h2>The Post-Mortem Defense Plan & Executive Briefing</h2>
+            <p>Translating Raw Telemetry into Business Impact, Root Causes, and CERT-In Regulatory Filings</p>
+            
+            <div class="grid-2" style="margin-top: 16px;">
+              <div class="cyber-card">
+                <strong style="color: var(--neon-amber); font-size: 14px;">Executive 1-Page Briefing Structure</strong>
+                <div style="font-size: 12px; line-height: 1.6; margin-top: 8px;">
+                  <p><strong>1. Executive Summary:</strong> What happened, when detected, operational status (Grid operational; zero physical damage sustained).</p>
+                  <p><strong>2. Root Cause Analysis (RCA):</strong> Spear-phishing macro on unmanaged contractor laptop; absence of MFA on internal IT-OT jump host.</p>
+                  <p><strong>3. Business & Financial Impact:</strong> Containment completed within 142 minutes; customer outage averted; zero regulatory penalties.</p>
+                  <p><strong>4. Strategic Remediation:</strong> Enforce FIDO2 hardware keys, micro-segment OT subnet with unidirectional data diodes, deploy SOAR playbooks.</p>
+                </div>
+              </div>
+              
+              <div class="cyber-card">
+                <strong style="color: var(--cyber-cyan); font-size: 14px;">CERT-In Mandatory Reporting Compliance</strong>
+                <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+                  <div class="terminal-body">
+<span style="color: var(--cyber-cyan);">// CERT-In 6-Hour Incident Notification Summary:</span>
+Incident Ref: CERT-IN-2026-AEROGRID-0891
+Reporting Entity: AeroGrid Power Distribution Ltd.
+Incident Category: Unauthorized Access to Critical Infrastructure / ICS
+Time of Detection: 31-Oct-2026 14:12 IST
+Time of Reporting: 31-Oct-2026 16:30 IST (Within 6-hour statutory window)
+Containment Status: Full Network Severance & Account Revocation Completed
+Impact Assessment: Distribution Telemetry Secured; No Blackout Incurred
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Technical skill without the ability to communicate with leadership is useless. The Board of Directors does not care what Sysmon Event ID 10 is. They want to know: Did the lights go out? Was customer data stolen? Are we in legal compliance with CERT-In 6-hour mandatory reporting regulations? And what will prevent this from happening again on Monday? Presenting your post-mortem with clarity and confidence establishes your authority as a cybersecurity professional.
+          [PEDAGOGY:] Emphasize the Indian regulatory landscape, including CERT-In cyber crisis management rules.
+        </aside>
+      </section>
+
+      <!-- DAY 06 - SLIDE 32: Mission Accomplished: Operational SOC Transition -->
+      <section data-day="DAY 06" data-module="COURSE GRADUATION" data-session="9:30 AM – 5:00 PM" data-ref="Handbook Epilogue; Course Evaluation Protocol">
+
+          <div style="text-align: center; padding: 20px 10px;">
+            <div class="cyber-badge badge-teal animate-pulse" style="margin-bottom: 14px;">PROGRAM STATUS: 100% COMPLETED (LH3 - 4TH FLOOR)</div>
+            <h1 style="font-size: 2.4em; margin-bottom: 10px;">From Classroom to Cyber Defense Operations</h1>
+            <p style="font-size: 1.1em; color: var(--text-secondary); max-width: 820px; margin: 0 auto 24px auto;">
+              You have mastered the entire operational lifecycle: Threat Intelligence, Indicator Engineering, ATT&CK TTP Mapping, Telemetry Correlation, Forensic Volatility, Automated Containment, and Executive Governance.
+            </p>
+            
+            <div class="grid-3" style="max-width: 920px; margin: 0 auto; text-align: left;">
+              <div class="cyber-card" style="border-top: 2px solid var(--cyber-cyan);">
+                <strong style="color: var(--cyber-cyan); font-size: 14px;">Continuous Curiosity</strong>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px; line-height: 1.5;">
+                  Tools change every 18 months; foundational principles (RFC protocols, volatility, telemetry correlation) last a lifetime.
+                </p>
+              </div>
+              
+              <div class="cyber-card" style="border-top: 2px solid var(--neon-amber);">
+                <strong style="color: var(--neon-amber); font-size: 14px;">Rigorous Evidence</strong>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px; line-height: 1.5;">
+                  Never guess. Verify every hypothesis with raw event logs, cryptographic hashes, and structured analysis.
+                </p>
+              </div>
+              
+              <div class="cyber-card" style="border-top: 2px solid var(--emerald-pass);">
+                <strong style="color: var(--emerald-pass); font-size: 14px;">Defenders Unite</strong>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px; line-height: 1.5;">
+                  Attackers share infrastructure and exploits; defenders must share intelligence, playbooks, and solidarity.
+                </p>
+              </div>
+            </div>
+            
+            <div style="margin-top: 28px; font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);">
+              "In cybersecurity, we don't rise to the level of our hopes; we fall to the level of our training."
+            </div>
+          </div>
+        
+        <aside class="notes">
+          [SAY:] Please give yourselves a massive round of applause. In 6 days, you have covered 26.5 hours of rigorous technical training. You configured STIX/TAXII graphs, mapped ATT&CK Navigator layers, authored Sigma rules, extracted volatile memory with KAPE, built automated SOAR playbooks, and defended a critical infrastructure power grid from an advanced threat actor. Remember: the tools will evolve, but your disciplined mindset — verifying evidence, understanding protocols, and standing guard — will define your career. It has been an absolute honor being your trainer this week. Thank you, and welcome to the ranks of operational defenders!
+          [PEDAGOGY:] Conclude with high encouragement, congratulate students individually, and open the floor for final feedback and certificate distribution.
+        </aside>
+      </section>
+
+
+      <!-- DAY 06 - CONCLUSION & PORTAL RETURN -->
+      <section data-day="DAY 06" data-module="WRAP-UP & ADJOURNMENT" data-session="9:30 AM – 5:00 PM" data-ref="Course Syllabus">
+        <div style="text-align: center; padding: 30px 10px;">
+          <div class="cyber-badge badge-red" style="margin-bottom: 15px;">DAY 06 ADJOURNMENT</div>
+          <h2>Session Concluded: Phishing Triage, Containment, SOAR Automation & AeroGrid APT Crisis</h2>
+          <p style="color: var(--text-secondary); max-width: 780px; margin: 0 auto 25px auto; font-size: 15px;">
+            You have completed all planned instructional milestones, practical demonstrations, and lab exercises for Saturday, 31 October 2026.
+          </p>
+          
+          <div class="grid-2" style="max-width: 800px; margin: 0 auto 30px auto; text-align: left;">
+            <div class="cyber-card">
+              <strong style="color: var(--day-accent); font-size: 14px;">Today's Completed Practical Milestones</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                LAB-05: Phishing Triage | LAB-07: Shuffle SOAR | LAB-08: AeroGrid APT Tabletop
+              </div>
+            </div>
+            <div class="cyber-card">
+              <strong style="color: var(--neon-amber); font-size: 14px;">Next Session Briefing</strong>
+              <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                Course Graduation & SOC Transition Complete!
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: flex; justify-content: center; gap: 15px;">
+            <a href="../index.html" class="portal-home-btn" style="padding: 10px 24px; font-size: 13px;">⊞ RETURN TO MASTER PORTAL</a>
+            
+          </div>
+        </div>
+      </section>
+    
+    </div>
+  </div>
+
+  <!-- Shared Script Engines: Reveal.js, GSAP, Three.js, Mascots & Narratives -->
+  <script src="../shared/js/reveal.js"></script>
+  <script src="../shared/js/gsap.min.js"></script>
+  <script src="../shared/js/three.min.js"></script>
+  <script src="../shared/js/characters.js"></script>
+  <script src="../shared/js/cyber-3d.js"></script>
+  <script src="../shared/js/gsap-narratives.js"></script>
+  <script src="../shared/js/presentation-app.js"></script>
+  <script>
+    Reveal.on('slidechanged', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 06: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+    Reveal.on('ready', event => {
+      const counterEl = document.getElementById('custom-slide-counter');
+      if (counterEl) {
+        const current = Reveal.getSlidePastCount() + 1;
+        const total = Reveal.getTotalSlides();
+        counterEl.innerHTML = `DAY 06: SLIDE <span>${String(current).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+      }
+    });
+  </script>
+</body>
+</html>

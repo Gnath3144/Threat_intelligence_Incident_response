@@ -1,0 +1,96 @@
+/* ===================================================================
+   ANIMATION & MOTION SYSTEM — PURPOSEFUL CYBERSECURITY TELEMETRY
+   =================================================================== */
+
+@keyframes pulse-dot {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.6); opacity: 0.4; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes scanline-pass {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+@keyframes border-glow-cycle {
+  0% { border-color: rgba(0, 242, 254, 0.2); }
+  50% { border-color: rgba(0, 242, 254, 0.7); box-shadow: 0 0 15px rgba(0, 242, 254, 0.25); }
+  100% { border-color: rgba(0, 242, 254, 0.2); }
+}
+
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes packet-transmit {
+  0% { transform: translateX(0); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateX(200px); opacity: 0; }
+}
+
+/* Staggered Element Fade-Ins */
+.animate-fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.45s; }
+.delay-4 { animation-delay: 0.6s; }
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Radar Sweep Element for SOC Monitoring Slides */
+.radar-box {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  background: radial-gradient(circle, rgba(0, 242, 254, 0.05) 0%, rgba(5, 8, 20, 0.8) 70%);
+  margin: 0 auto 16px auto;
+  overflow: hidden;
+}
+
+.radar-sweep-beam {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70px;
+  height: 70px;
+  transform-origin: top left;
+  background: conic-gradient(from 0deg, rgba(0, 242, 254, 0.4) 0deg, transparent 60deg);
+  animation: radar-sweep 4s linear infinite;
+}
+
+.radar-target {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--alert-crimson);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--alert-crimson);
+}
+
+.target-1 { top: 35px; left: 80px; }
+.target-2 { top: 90px; left: 45px; }
+
+/* Interactive Hover Glitch / Glow */
+.cyber-glow-hover {
+  transition: all 0.25s ease;
+}
+
+.cyber-glow-hover:hover {
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.35);
+  border-color: var(--cyber-cyan);
+}
