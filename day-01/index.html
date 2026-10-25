@@ -598,40 +598,45 @@ ACTION: Alert Logged (Unblocked)
       <!-- DAY 01 - SLIDE 12: NATO Admiralty Code Source Scoring -->
       <section data-day="DAY 01" data-module="MOD-01: CTI FUNDAMENTALS" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Concept 5">
 
-          <div style="text-align: left;">
-            <div class="cyber-badge badge-amber">OBJECTIVE EVALUATION</div>
-            <h2>NATO Admiralty Code: Source Reliability × Information Credibility</h2>
-            <p>Never panic over rumors. Score source pedigree independently from technical evidence.</p>
-            
-            <div class="grid-2" style="margin-top: 20px;">
-              <div class="cyber-card">
-                <strong style="color: var(--cyber-cyan);">SOURCE RELIABILITY (A to F)</strong>
-                <table class="lab-steps-compact" style="margin-top: 8px;">
-                  <tr><th>Code</th><th>Assessment Standard</th></tr>
-                  <tr><td><strong>A</strong></td><td>Completely Reliable (No doubt of authenticity or competence)</td></tr>
-                  <tr><td><strong>B</strong></td><td>Usually Reliable (Past reports consistently verified)</td></tr>
-                  <tr><td><strong>C</strong></td><td>Fairly Reliable (Past track record mostly accurate)</td></tr>
-                  <tr><td><strong>D</strong></td><td>Not Usually Reliable (Past history of inaccuracies)</td></tr>
-                  <tr><td><strong>E</strong></td><td>Unreliable (Past reports routinely false or manipulated)</td></tr>
-                  <tr><td><strong>F</strong></td><td>Reliability Cannot Be Judged (Brand-new source, unverified)</td></tr>
-                </table>
-              </div>
-              
-              <div class="cyber-card">
-                <strong style="color: var(--neon-amber);">INFORMATION CREDIBILITY (1 to 6)</strong>
-                <table class="lab-steps-compact" style="margin-top: 8px;">
-                  <tr><th>Code</th><th>Assessment Standard</th></tr>
-                  <tr><td><strong>1</strong></td><td>Confirmed by other independent sources (Empirical proof)</td></tr>
-                  <tr><td><strong>2</strong></td><td>Probably True (Matches known adversary TTPs)</td></tr>
-                  <tr><td><strong>3</strong></td><td>Possibly True (Plausible but uncorroborated)</td></tr>
-                  <tr><td><strong>4</strong></td><td>Doubtful (Inconsistent with known baselines)</td></tr>
-                  <tr><td><strong>5</strong></td><td>Improbable (Defies physical/technical possibility)</td></tr>
-                  <tr><td><strong>6</strong></td><td>Truth Cannot Be Judged (Zero corroborating evidence)</td></tr>
-                </table>
-              </div>
-            </div>
-          </div>
-        
+  <div style="text-align: left;">
+    <div class="investigation-tracker-bar">
+      <span style="color: var(--cyber-cyan); font-weight: bold;">🎯 MISSION: DEFEND AEROGRID // UNC-PHOENIX INVESTIGATION</span>
+      <div class="tracker-progress-track"><div class="tracker-progress-fill" style="width: 16%;"></div></div>
+      <span style="color: var(--text-muted);">PHASE 1: RECONNAISSANCE (DAY 1 OF 6)</span>
+    </div>
+    <div class="cyber-badge badge-cyan">EVIDENCE-BASED EVALUATION</div>
+    <h2>NATO Admiralty Source Scoring & Indicator Station</h2>
+    <p>Evaluate Source Reliability vs. Information Credibility (Click Indicators Below)</p>
+    
+    <div id="indicator-station-demo" class="indicator-station">
+      <div style="font-family: var(--font-mono); font-size: 11px; color: #94A3B8; margin-bottom: 8px;">
+        SELECT AN INCIDENT INDICATOR TO LAUNCH FORENSIC APPRAISAL:
+      </div>
+      <div class="indicator-pills-row">
+        <button class="indicator-pill-btn active" onclick="inspectIndicator('fqdn', this)">🌐 updates-aerogrid.internal-sync[.]com</button>
+        <button class="indicator-pill-btn" onclick="inspectIndicator('ip', this)">📡 198.51.100.44 (C2 Transit)</button>
+        <button class="indicator-pill-btn" onclick="inspectIndicator('hash', this)">🔑 8f4b23...a9c1 (Macro Hash)</button>
+      </div>
+      <div class="indicator-detail-panel">
+        <div style="color: var(--cyber-cyan); font-weight: 700; font-size: 1rem; margin-bottom: 4px;">
+          🌐 Domain: updates-aerogrid.internal-sync[.]com
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--neon-amber); margin-bottom: 6px;">
+          Fully Qualified Domain Name (FQDN) | Admiralty: B2
+        </div>
+        <div style="font-size: 12px; color: #E2E8F0; line-height: 1.5; margin-bottom: 8px;">
+          <strong>Context:</strong> Newly registered subdomain impersonating AeroGrid corporate IT infrastructure. Hosted on dynamic cloud infrastructure.
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 6px;">
+          <span style="color: #FF8A8A;">⚠️ Limitation:</span> Adversaries can abandon or re-route domains rapidly once detected. Low-to-moderate adversary pain threshold.
+        </div>
+        <div style="font-size: 11px; color: var(--emerald-pass); line-height: 1.4;">
+          <span>🎯 Recommended Action:</span> Query Certificate Transparency logs for wildcard sibling certificates. Sinkhole DNS requests at enterprise resolvers.
+        </div>
+      </div>
+    </div>
+  </div>
+
         <aside class="notes">
           [SAY:] When an unverified post on Telegram claims your bank has been breached, what is its Admiralty rating? The source is F: unknown. The credibility is 6: unverified. You do not wake up your CEO for an F6! But if your internal proxy logs corroborate traffic to that exact C2 domain, credibility leaps to 1, giving you an actionable F1 rating.
           [PEDAGOGY:] Teach the separation of Source (pedigree) and Information (empirical evidence). Crucial foundation for Lab 1.
@@ -646,35 +651,65 @@ ACTION: Alert Logged (Unblocked)
             <h2>The Diamond Model: 4 Core Vertices & Meta-Features</h2>
             <p>Sergio Caltagirone's model deconstructs every malicious event into four interrelated vertices.</p>
             
-            <div class="grid-2" style="margin-top: 16px;">
-              <div style="text-align: center; background: rgba(15, 23, 42, 0.6); padding: 24px; border-radius: 12px; border: 1px solid var(--border-subtle);">
-                <div style="display: inline-block; position: relative; width: 260px; height: 260px;">
-                  <!-- Diamond Visual -->
-                  <div onclick="inspectDiamondVertex('Adversary')" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); cursor: pointer;" class="cyber-badge badge-crimson">ADVERSARY (Top)</div>
-                  <div onclick="inspectDiamondVertex('Capability')" style="position: absolute; top: 50%; left: 0; transform: translateY(-50%); cursor: pointer;" class="cyber-badge badge-blue">CAPABILITY (Left)</div>
-                  <div onclick="inspectDiamondVertex('Infrastructure')" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); cursor: pointer;" class="cyber-badge badge-amber">INFRASTRUCTURE (Right)</div>
-                  <div onclick="inspectDiamondVertex('Victim')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); cursor: pointer;" class="cyber-badge badge-cyan">VICTIM (Bottom)</div>
-                  
-                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140px; height: 140px; border: 1px dashed var(--cyber-cyan); transform: translate(-50%, -50%) rotate(45deg); pointer-events: none;"></div>
-                </div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">Click any vertex to inspect operational telemetry</div>
+            <div class="grid-2" style="margin-top: 14px; align-items: stretch;">
+              <!-- Left: Interactive Diamond SVG + Control Surface -->
+              <div class="diamond-interactive-stage" id="diamond-model-stage">
+                <svg class="diamond-svg-canvas" viewBox="0 0 480 330">
+                  <!-- Diamond Outer Perimeter Lines -->
+                  <line x1="240" y1="36" x2="80" y2="165" stroke="rgba(79, 172, 254, 0.4)" stroke-width="2" stroke-dasharray="4,4" id="line-adv-cap"/>
+                  <line x1="80" y1="165" x2="240" y2="294" stroke="rgba(0, 242, 254, 0.4)" stroke-width="2" stroke-dasharray="4,4" id="line-cap-vic"/>
+                  <line x1="240" y1="294" x2="400" y2="165" stroke="rgba(255, 179, 0, 0.4)" stroke-width="2" stroke-dasharray="4,4" id="line-vic-inf"/>
+                  <line x1="400" y1="165" x2="240" y2="36" stroke="rgba(255, 75, 75, 0.4)" stroke-width="2" stroke-dasharray="4,4" id="line-inf-adv"/>
+
+                  <!-- Internal Cross Axes -->
+                  <line x1="240" y1="50" x2="240" y2="280" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" stroke-dasharray="6,4"/>
+                  <line x1="95" y1="165" x2="385" y2="165" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+                  <!-- Meta-Feature Axis Labels -->
+                  <text x="245" y="105" fill="#64748B" font-family="monospace" font-size="9" letter-spacing="1">SOCIOPOLITICAL AXIS</text>
+                  <text x="245" y="235" fill="#64748B" font-family="monospace" font-size="9" letter-spacing="1">INTENT & IMPACT</text>
+                  <text x="100" y="152" fill="#64748B" font-family="monospace" font-size="9" letter-spacing="1">TECHNICAL AXIS</text>
+                </svg>
+
+                <!-- Interactive Vertex Nodes -->
+                <button type="button" class="diamond-vertex-btn diamond-vertex-adversary" data-vertex="Adversary" onclick="inspectDiamondVertex('Adversary', event)">
+                  <span style="font-size: 13px;">🎯</span> ADVERSARY
+                </button>
+
+                <button type="button" class="diamond-vertex-btn diamond-vertex-capability" data-vertex="Capability" onclick="inspectDiamondVertex('Capability', event)">
+                  <span style="font-size: 13px;">⚡</span> CAPABILITY
+                </button>
+
+                <button type="button" class="diamond-vertex-btn diamond-vertex-infrastructure" data-vertex="Infrastructure" onclick="inspectDiamondVertex('Infrastructure', event)">
+                  <span style="font-size: 13px;">📡</span> INFRASTRUCTURE
+                </button>
+
+                <button type="button" class="diamond-vertex-btn diamond-vertex-victim" data-vertex="Victim" onclick="inspectDiamondVertex('Victim', event)">
+                  <span style="font-size: 13px;">🛡️</span> VICTIM
+                </button>
+
+                <!-- Center Intrusion Hub -->
+                <button type="button" class="diamond-hub-btn" data-vertex="Event" onclick="inspectDiamondVertex('Event', event)" title="Click to inspect the Intrusion Event Hub">
+                  <span style="font-size: 14px; margin-bottom: 2px;">⚡</span>
+                  <span>EVENT</span>
+                  <span style="font-size: 8px; opacity: 0.8;">HUB</span>
+                </button>
               </div>
               
-              <div class="cyber-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <!-- Right: Detailed Forensic Telemetry Panel -->
+              <div class="cyber-card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 18px 20px;">
                 <div>
-                  <strong style="color: #FFF; font-size: 15px;">Vertex Operational Details:</strong>
-                  <div id="diamond-vertex-desc" style="margin-top: 10px; font-size: 13px; color: var(--text-secondary); min-height: 90px; padding: 10px; background: rgba(5,8,20,0.5); border-radius: 6px; border: 1px solid var(--border-subtle);">
-                    Click any vertex on the left to inspect its operational role, evidence types, and pivoting relationships.
+                  <strong style="color: #FFF; font-size: 14px;">Vertex Telemetry & Operational Pivots:</strong>
+                  <div id="diamond-vertex-desc" style="margin-top: 10px; font-size: 12px; color: var(--text-secondary); min-height: 140px; padding: 12px 14px; background: rgba(5,8,20,0.6); border-radius: 8px; border: 1px solid var(--border-subtle); transition: border-color 0.3s ease;">
+                    <span style="color: var(--cyber-cyan); font-weight: 600;">Click any vertex (Adversary, Capability, Infrastructure, Victim) or the center Event Hub</span> to explore its investigative telemetry, NATO Admiralty rating, and pivoting pathways.
                   </div>
                 </div>
                 
-                <div style="margin-top: 14px; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
-                  <strong style="color: var(--neon-amber); font-size: 12px;">Essential Meta-Features:</strong>
-                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
-                    • <strong>Timestamp:</strong> Start / End time of intrusion phase<br>
-                    • <strong>Phase:</strong> Cyber Kill Chain step (e.g., Installation)<br>
-                    • <strong>Result:</strong> Success, Failure, or Unknown<br>
-                    • <strong>Direction:</strong> Adversary-to-Victim, Victim-to-Infra (C2)
+                <div style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px;">
+                  <strong style="color: var(--neon-amber); font-size: 11px;">Intrusion Meta-Features:</strong>
+                  <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.5;">
+                    • <strong>Timestamp:</strong> Execution start/end window &nbsp;|&nbsp; • <strong>Phase:</strong> Cyber Kill Chain step<br>
+                    • <strong>Result:</strong> Success / Defeated / Denied &nbsp;|&nbsp; • <strong>Direction:</strong> Adversary-to-Victim / C2 Transit
                   </div>
                 </div>
               </div>

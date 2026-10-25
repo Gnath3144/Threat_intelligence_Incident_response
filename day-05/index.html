@@ -237,43 +237,54 @@
       <!-- DAY 05 - SLIDE 04: RFC 3227 Order of Volatility -->
       <section data-day="DAY 05" data-module="MOD-05: TRIAGE & FORENSICS" data-session="2:00 PM – 5:00 PM" data-ref="Handbook Day 5 Concept 3">
 
-          <div style="text-align: left;">
-            <div class="cyber-badge badge-crimson">EVIDENCE PRESERVATION</div>
-            <h2>RFC 3227: Order of Volatility & Legal Chain of Custody</h2>
-            <p>Evidence disappears at different rates. Capture the most volatile artifacts first.</p>
-            
-            <div style="max-width: 800px; margin: 20px auto 0 auto;">
-              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--alert-crimson); background: rgba(255,75,75,0.12);">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <strong style="color: var(--alert-crimson);">1. CPU Registers & Cache</strong>
-                  <span class="cyber-badge badge-crimson">NANOSECONDS</span>
-                </div>
-                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Vanishes instantly on context switch. Rarely captured in standard enterprise triage.</div>
-              </div>
-              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--neon-amber); background: rgba(255,179,0,0.1);">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <strong style="color: var(--neon-amber);">2. Routing Tables, ARP Cache, Process Table, Kernel Memory (RAM)</strong>
-                  <span class="cyber-badge badge-amber">SECONDS TO MINUTES</span>
-                </div>
-                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Decrypted malware binaries, active C2 network sockets, injected DLLs, unencrypted keys. <em>Vulnerable to power loss!</em></div>
-              </div>
-              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--electric-blue); background: rgba(79,172,254,0.1);">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <strong style="color: var(--electric-blue);">3. Temporary File Systems & Swap Space</strong>
-                  <span class="cyber-badge badge-blue">MINUTES TO HOURS</span>
-                </div>
-                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Virtual memory pagefile.sys, hiberfil.sys, staging folders (C:\Windows\Temp).</div>
-              </div>
-              <div class="cyber-card" style="border-color: var(--cyber-cyan); background: rgba(0,242,254,0.06);">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <strong style="color: var(--cyber-cyan);">4. Non-Volatile Storage (Hard Disks, SSDs) & Remote Logging</strong>
-                  <span class="cyber-badge badge-cyan">DAYS TO YEARS</span>
-                </div>
-                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">NTFS $MFT, Event Log EVTX files, prefetch, Amcache. Stable across power cycles.</div>
-              </div>
-            </div>
-          </div>
-        
+  <div style="text-align: left;">
+    <div class="investigation-tracker-bar">
+      <span style="color: var(--neon-amber); font-weight: bold;">🎯 MISSION: DEFEND AEROGRID // UNC-PHOENIX INVESTIGATION</span>
+      <div class="tracker-progress-track"><div class="tracker-progress-fill" style="width: 82%;"></div></div>
+      <span style="color: var(--text-muted);">PHASE 5: FORENSIC TRIAGE (DAY 5 OF 6)</span>
+    </div>
+    <div class="cyber-badge badge-amber">CRISIS CHRONOLOGY & FORENSIC TRIAGE</div>
+    <h2>AeroGrid 5-Day Breach Timeline & RFC 3227 Decision Gate</h2>
+    <p>Track Infiltration Milestones (Top) & Choose the Forensic Response Action (Bottom)</p>
+    
+    <div id="incident-timeline-demo" class="incident-timeline-wrapper">
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--neon-amber); font-weight: bold;">
+        📅 INTERACTIVE BREACH TIMELINE (CLICK MILESTONES 1 THROUGH 5):
+      </div>
+      <div class="timeline-milestones-row">
+        <div class="timeline-node-item active" onclick="inspectTimelineMilestone(0, this)">1</div>
+        <div class="timeline-node-item" onclick="inspectTimelineMilestone(1, this)">2</div>
+        <div class="timeline-node-item" onclick="inspectTimelineMilestone(2, this)">3</div>
+        <div class="timeline-node-item" onclick="inspectTimelineMilestone(3, this)">4</div>
+        <div class="timeline-node-item" onclick="inspectTimelineMilestone(4, this)">5</div>
+      </div>
+      <div class="timeline-evidence-drawer">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span style="font-family: var(--font-mono); font-size: 11px; color: var(--neon-amber); font-weight: 700;">DAY 1 (OCT 26)</span>
+          <span style="font-family: var(--font-mono); font-size: 10px; color: #00E676; font-weight: 700;">VERIFIED EVIDENCE (ESTABLISHED)</span>
+        </div>
+        <div style="font-size: 0.95rem; font-weight: 700; color: #FFF; margin-bottom: 4px;">
+          INITIAL ACCESS & FOOTHOLD
+        </div>
+        <div style="font-size: 12px; color: #CBD5E1; line-height: 1.5;">
+          Spearphishing email delivered to `j.smith@aerogrid.com`. Weaponized Excel macro executed; outbound beacon connected to `198.51.100.44`.
+        </div>
+      </div>
+    </div>
+    
+    <div id="ir-decision-demo" style="margin-top: 14px; background: rgba(15,23,42,0.9); border: 1px solid rgba(255,179,0,0.3); border-radius: 8px; padding: 14px;">
+      <div style="font-family: var(--font-mono); font-size: 11px; color: #FFF; font-weight: bold; margin-bottom: 8px;">
+        THE GOLDEN RULE DECISION: Patient Zero WS-041 is actively beaconing. What is your action?
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="decision-btn" onclick="selectIRChoice(0, this)">A) Reboot Machine Immediately</button>
+        <button class="decision-btn" onclick="selectIRChoice(1, this)">B) Live Memory Dump + Network Isolation</button>
+        <button class="decision-btn" onclick="selectIRChoice(2, this)">C) Run Full Antivirus Disk Scan</button>
+      </div>
+      <div class="decision-feedback-panel" style="margin-top: 10px; min-height: 40px; font-size: 11px;"></div>
+    </div>
+  </div>
+
         <aside class="notes">
           [SAY:] RFC 3227 dictates our preservation sequence. Notice RAM sits at Level 2. If you turn off the power, volatile RAM vanishes forever. Always capture memory before touching the hard drive.
           [PEDAGOGY:] Drill the RFC 3227 order of volatility into memory. Direct bridge to the Golden Rule.

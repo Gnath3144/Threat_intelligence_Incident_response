@@ -1,0 +1,510 @@
+{
+  "1080p_Desktop": {
+    "portal": {
+      "test": "Master Portal Cards",
+      "count": 6,
+      "pass": true
+    },
+    "day-01": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Scenario Decision Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Intel Cycle Stage 3 Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 NATO Indicator Pill Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Diamond Model (All 5 Vertices)",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-02": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 2 Threat Triage Card Click",
+        "pass": true
+      },
+      {
+        "test": "Day 2 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-03": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 3 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-04": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 4 Sysmon Log Hotspot Click",
+        "pass": true
+      },
+      {
+        "test": "Day 4 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-05": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 5 Timeline Milestone Click",
+        "pass": true
+      },
+      {
+        "test": "Day 5 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-06": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Phishing Dissector Hotspot Click",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Air-Gap Breaker Toggle",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Executive Dossier Tab Click",
+        "pass": true
+      }
+    ]
+  },
+  "Laptop_1366": {
+    "portal": {
+      "test": "Master Portal Cards",
+      "count": 6,
+      "pass": true
+    },
+    "day-01": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Scenario Decision Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Intel Cycle Stage 3 Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 NATO Indicator Pill Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Diamond Model (All 5 Vertices)",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-02": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 2 Threat Triage Card Click",
+        "pass": true
+      },
+      {
+        "test": "Day 2 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-03": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 3 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-04": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 4 Sysmon Log Hotspot Click",
+        "pass": true
+      },
+      {
+        "test": "Day 4 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-05": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 5 Timeline Milestone Click",
+        "pass": true
+      },
+      {
+        "test": "Day 5 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-06": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Phishing Dissector Hotspot Click",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Air-Gap Breaker Toggle",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Executive Dossier Tab Click",
+        "pass": true
+      }
+    ]
+  },
+  "Tablet_1024": {
+    "portal": {
+      "test": "Master Portal Cards",
+      "count": 6,
+      "pass": true
+    },
+    "day-01": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Scenario Decision Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Intel Cycle Stage 3 Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 NATO Indicator Pill Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Diamond Model (All 5 Vertices)",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-02": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 2 Threat Triage Card Click",
+        "pass": true
+      },
+      {
+        "test": "Day 2 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-03": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 3 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-04": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 4 Sysmon Log Hotspot Click",
+        "pass": true
+      },
+      {
+        "test": "Day 4 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-05": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 5 Timeline Milestone Click",
+        "pass": true
+      },
+      {
+        "test": "Day 5 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-06": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Phishing Dissector Hotspot Click",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Air-Gap Breaker Toggle",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Executive Dossier Tab Click",
+        "pass": true
+      }
+    ]
+  },
+  "Mobile_375": {
+    "portal": {
+      "test": "Master Portal Cards",
+      "count": 6,
+      "pass": true
+    },
+    "day-01": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Scenario Decision Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Intel Cycle Stage 3 Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 NATO Indicator Pill Click",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Diamond Model (All 5 Vertices)",
+        "pass": true
+      },
+      {
+        "test": "Day 1 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-02": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 2 Threat Triage Card Click",
+        "pass": true
+      },
+      {
+        "test": "Day 2 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-03": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 3 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-04": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 4 Sysmon Log Hotspot Click",
+        "pass": true
+      },
+      {
+        "test": "Day 4 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-05": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 5 Timeline Milestone Click",
+        "pass": true
+      },
+      {
+        "test": "Day 5 Knowledge Check Quiz Click",
+        "pass": true
+      }
+    ],
+    "day-06": [
+      {
+        "test": "Shortcuts Modal Open",
+        "pass": true
+      },
+      {
+        "test": "Shortcuts Modal Close",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Phishing Dissector Hotspot Click",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Air-Gap Breaker Toggle",
+        "pass": true
+      },
+      {
+        "test": "Day 6 Executive Dossier Tab Click",
+        "pass": true
+      }
+    ]
+  }
+}

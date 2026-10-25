@@ -311,3 +311,438 @@
 .aerogrid-switch-btn:hover {
   transform: scale(1.04);
 }
+
+/* ===================================================================
+   CYBERSECURITY INVESTIGATION & ACTIVE LEARNING INTERACTIVE WIDGETS
+   =================================================================== */
+
+/* 7. Incident Investigation Mission Tracker */
+.investigation-tracker-bar {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  border-radius: 8px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.tracker-progress-track {
+  flex: 1;
+  max-width: 280px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 0 12px;
+}
+
+.tracker-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyber-cyan), var(--emerald-pass));
+  transition: width 0.4s ease;
+}
+
+/* 8. Interactive Indicator Investigation Station */
+.indicator-station {
+  background: rgba(10, 17, 40, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 10px;
+}
+
+.indicator-pills-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.indicator-pill-btn {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #CBD5E1;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.indicator-pill-btn:hover {
+  border-color: var(--cyber-cyan);
+  color: #FFF;
+}
+
+.indicator-pill-btn.active {
+  background: rgba(0, 242, 254, 0.15);
+  border-color: var(--cyber-cyan);
+  color: var(--cyber-cyan);
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.3);
+}
+
+.indicator-detail-panel {
+  background: #020617;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--cyber-cyan);
+  border-radius: 6px;
+  padding: 14px 18px;
+  min-height: 85px;
+  text-align: left;
+}
+
+/* 9. Interactive Threat-Triage Challenge */
+.triage-challenge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.triage-alert-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.triage-alert-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--cyber-cyan);
+  box-shadow: 0 4px 16px rgba(0, 242, 254, 0.2);
+}
+
+.triage-alert-card.selected {
+  border-color: var(--cyber-cyan);
+  background: rgba(0, 242, 254, 0.08);
+}
+
+.triage-feedback-panel {
+  margin-top: 12px;
+  background: #020617;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 8px;
+  padding: 12px 18px;
+  text-align: left;
+  min-height: 60px;
+}
+
+/* 10. Interactive Log Inspector */
+.log-inspector-card {
+  background: #020617;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.log-field-hotspot {
+  display: inline-block;
+  padding: 2px 6px;
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px dashed var(--matrix-teal);
+  color: var(--matrix-teal);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.log-field-hotspot:hover {
+  background: var(--matrix-teal);
+  color: #050814;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+}
+
+.log-explanation-drawer {
+  margin-top: 10px;
+  background: rgba(15, 23, 42, 0.95);
+  border-left: 3px solid var(--matrix-teal);
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: #E2E8F0;
+  min-height: 50px;
+}
+
+/* 11. Interactive Visual Incident Timeline */
+.incident-timeline-wrapper {
+  background: rgba(10, 17, 40, 0.85);
+  border: 1px solid rgba(255, 179, 0, 0.3);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 10px;
+}
+
+.timeline-milestones-row {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin: 15px 0 20px 0;
+}
+
+.timeline-milestones-row::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 30px;
+  right: 30px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.timeline-node-item {
+  position: relative;
+  z-index: 2;
+  background: #0F172A;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.timeline-node-item:hover {
+  border-color: var(--neon-amber);
+  transform: scale(1.15);
+}
+
+.timeline-node-item.active {
+  background: var(--neon-amber);
+  border-color: #FFF;
+  color: #050814;
+  box-shadow: 0 0 16px rgba(255, 179, 0, 0.6);
+  transform: scale(1.2);
+}
+
+.timeline-evidence-drawer {
+  background: #020617;
+  border: 1px solid rgba(255, 179, 0, 0.3);
+  border-left: 3px solid var(--neon-amber);
+  border-radius: 6px;
+  padding: 12px 18px;
+  text-align: left;
+  min-height: 75px;
+}
+
+/* 12. Incident Briefing Dossier */
+.briefing-dossier-card {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 75, 75, 0.35);
+  border-radius: 10px;
+  padding: 18px;
+  margin-top: 10px;
+  text-align: left;
+}
+
+.briefing-tab-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+}
+
+.briefing-tab-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: #94A3B8;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.briefing-tab-btn:hover {
+  color: #FFF;
+}
+
+.briefing-tab-btn.active {
+  background: rgba(255, 75, 75, 0.15);
+  border-color: #FF4B4B;
+  color: #FF4B4B;
+  font-weight: 700;
+}
+
+.briefing-tab-content {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #E2E8F0;
+  min-height: 80px;
+}
+
+/* 13. Caltagirone Diamond Model Interactive Stage */
+.diamond-interactive-stage {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  height: 330px;
+  margin: 0 auto;
+  background: rgba(10, 17, 40, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.diamond-svg-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.diamond-vertex-btn {
+  position: absolute;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.diamond-vertex-btn:hover {
+  transform: scale(1.06);
+}
+
+.diamond-vertex-btn:focus-visible {
+  outline: 2px solid #FFF;
+  outline-offset: 2px;
+}
+
+.diamond-vertex-btn.active-vertex {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px currentColor;
+  border-width: 2px;
+}
+
+.diamond-vertex-adversary {
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 75, 75, 0.18);
+  color: #FF6B6B;
+  border-color: rgba(255, 75, 75, 0.4);
+}
+.diamond-vertex-adversary:hover,
+.diamond-vertex-adversary.active-vertex {
+  background: rgba(255, 75, 75, 0.35);
+  border-color: #FF4B4B;
+  color: #FFF;
+  transform: translateX(-50%) scale(1.08);
+}
+
+.diamond-vertex-capability {
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  background: rgba(79, 172, 254, 0.18);
+  color: #4FACFE;
+  border-color: rgba(79, 172, 254, 0.4);
+}
+.diamond-vertex-capability:hover,
+.diamond-vertex-capability.active-vertex {
+  background: rgba(79, 172, 254, 0.35);
+  border-color: #4FACFE;
+  color: #FFF;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.diamond-vertex-infrastructure {
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  background: rgba(255, 179, 0, 0.18);
+  color: #FFB300;
+  border-color: rgba(255, 179, 0, 0.4);
+}
+.diamond-vertex-infrastructure:hover,
+.diamond-vertex-infrastructure.active-vertex {
+  background: rgba(255, 179, 0, 0.35);
+  border-color: #FFB300;
+  color: #FFF;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.diamond-vertex-victim {
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 242, 254, 0.18);
+  color: #00F2FE;
+  border-color: rgba(0, 242, 254, 0.4);
+}
+.diamond-vertex-victim:hover,
+.diamond-vertex-victim.active-vertex {
+  background: rgba(0, 242, 254, 0.35);
+  border-color: #00F2FE;
+  color: #FFF;
+  transform: translateX(-50%) scale(1.08);
+}
+
+.diamond-hub-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.25) 0%, rgba(5, 8, 20, 0.9) 80%);
+  border: 2px dashed rgba(0, 229, 255, 0.6);
+  color: #00E5FF;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  z-index: 15;
+  transition: all 0.25s ease;
+  line-height: 1.2;
+}
+
+.diamond-hub-btn:hover,
+.diamond-hub-btn.active-vertex {
+  border-style: solid;
+  border-color: #00E5FF;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+  transform: translate(-50%, -50%) scale(1.1);
+  color: #FFF;
+}
+

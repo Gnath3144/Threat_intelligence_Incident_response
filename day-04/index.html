@@ -238,35 +238,35 @@
       <!-- DAY 04 - SLIDE 04: Sysmon Telemetry Deep-Dive -->
       <section data-day="DAY 04" data-module="MOD-04: TELEMETRY & SIEM" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 4 Concept 3">
 
-          <div style="text-align: left;">
-            <div class="cyber-badge badge-amber">SYSINTERNALS SYSMON</div>
-            <h2>Microsoft Sysmon: The High-Fidelity Endpoint Sensor</h2>
-            <p>System Monitor bridges the gap between basic event logs and commercial EDR agents.</p>
-            
-            <div class="grid-4" style="margin-top: 20px; font-size: 12px;">
-              <div class="cyber-card">
-                <strong style="color: var(--cyber-cyan);">EVENT ID 1</strong>
-                <div style="font-weight: 700; color: #FFF; margin: 6px 0;">Process Create</div>
-                <p>Captures full command line, parent process lineage, image hashes (MD5, SHA-256), and original file name.</p>
-              </div>
-              <div class="cyber-card">
-                <strong style="color: var(--electric-blue);">EVENT ID 3</strong>
-                <div style="font-weight: 700; color: #FFF; margin: 6px 0;">Network Connect</div>
-                <p>Binds the exact process ID and binary image to an outbound destination IP, port, and protocol.</p>
-              </div>
-              <div class="cyber-card">
-                <strong style="color: var(--alert-crimson);">EVENT ID 10</strong>
-                <div style="font-weight: 700; color: #FFF; margin: 6px 0;">Process Access</div>
-                <p>Detects process injection (T1055) and LSASS memory dumping (Mimikatz accessing lsass.exe).</p>
-              </div>
-              <div class="cyber-card">
-                <strong style="color: var(--neon-amber);">EVENT ID 22</strong>
-                <div style="font-weight: 700; color: #FFF; margin: 6px 0;">DNS Query</div>
-                <p>Logs the exact query string, resolved IP, and originating process ID (detects C2 domain resolution).</p>
-              </div>
-            </div>
-          </div>
-        
+  <div style="text-align: left;">
+    <div class="investigation-tracker-bar">
+      <span style="color: var(--matrix-teal); font-weight: bold;">🎯 MISSION: DEFEND AEROGRID // UNC-PHOENIX INVESTIGATION</span>
+      <div class="tracker-progress-track"><div class="tracker-progress-fill" style="width: 65%;"></div></div>
+      <span style="color: var(--text-muted);">PHASE 4: TELEMETRY PIVOTING (DAY 4 OF 6)</span>
+    </div>
+    <div class="cyber-badge badge-teal">ENDPOINT TELEMETRY DISSECTION</div>
+    <h2>Sysmon Event ID 1: Process Creation Dissector</h2>
+    <p>Click Dashed Teal Hotspots to Discover Attacker Footprints and Attribution Evidence</p>
+    
+    <div id="log-inspector-demo" class="log-inspector-card">
+      <div style="color: var(--matrix-teal); font-weight: bold; margin-bottom: 8px;">
+        📋 SYSMON OPERATIONAL LOG RECORD // EVENT ID 1 (PROCESS_CREATE)
+      </div>
+      <div style="line-height: 1.8;">
+        UtcTime: <span class="log-field-hotspot" onclick="inspectLogField('timestamp', this)">2026-10-26 13:42:10.491</span><br>
+        ProcessGuid: {A1B2C3D4-E5F6-7890-1234-56789ABCDEF0}<br>
+        ProcessId: 4912<br>
+        Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe<br>
+        CommandLine: <span class="log-field-hotspot" onclick="inspectLogField('cmdline', this)">powershell.exe -w hidden -enc JABzACAAPQAgAE4AZQB3AC0ATwBiAGo...</span><br>
+        ParentImage: <span class="log-field-hotspot" onclick="inspectLogField('parent', this)">C:\Windows\explorer.exe</span> [PID: 2840]<br>
+        User: <span class="log-field-hotspot" onclick="inspectLogField('user', this)">AEROGRID\j.smith</span>
+      </div>
+      <div class="log-explanation-drawer">
+        Click any teal hotspot above to inspect why this field is vital for threat correlation.
+      </div>
+    </div>
+  </div>
+
         <aside class="notes">
           [SAY:] Look at Sysmon Event ID 1: Process Creation. We look at the parent-child relationship. If Word launches PowerShell, which launches CMD, which launches Certutil... colleagues, that is not Microsoft Word doing document formatting! That is like your younger brother borrowing your motorcycle at 2:00 AM wearing a helmet and carrying a crowbar! You don't need an audit committee to know something suspicious is taking place.
           [PEDAGOGY:] HUMOR ANCHOR: The younger brother borrowing your bike at 2:00 AM with a crowbar! Memorable analogy for malicious process trees.

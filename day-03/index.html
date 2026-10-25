@@ -196,35 +196,59 @@
       <!-- DAY 03 - SLIDE 03: Indicator Lifecycle & Aging Dynamics -->
       <section data-day="DAY 03" data-module="MOD-03: OSINT & STIX/TAXII" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 3 Concept 2">
 
-          <div style="text-align: left;">
-            <div class="cyber-badge badge-amber">OPERATIONAL LIFECYCLE</div>
-            <h2>The Indicator Lifecycle: Managing Expiration & Degradation</h2>
-            <p>Indicators decay over time. Without automated expiration, firewalls suffer catastrophic state bloat.</p>
-            
-            <div class="grid-4" style="margin-top: 24px; font-size: 13px;">
-              <div class="cyber-card">
-                <span class="cyber-badge badge-blue">PHASE 1: DISCOVERED</span>
-                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Observation</div>
-                <p style="font-size: 12px;">New IP or hash identified in external bulletin or honeypot. Confidence: Pending verification.</p>
-              </div>
-              <div class="cyber-card" style="border-color: var(--alert-crimson);">
-                <span class="cyber-badge badge-crimson">PHASE 2: ACTIVE</span>
-                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Enforced Blocking</div>
-                <p style="font-size: 12px;">Corroborated by internal telemetry. Pushed to active perimeter blocklists. Lifespan timer starts.</p>
-              </div>
-              <div class="cyber-card">
-                <span class="cyber-badge badge-amber">PHASE 3: DEPRECATED</span>
-                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Aging Out</div>
-                <p style="font-size: 12px;">Zero adversary traffic observed for 30 days. Removed from active blocklist; retained in SIEM historical hunt index.</p>
-              </div>
-              <div class="cyber-card" style="border-color: var(--emerald-pass);">
-                <span class="cyber-badge badge-cyan">PHASE 4: REVOKED</span>
-                <div style="font-weight: 700; color: #FFF; margin: 10px 0 4px 0;">Decommissioned</div>
-                <p style="font-size: 12px;">IP confirmed reassigned to legitimate cloud customer. Fully purged from blocklists to prevent false positives.</p>
-              </div>
-            </div>
+  <div style="text-align: left;">
+    <div class="investigation-tracker-bar">
+      <span style="color: var(--purple-intel); font-weight: bold;">🎯 MISSION: DEFEND AEROGRID // UNC-PHOENIX INVESTIGATION</span>
+      <div class="tracker-progress-track"><div class="tracker-progress-fill" style="width: 48%;"></div></div>
+      <span style="color: var(--text-muted);">PHASE 3: INFRASTRUCTURE & STIX (DAY 3 OF 6)</span>
+    </div>
+    <div class="cyber-badge badge-purple">INDICATOR AGING DYNAMICS</div>
+    <h2>STIX 2.1 Graph & Temporal Confidence Decay</h2>
+    <p>Adversary Infrastructure Lifecycle: Preventing Firewall Rule Bloat</p>
+    
+    <div class="grid-2" style="margin-top: 12px;">
+      <div class="cyber-card">
+        <strong style="color: var(--purple-intel); font-size: 13px;">STIX 2.1 Graph SDO/SRO Relationship</strong>
+        <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
+          <div class="terminal-body">
+[SDO: Threat Actor] "UNC-PHOENIX" (Confidence: 90)<br>
+&nbsp;&nbsp;&boxur;&nbsp;[SRO: uses] -&gt; [SDO: Tool] "Cobalt Strike"<br>
+&nbsp;&nbsp;&boxur;&nbsp;[SRO: indicates] -&gt; [SDO: Indicator] "198.51.100.44"<br>
+&nbsp;&nbsp;&boxur;&nbsp;[SRO: targets] -&gt; [SDO: Identity] "AeroGrid SCADA"
           </div>
-        
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">
+          STIX 2.1 links observations to actors, tools, and victims via unambiguous JSON objects.
+        </div>
+      </div>
+      
+      <div class="cyber-card">
+        <strong style="color: var(--cyber-cyan); font-size: 13px;">Temporal Half-Life Decay Curve</strong>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px;">
+            <span>Day 0 (Active Sighting):</span>
+            <strong style="color: #00E676;">95% Confidence (Active Block)</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px;">
+            <span>Day 7 (No Sighting):</span>
+            <strong style="color: var(--cyber-cyan);">75% Confidence (Alert Only)</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px;">
+            <span>Day 30 (Dormant):</span>
+            <strong style="color: var(--neon-amber);">40% Confidence (Candidate Prune)</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px;">
+            <span>Day 90+ (Expired):</span>
+            <strong style="color: var(--text-muted);">0% Confidence (Revoked/Removed)</strong>
+          </div>
+        </div>
+        <div style="background: rgba(179,136,255,0.08); border-left: 2px solid var(--purple-intel); padding: 6px 10px; margin-top: 10px; font-size: 10px; color: #CBD5E1;">
+          💡 Automatic decay prevents perimeter firewalls from choking on hundreds of thousands of stale IP blocks.
+        </div>
+      </div>
+    </div>
+  </div>
+
         <aside class="notes">
           [SAY:] Notice Phase 3 and Phase 4: Deprecated and Revoked. If your SOC never removes indicators, your firewall state tables become huge and inspection throughput slows to a crawl. Indicators are like milk in a college hostel fridge—they have an expiration date!
           [PEDAGOGY:] HUMOR ANCHOR: Hostel fridge milk expiration date. Emphasize why indicator aging prevents false positives and firewall latency.

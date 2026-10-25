@@ -198,43 +198,52 @@
       <!-- DAY 02 - SLIDE 03: David Bianco's Pyramid of Pain -->
       <section data-day="DAY 02" data-module="MOD-02: THREAT MODELING" data-session="1:00 PM – 5:00 PM" data-ref="Handbook Day 2 Concept 2">
 
-          <div style="text-align: left;">
-            <div class="cyber-badge badge-crimson">DEFENSIVE ROI HIERARCHY</div>
-            <h2>David Bianco's Pyramid of Pain</h2>
-            <p>The higher you climb on the pyramid, the more operational pain you inflict on the adversary.</p>
-            
-            <div style="max-width: 800px; margin: 24px auto 0 auto;">
-              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--alert-crimson); background: rgba(255,75,75,0.12);">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <strong style="color: var(--alert-crimson);">TTPs (Tactics, Techniques & Procedures)</strong>
-                  <span class="cyber-badge badge-crimson">TOUGH (Pain: Severe)</span>
-                </div>
-                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Adversary behavior (Pass-the-Hash, Certutil staging). Forces adversary to completely retrain operators and rewrite tooling.</div>
-              </div>
-              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--neon-amber); background: rgba(255,179,0,0.1);">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <strong style="color: var(--neon-amber);">Tools (Mimikatz, Cobalt Strike, PsExec)</strong>
-                  <span class="cyber-badge badge-amber">CHALLENGING (Pain: High)</span>
-                </div>
-                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Specific utilities dropped to disk. Adversary must re-engineer or find alternative bypass tools.</div>
-              </div>
-              <div class="cyber-card" style="margin-bottom: 8px; border-color: var(--electric-blue); background: rgba(79,172,254,0.1);">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <strong style="color: var(--electric-blue);">Network / Host Artifacts & Domain Names</strong>
-                  <span class="cyber-badge badge-blue">ANNOYING / SIMPLE (Pain: Moderate)</span>
-                </div>
-                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">URI patterns, registry run keys, registered domains. Costs $10 and 2 minutes to register a new domain.</div>
-              </div>
-              <div class="cyber-card" style="border-color: var(--cyber-cyan); background: rgba(0,242,254,0.06);">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <strong style="color: var(--cyber-cyan);">IP Addresses & Hash Values (MD5, SHA-256)</strong>
-                  <span class="cyber-badge badge-cyan">TRIVIAL (Pain: Negligible)</span>
-                </div>
-                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Changing a hash takes 1 benign byte. Changing an IP takes 15 seconds on a cloud instance. Zero adversary pain.</div>
-              </div>
-            </div>
+  <div style="text-align: left;">
+    <div class="investigation-tracker-bar">
+      <span style="color: var(--electric-blue); font-weight: bold;">🎯 MISSION: DEFEND AEROGRID // UNC-PHOENIX INVESTIGATION</span>
+      <div class="tracker-progress-track"><div class="tracker-progress-fill" style="width: 32%;"></div></div>
+      <span style="color: var(--text-muted);">PHASE 2: FOOTHOLD & ATT&CK (DAY 2 OF 6)</span>
+    </div>
+    <div class="cyber-badge badge-blue">SOC TRIAGE CHALLENGE</div>
+    <h2>Pyramid of Pain & Alert Prioritization Dilemma</h2>
+    <p>Which Alert Demands Immediate Incident Commander Escalation? (Click to Choose)</p>
+    
+    <div id="threat-triage-demo">
+      <div class="triage-challenge-grid">
+        <div class="triage-alert-card" onclick="selectTriageAlert('alert-a', this)">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-family:var(--font-mono); font-size:10px; color:#94A3B8;">ALERT ID: 1041</span>
+            <span class="cyber-badge badge-amber" style="font-size:9px;">SEV: MEDIUM</span>
           </div>
+          <strong style="font-size:12px; color:#FFF;">Perimeter TCP SYN Scan</strong>
+          <p style="font-size:11px; color:#94A3B8; margin-top:4px;">10,000 inbound probes on port 443 from commercial VPN exit node.</p>
+        </div>
         
+        <div class="triage-alert-card" onclick="selectTriageAlert('alert-b', this)">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-family:var(--font-mono); font-size:10px; color:#94A3B8;">ALERT ID: 1042</span>
+            <span class="cyber-badge badge-red" style="font-size:9px;">SEV: CRITICAL</span>
+          </div>
+          <strong style="font-size:12px; color:#FF8A8A;">Encoded PowerShell on WS-041</strong>
+          <p style="font-size:11px; color:#94A3B8; margin-top:4px;">powershell.exe -w hidden -enc spawning from Finance downloads folder.</p>
+        </div>
+        
+        <div class="triage-alert-card" onclick="selectTriageAlert('alert-c', this)">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-family:var(--font-mono); font-size:10px; color:#94A3B8;">ALERT ID: 1043</span>
+            <span class="cyber-badge badge-amber" style="font-size:9px;">SEV: LOW</span>
+          </div>
+          <strong style="font-size:12px; color:#FFF;">Disabled Guest Login Fails</strong>
+          <p style="font-size:11px; color:#94A3B8; margin-top:4px;">3 failed NTLM auth attempts against legacy Guest account.</p>
+        </div>
+      </div>
+      
+      <div class="triage-feedback-panel">
+        <span style="color:var(--text-muted); font-size:12px;">Click one of the three incoming alerts above to evaluate your triage decision.</span>
+      </div>
+    </div>
+  </div>
+
         <aside class="notes">
           [SAY:] David Bianco gave us the Pyramid of Pain. Look at the bottom: Hashes and IP addresses. Changing a hash is as easy as changing your WhatsApp DP—takes three seconds, zero effort. Changing an IP is like buying a ten-rupee prepaid SIM card. But changing a TTP at the top? That is like asking an engineering student to stop studying at 2:00 AM the night before exams! It requires complete rewiring of their operational muscle memory.
           [PEDAGOGY:] HUMOR ANCHOR: Changing hash = changing WhatsApp DP. Changing TTPs = breaking engineering student exam habits. Explains why behavioral defense matters.

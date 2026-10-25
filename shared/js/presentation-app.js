@@ -50,12 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. Prevent clicks on interactive cards, buttons, widgets, mascots, and custom controls from bubbling to Reveal.js
+  // 2. Prevent clicks on interactive elements from bubbling beyond document
   document.addEventListener('click', (e) => {
-    if (e.target.closest('.cyber-card, .interactive-decision-box, .three-canvas-container, .cyber-mascot, .terminal-buffer, .intel-cycle-container, .decision-btn, .phish-hotspot, button, a, [onclick], .cyber-badge, .nav-day-btn, .portal-home-btn, .decision-options')) {
+    if (e.target.closest('.cyber-card, .interactive-decision-box, .three-canvas-container, .cyber-mascot, .terminal-buffer, .intel-cycle-container, .decision-btn, .phish-hotspot, button, a, [onclick], .cyber-badge, .nav-day-btn, .portal-home-btn, .decision-options, .indicator-station, .triage-alert-card, .log-inspector-card, .timeline-node-item, .briefing-tab-btn, .indicator-pill-btn, .log-field-hotspot, .timeline-evidence-drawer, .briefing-dossier-card')) {
       e.stopPropagation();
     }
-  }, true);
+  }, false);
 
   // 3. Telemetry Status Bar & Module Tracker
   function updateTelemetryStatusBar(event) {
@@ -158,6 +158,36 @@ document.addEventListener('DOMContentLoaded', () => {
     if (aerogridBreaker && window.CyberGSAP) {
       setTimeout(() => window.CyberGSAP.initAeroGridBreaker('aerogrid-breaker-demo'), 100);
     }
+
+    const indicatorStation = slide.querySelector('#indicator-station-demo');
+    if (indicatorStation && window.CyberGSAP) {
+      setTimeout(() => window.CyberGSAP.initIndicatorStation('indicator-station-demo'), 100);
+    }
+
+    const threatTriage = slide.querySelector('#threat-triage-demo');
+    if (threatTriage && window.CyberGSAP) {
+      setTimeout(() => window.CyberGSAP.initThreatTriage('threat-triage-demo'), 100);
+    }
+
+    const logInspector = slide.querySelector('#log-inspector-demo');
+    if (logInspector && window.CyberGSAP) {
+      setTimeout(() => window.CyberGSAP.initLogInspector('log-inspector-demo'), 100);
+    }
+
+    const incidentTimeline = slide.querySelector('#incident-timeline-demo');
+    if (incidentTimeline && window.CyberGSAP) {
+      setTimeout(() => window.CyberGSAP.initIncidentTimeline('incident-timeline-demo'), 100);
+    }
+
+    const irDecision = slide.querySelector('#ir-decision-demo');
+    if (irDecision && window.CyberGSAP) {
+      setTimeout(() => window.CyberGSAP.initIRDecision('ir-decision-demo'), 100);
+    }
+
+    const briefingDossier = slide.querySelector('#briefing-dossier-demo');
+    if (briefingDossier && window.CyberGSAP) {
+      setTimeout(() => window.CyberGSAP.initBriefingDossier('briefing-dossier-demo'), 100);
+    }
   }
 
   // 9. Interactive Quiz / Decision Widget Handler
@@ -165,12 +195,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event) event.stopPropagation();
     else if (window.event) window.event.stopPropagation();
 
-    const parent = btnEl.closest('.decision-options');
-    const expBox = parent.querySelector('.decision-explanation');
+    const container = btnEl.closest('.interactive-decision-box, .decision-options, .cyber-card') || btnEl.parentElement;
+    const expBox = container ? (container.querySelector('.decision-explanation') || (container.parentElement ? container.parentElement.querySelector('.decision-explanation') : null)) : null;
     
-    parent.querySelectorAll('.decision-btn').forEach(btn => {
-      btn.classList.remove('correct', 'incorrect');
-    });
+    if (container) {
+      container.querySelectorAll('.decision-btn').forEach(btn => {
+        btn.classList.remove('correct', 'incorrect');
+      });
+    }
 
     if (isCorrect) {
       btnEl.classList.add('correct');
@@ -192,29 +224,77 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event) event.stopPropagation();
     else if (window.event) window.event.stopPropagation();
 
+    // Toggle active state on interactive nodes
+    const allButtons = document.querySelectorAll('.diamond-vertex-btn, .diamond-hub-btn');
+    allButtons.forEach(btn => {
+      btn.classList.remove('active-vertex');
+      if (btn.getAttribute('data-vertex') === vertexName) {
+        btn.classList.add('active-vertex');
+      }
+    });
+
     const descEl = document.getElementById('diamond-vertex-desc');
     const dataMap = {
       'Adversary': {
         title: 'Adversary Vertex',
-        details: 'The threat actor or group behind the campaign (e.g., UNC-PHOENIX, APT41). Evaluates motivation (financial, geopolitical), sponsorship, capability tier, and operator skill level.'
+        color: '#FF6B6B',
+        badge: 'THREAT ACTOR NEXUS',
+        role: 'The entity wielding intent and capabilities against victim assets (e.g., UNC-PHOENIX, APT29, FIN7). Evaluates geopolitical motivation, operational sophistication, sponsorship, and operator working hours.',
+        artifacts: 'Campaign identifiers, language code artifacts, keyboard layout markers, operational tempo timestamps.',
+        pivot: '<strong>Pivot Strategy:</strong> Pivot from Adversary to Capability (what custom tools do they develop?) and Infrastructure (which bulletproof providers do they lease?).'
       },
       'Capability': {
         title: 'Capability Vertex',
-        details: 'The specific tools, techniques, exploits, and malware payloads wielded by the adversary (e.g., Certutil staging, Living-off-the-Land LOLBins, BlackCat ransomware encryptors).'
+        color: '#4FACFE',
+        badge: 'TOOLS & EXPLOITS',
+        role: 'All tools, techniques, exploits, and malware used by the adversary across the Cyber Kill Chain (e.g., Certutil staging, PowerShell LOLBins, Cobalt Strike M2, BlackCat ransomware).',
+        artifacts: 'File hashes (SHA-256), YARA signatures, command-line arguments, API hooking patterns, CVE exploit code.',
+        pivot: '<strong>Pivot Strategy:</strong> Pivot from Capability to Infrastructure (what C2 ports/protocols does the payload beacon to?) and Victim (what systems execute this payload?).'
       },
       'Infrastructure': {
         title: 'Infrastructure Vertex',
-        details: 'The logical and physical network nodes delivering capabilities and receiving C2 traffic (e.g., Bulletproof hosting IPs, Fast-Flux domains, Cloudflare CDN reverse proxies, SSL certificates).'
+        color: '#FFB300',
+        badge: 'C2 & TRANSIT NODES',
+        role: 'The physical and logical network elements connecting adversary capability to the victim (e.g., Bulletproof VPS, Fast-Flux domains, Cloudflare reverse proxies, Let\'s Encrypt TLS certificates).',
+        artifacts: 'IPv4/IPv6 addresses, FQDNs, Certificate Transparency SANs, ASN registrations, dynamic DNS records.',
+        pivot: '<strong>Pivot Strategy:</strong> Pivot from Infrastructure to Capability (what payloads are downloaded from this IP?) and Adversary (who registered this domain cluster?).'
       },
       'Victim': {
         title: 'Victim Vertex',
-        details: 'The organization, domain account, host, or network subnet targeted (e.g., AeroGrid Power Distribution Portal, Host 10.0.4.12, domain admin credentials).'
+        color: '#00F2FE',
+        badge: 'TARGET ASSETS',
+        role: 'The target organization, network subnet, host, software application, or user account under attack (e.g., AeroGrid Power Distribution Portal, Host WS-041, Domain Admin credentials).',
+        artifacts: 'Hostnames, internal IP subnets, target industry vertical (energy, banking), compromised AD user accounts.',
+        pivot: '<strong>Pivot Strategy:</strong> Pivot from Victim to Capability (what vulnerabilities did the victim expose?) and Infrastructure (what external IPs did the victim beacon out to?).'
+      },
+      'Event': {
+        title: 'Intrusion Event Core',
+        color: '#00E5FF',
+        badge: 'CORE INTRUSION HUB',
+        role: 'The mathematical binding point where Adversary, Capability, Infrastructure, and Victim intersect. Every intrusion is represented as a sequence of linked diamond events over time.',
+        artifacts: 'Meta-Features: Timestamp, Kill Chain Phase (e.g., Exploitation), Result (Success/Failure), Directionality.',
+        pivot: '<strong>Pivot Strategy:</strong> Graphing multiple diamond events reveals the adversary’s multi-phase attack graph, exposing backup C2 channels and lateral movement.'
       }
     };
 
-    if (descEl && dataMap[vertexName]) {
-      descEl.innerHTML = `<strong>${dataMap[vertexName].title}:</strong> ${dataMap[vertexName].details}`;
-      descEl.style.borderColor = '#00F2FE';
+    const item = dataMap[vertexName];
+    if (descEl && item) {
+      descEl.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <strong style="color: ${item.color}; font-size: 14px;">${item.title}</strong>
+          <span class="cyber-badge" style="font-size: 9px; background: rgba(255,255,255,0.06); color: ${item.color}; border: 1px solid ${item.color};">${item.badge}</span>
+        </div>
+        <div style="font-size: 12px; color: #E2E8F0; line-height: 1.5; margin-bottom: 6px;">
+          ${item.role}
+        </div>
+        <div style="font-size: 11px; color: #94A3B8; margin-bottom: 6px;">
+          <strong style="color: #CBD5E1;">Key Telemetry:</strong> ${item.artifacts}
+        </div>
+        <div style="font-size: 11px; color: var(--emerald-pass); background: rgba(0, 230, 118, 0.08); padding: 5px 8px; border-radius: 4px; border-left: 2px solid var(--emerald-pass);">
+          ${item.pivot}
+        </div>
+      `;
+      descEl.style.borderColor = item.color;
     }
   };
 

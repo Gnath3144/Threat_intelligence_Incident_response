@@ -537,35 +537,65 @@ ACT0_ACT1_SLIDES = [
             <h2>The Diamond Model: 4 Core Vertices & Meta-Features</h2>
             <p>Sergio Caltagirone's model deconstructs every malicious event into four interrelated vertices.</p>
             
-            <div class="grid-2" style="margin-top: 16px;">
-              <div style="text-align: center; background: rgba(15, 23, 42, 0.6); padding: 24px; border-radius: 12px; border: 1px solid var(--border-subtle);">
-                <div style="display: inline-block; position: relative; width: 260px; height: 260px;">
-                  <!-- Diamond Visual -->
-                  <div onclick="inspectDiamondVertex('Adversary')" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); cursor: pointer;" class="cyber-badge badge-crimson">ADVERSARY (Top)</div>
-                  <div onclick="inspectDiamondVertex('Capability')" style="position: absolute; top: 50%; left: 0; transform: translateY(-50%); cursor: pointer;" class="cyber-badge badge-blue">CAPABILITY (Left)</div>
-                  <div onclick="inspectDiamondVertex('Infrastructure')" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); cursor: pointer;" class="cyber-badge badge-amber">INFRASTRUCTURE (Right)</div>
-                  <div onclick="inspectDiamondVertex('Victim')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); cursor: pointer;" class="cyber-badge badge-cyan">VICTIM (Bottom)</div>
-                  
-                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140px; height: 140px; border: 1px dashed var(--cyber-cyan); transform: translate(-50%, -50%) rotate(45deg); pointer-events: none;"></div>
-                </div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">Click any vertex to inspect operational telemetry</div>
+            <div class="grid-2" style="margin-top: 14px; align-items: stretch;">
+              <!-- Left: Interactive Diamond SVG + Control Surface -->
+              <div class="diamond-interactive-stage" id="diamond-model-stage">
+                <svg class="diamond-svg-canvas" viewBox="0 0 480 330">
+                  <!-- Diamond Outer Perimeter Lines -->
+                  <line x1="240" y1="36" x2="80" y2="165" stroke="rgba(79, 172, 254, 0.4)" stroke-width="2" stroke-dasharray="4,4" id="line-adv-cap"/>
+                  <line x1="80" y1="165" x2="240" y2="294" stroke="rgba(0, 242, 254, 0.4)" stroke-width="2" stroke-dasharray="4,4" id="line-cap-vic"/>
+                  <line x1="240" y1="294" x2="400" y2="165" stroke="rgba(255, 179, 0, 0.4)" stroke-width="2" stroke-dasharray="4,4" id="line-vic-inf"/>
+                  <line x1="400" y1="165" x2="240" y2="36" stroke="rgba(255, 75, 75, 0.4)" stroke-width="2" stroke-dasharray="4,4" id="line-inf-adv"/>
+
+                  <!-- Internal Cross Axes -->
+                  <line x1="240" y1="50" x2="240" y2="280" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" stroke-dasharray="6,4"/>
+                  <line x1="95" y1="165" x2="385" y2="165" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+                  <!-- Meta-Feature Axis Labels -->
+                  <text x="245" y="105" fill="#64748B" font-family="monospace" font-size="9" letter-spacing="1">SOCIOPOLITICAL AXIS</text>
+                  <text x="245" y="235" fill="#64748B" font-family="monospace" font-size="9" letter-spacing="1">INTENT & IMPACT</text>
+                  <text x="100" y="152" fill="#64748B" font-family="monospace" font-size="9" letter-spacing="1">TECHNICAL AXIS</text>
+                </svg>
+
+                <!-- Interactive Vertex Nodes -->
+                <button type="button" class="diamond-vertex-btn diamond-vertex-adversary" data-vertex="Adversary" onclick="inspectDiamondVertex('Adversary', event)">
+                  <span style="font-size: 13px;">🎯</span> ADVERSARY
+                </button>
+
+                <button type="button" class="diamond-vertex-btn diamond-vertex-capability" data-vertex="Capability" onclick="inspectDiamondVertex('Capability', event)">
+                  <span style="font-size: 13px;">⚡</span> CAPABILITY
+                </button>
+
+                <button type="button" class="diamond-vertex-btn diamond-vertex-infrastructure" data-vertex="Infrastructure" onclick="inspectDiamondVertex('Infrastructure', event)">
+                  <span style="font-size: 13px;">📡</span> INFRASTRUCTURE
+                </button>
+
+                <button type="button" class="diamond-vertex-btn diamond-vertex-victim" data-vertex="Victim" onclick="inspectDiamondVertex('Victim', event)">
+                  <span style="font-size: 13px;">🛡️</span> VICTIM
+                </button>
+
+                <!-- Center Intrusion Hub -->
+                <button type="button" class="diamond-hub-btn" data-vertex="Event" onclick="inspectDiamondVertex('Event', event)" title="Click to inspect the Intrusion Event Hub">
+                  <span style="font-size: 14px; margin-bottom: 2px;">⚡</span>
+                  <span>EVENT</span>
+                  <span style="font-size: 8px; opacity: 0.8;">HUB</span>
+                </button>
               </div>
               
-              <div class="cyber-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <!-- Right: Detailed Forensic Telemetry Panel -->
+              <div class="cyber-card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 18px 20px;">
                 <div>
-                  <strong style="color: #FFF; font-size: 15px;">Vertex Operational Details:</strong>
-                  <div id="diamond-vertex-desc" style="margin-top: 10px; font-size: 13px; color: var(--text-secondary); min-height: 90px; padding: 10px; background: rgba(5,8,20,0.5); border-radius: 6px; border: 1px solid var(--border-subtle);">
-                    Click any vertex on the left to inspect its operational role, evidence types, and pivoting relationships.
+                  <strong style="color: #FFF; font-size: 14px;">Vertex Telemetry & Operational Pivots:</strong>
+                  <div id="diamond-vertex-desc" style="margin-top: 10px; font-size: 12px; color: var(--text-secondary); min-height: 140px; padding: 12px 14px; background: rgba(5,8,20,0.6); border-radius: 8px; border: 1px solid var(--border-subtle); transition: border-color 0.3s ease;">
+                    <span style="color: var(--cyber-cyan); font-weight: 600;">Click any vertex (Adversary, Capability, Infrastructure, Victim) or the center Event Hub</span> to explore its investigative telemetry, NATO Admiralty rating, and pivoting pathways.
                   </div>
                 </div>
                 
-                <div style="margin-top: 14px; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
-                  <strong style="color: var(--neon-amber); font-size: 12px;">Essential Meta-Features:</strong>
-                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
-                    • <strong>Timestamp:</strong> Start / End time of intrusion phase<br>
-                    • <strong>Phase:</strong> Cyber Kill Chain step (e.g., Installation)<br>
-                    • <strong>Result:</strong> Success, Failure, or Unknown<br>
-                    • <strong>Direction:</strong> Adversary-to-Victim, Victim-to-Infra (C2)
+                <div style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px;">
+                  <strong style="color: var(--neon-amber); font-size: 11px;">Intrusion Meta-Features:</strong>
+                  <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.5;">
+                    • <strong>Timestamp:</strong> Execution start/end window &nbsp;|&nbsp; • <strong>Phase:</strong> Cyber Kill Chain step<br>
+                    • <strong>Result:</strong> Success / Defeated / Denied &nbsp;|&nbsp; • <strong>Direction:</strong> Adversary-to-Victim / C2 Transit
                   </div>
                 </div>
               </div>

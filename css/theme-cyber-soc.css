@@ -414,3 +414,53 @@ body,
     scroll-behavior: auto !important;
   }
 }
+
+/* Responsive Layout Adaptations for Tablets and Mobile Devices */
+@media (max-width: 1024px) {
+  .telemetry-status-bar {
+    padding: 0 12px;
+  }
+  .status-left, .status-center, .status-right {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .telemetry-status-bar {
+    padding: 0 8px;
+    height: 38px;
+    font-size: 10px;
+  }
+  .status-center {
+    display: none !important;
+  }
+  .status-left .status-pill:not(:first-of-type) {
+    display: none !important;
+  }
+  .status-left, .status-right {
+    gap: 6px;
+  }
+  .status-right .nav-day-btn {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+  .diamond-interactive-stage {
+    max-width: 100% !important;
+    height: 290px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .status-left .portal-home-btn {
+    padding: 2px 5px;
+    font-size: 9px;
+  }
+  .status-right button {
+    padding: 1px 4px !important;
+    font-size: 9px !important;
+  }
+}
+

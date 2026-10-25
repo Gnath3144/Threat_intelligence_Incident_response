@@ -175,7 +175,7 @@
   <div style="text-align: left;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <div class="cyber-badge badge-cyan">EMAIL TELEMETRY</div>
-      <div id="mascot-phish-impostor"></div>
+      <div id="mascot-phish-badge-area"></div>
     </div>
     <h2>SES-06A: Deconstructing RFC 5322 Email Telemetry</h2>
     <p>Never Trust the Display Name: Dissecting Mail Transfer Agent (MTA) Hops & Authentication Records</p>
@@ -1455,40 +1455,44 @@ INCIDENT ID: INC-20261031-APT | SEVERITY: SEV-1 CRITICAL
       <!-- DAY 06 - SLIDE 31: The Post-Mortem Defense Plan & Executive Briefing -->
       <section data-day="DAY 06" data-module="SES-06C: CAPSTONE CRISIS" data-session="9:30 AM – 5:00 PM" data-ref="CERT-In Cyber Security Directions 2022; Handbook Section 7.13">
 
-          <div style="text-align: left;">
-            <div class="cyber-badge badge-amber">EXECUTIVE GOVERNANCE</div>
-            <h2>The Post-Mortem Defense Plan & Executive Briefing</h2>
-            <p>Translating Raw Telemetry into Business Impact, Root Causes, and CERT-In Regulatory Filings</p>
-            
-            <div class="grid-2" style="margin-top: 16px;">
-              <div class="cyber-card">
-                <strong style="color: var(--neon-amber); font-size: 14px;">Executive 1-Page Briefing Structure</strong>
-                <div style="font-size: 12px; line-height: 1.6; margin-top: 8px;">
-                  <p><strong>1. Executive Summary:</strong> What happened, when detected, operational status (Grid operational; zero physical damage sustained).</p>
-                  <p><strong>2. Root Cause Analysis (RCA):</strong> Spear-phishing macro on unmanaged contractor laptop; absence of MFA on internal IT-OT jump host.</p>
-                  <p><strong>3. Business & Financial Impact:</strong> Containment completed within 142 minutes; customer outage averted; zero regulatory penalties.</p>
-                  <p><strong>4. Strategic Remediation:</strong> Enforce FIDO2 hardware keys, micro-segment OT subnet with unidirectional data diodes, deploy SOAR playbooks.</p>
-                </div>
-              </div>
-              
-              <div class="cyber-card">
-                <strong style="color: var(--cyber-cyan); font-size: 14px;">CERT-In Mandatory Reporting Compliance</strong>
-                <div class="terminal-buffer" style="margin-top: 8px; font-size: 11px;">
-                  <div class="terminal-body">
-<span style="color: var(--cyber-cyan);">// CERT-In 6-Hour Incident Notification Summary:</span>
-Incident Ref: CERT-IN-2026-AEROGRID-0891
-Reporting Entity: AeroGrid Power Distribution Ltd.
-Incident Category: Unauthorized Access to Critical Infrastructure / ICS
-Time of Detection: 31-Oct-2026 14:12 IST
-Time of Reporting: 31-Oct-2026 16:30 IST (Within 6-hour statutory window)
-Containment Status: Full Network Severance & Account Revocation Completed
-Impact Assessment: Distribution Telemetry Secured; No Blackout Incurred
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        
+  <div style="text-align: left;">
+    <div class="investigation-tracker-bar">
+      <span style="color: var(--alert-crimson); font-weight: bold;">🎯 MISSION: DEFEND AEROGRID // UNC-PHOENIX INVESTIGATION</span>
+      <div class="tracker-progress-track"><div class="tracker-progress-fill" style="width: 100%;"></div></div>
+      <span style="color: var(--emerald-pass); font-weight: bold;">INCIDENT CONCLUDED (100%)</span>
+    </div>
+    <div class="cyber-badge badge-red">EXECUTIVE POST-MORTEM DOSSIER</div>
+    <h2>AeroGrid Cyber Incident Final Executive Briefing</h2>
+    <p>Evidence-Based Synthesis for Executive Leadership and CERT-In Regulatory Reporting</p>
+    
+    <div id="briefing-dossier-demo" class="briefing-dossier-card">
+      <div class="briefing-tab-row">
+        <button class="briefing-tab-btn active" onclick="switchBriefingTab('patient-zero', this)">1. PATIENT ZERO</button>
+        <button class="briefing-tab-btn" onclick="switchBriefingTab('threat-actor', this)">2. ATTRIBUTED ACTOR</button>
+        <button class="briefing-tab-btn" onclick="switchBriefingTab('lateral-path', this)">3. ATTACK PATH</button>
+        <button class="briefing-tab-btn" onclick="switchBriefingTab('containment', this)">4. REMEDIATIONS</button>
+      </div>
+      <div class="briefing-tab-content">
+        <strong>Patient Zero:</strong> Workstation <code>WS-041</code> assigned to Finance Analyst (j.smith). Compromised via spearphishing attachment at 13:42 UTC on Oct 26.
+      </div>
+    </div>
+    
+    <div class="grid-3" style="margin-top: 14px;">
+      <div class="cyber-card" style="border-left: 3px solid var(--emerald-pass);">
+        <strong style="color: var(--emerald-pass); font-size: 12px;">ROOT CAUSE ELIMINATED</strong>
+        <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Macro execution disabled tenant-wide via Group Policy (GPO).</p>
+      </div>
+      <div class="cyber-card" style="border-left: 3px solid var(--cyber-cyan);">
+        <strong style="color: var(--cyber-cyan); font-size: 12px;">IDENTITY HARDENED</strong>
+        <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">KRBTGT double reset completed; Kerberos Golden Tickets invalidated.</p>
+      </div>
+      <div class="cyber-card" style="border-left: 3px solid var(--purple-intel);">
+        <strong style="color: var(--purple-intel); font-size: 12px;">INTEL DISSEMINATED</strong>
+        <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">STIX 2.1 IOC bundle shared with National CERT-In & Energy ISAC.</p>
+      </div>
+    </div>
+  </div>
+
         <aside class="notes">
           [SAY:] Technical skill without the ability to communicate with leadership is useless. The Board of Directors does not care what Sysmon Event ID 10 is. They want to know: Did the lights go out? Was customer data stolen? Are we in legal compliance with CERT-In 6-hour mandatory reporting regulations? And what will prevent this from happening again on Monday? Presenting your post-mortem with clarity and confidence establishes your authority as a cybersecurity professional.
           [PEDAGOGY:] Emphasize the Indian regulatory landscape, including CERT-In cyber crisis management rules.
