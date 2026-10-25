@@ -43,8 +43,10 @@
   --font-heading: 'Space Grotesk', var(--font-main);
 }
 
-/* Base Presentation Environment */
-body {
+/* Base Presentation Environment & Reveal Viewport Dark SOC Foundation */
+html,
+body,
+.reveal-viewport {
   background-color: var(--bg-deep-space);
   color: var(--text-primary);
   font-family: var(--font-main);
@@ -52,8 +54,23 @@ body {
   line-height: 1.5;
 }
 
-.reveal-viewport, .reveal {
+.reveal-viewport,
+.reveal {
   overflow: hidden;
+  background-color: var(--bg-deep-space);
+  color: var(--text-primary);
+}
+
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal .slides section,
+.reveal .slides > section,
+.reveal .slides > section.present,
+.reveal .slide-background {
+  background-color: var(--bg-deep-space);
+  color: var(--text-primary);
 }
 
 /* Subtle Animated Background Grid */
@@ -67,6 +84,18 @@ body {
   background-size: 40px 40px;
   pointer-events: none;
   z-index: 1;
+}
+
+/* Live Dynamic Cyber Particle Network Canvas */
+#cyber-bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
 }
 
 /* Top Navigation & Status Bar */

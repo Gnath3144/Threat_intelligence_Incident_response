@@ -15,23 +15,28 @@ window.Cyber3D = {
   // 1. Interactive 3D Cyber Threat Globe
   renderThreatGlobe: function(containerId) {
     const container = document.getElementById(containerId);
-    if (!container || typeof THREE === 'undefined') return;
+    if (!container) return;
+    if (typeof THREE === 'undefined') {
+      this.renderStaticFallback(containerId, 'globe');
+      return;
+    }
 
     // Avoid duplicate initialization
     if (this.scenes[containerId]) return;
 
-    const width = container.clientWidth || 380;
-    const height = container.clientHeight || 320;
+    try {
+      const width = container.clientWidth || 380;
+      const height = container.clientHeight || 320;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.z = 210;
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      camera.position.z = 210;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.innerHTML = '';
-    container.appendChild(renderer.domElement);
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.innerHTML = '';
+      container.appendChild(renderer.domElement);
 
     // Prevent any clicks or drags inside container from propagating to Reveal.js
     container.addEventListener('click', (e) => e.stopPropagation());
@@ -175,8 +180,8 @@ window.Cyber3D = {
       // If mouse moved less than 6px, treat as click for Raycasting
       if (dragDistance < 6) {
         const rect = container.getBoundingClientRect();
-        mouse.x = ((e.clientX - rect.left) / container.clientWidth) * 2 - 1;
-        mouse.y = -((e.clientY - rect.top) / container.clientHeight) * 2 + 1;
+        mouse.x = ((e.clientX - rect.left) / (rect.width || container.clientWidth)) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / (rect.height || container.clientHeight)) * 2 + 1;
 
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(nodeMeshes);
@@ -220,24 +225,33 @@ window.Cyber3D = {
     }
     animate();
 
-    this.scenes[containerId] = { renderer, reqId, container };
+      this.scenes[containerId] = { renderer, reqId, container };
+    } catch (err) {
+      console.warn('renderThreatGlobe WebGL fallback activated:', err);
+      this.renderStaticFallback(containerId, 'globe');
+    }
   },
 
   // 2. 3D Interconnected Attack Surface Mesh
   renderDefenseMesh: function(containerId) {
     const container = document.getElementById(containerId);
-    if (!container || typeof THREE === 'undefined') return;
+    if (!container) return;
+    if (typeof THREE === 'undefined') {
+      this.renderStaticFallback(containerId, 'mesh');
+      return;
+    }
     if (this.scenes[containerId]) return;
 
-    const width = container.clientWidth || 400;
-    const height = container.clientHeight || 300;
+    try {
+      const width = container.clientWidth || 400;
+      const height = container.clientHeight || 300;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 160);
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+      camera.position.set(0, 0, 160);
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(width, height);
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
@@ -338,8 +352,8 @@ window.Cyber3D = {
 
       if (dragDist < 6) {
         const rect = container.getBoundingClientRect();
-        mouse.x = ((e.clientX - rect.left) / container.clientWidth) * 2 - 1;
-        mouse.y = -((e.clientY - rect.top) / container.clientHeight) * 2 + 1;
+        mouse.x = ((e.clientX - rect.left) / (rect.width || container.clientWidth)) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / (rect.height || container.clientHeight)) * 2 + 1;
 
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(nodeMeshes);
@@ -381,27 +395,36 @@ window.Cyber3D = {
     }
     animate();
 
-    this.scenes[containerId] = { renderer, reqId, container };
+      this.scenes[containerId] = { renderer, reqId, container };
+    } catch (err) {
+      console.warn('renderDefenseMesh WebGL fallback activated:', err);
+      this.renderStaticFallback(containerId, 'mesh');
+    }
   },
 
   // 3. 3D Rotating Cryptographic Defense Shield
   renderSecurityShield: function(containerId) {
     const container = document.getElementById(containerId);
-    if (!container || typeof THREE === 'undefined') return;
+    if (!container) return;
+    if (typeof THREE === 'undefined') {
+      this.renderStaticFallback(containerId, 'shield');
+      return;
+    }
     if (this.scenes[containerId]) return;
 
-    const width = container.clientWidth || 360;
-    const height = container.clientHeight || 280;
+    try {
+      const width = container.clientWidth || 360;
+      const height = container.clientHeight || 280;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.z = 120;
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      camera.position.z = 120;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.innerHTML = '';
-    container.appendChild(renderer.domElement);
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.innerHTML = '';
+      container.appendChild(renderer.domElement);
 
     container.addEventListener('click', (e) => e.stopPropagation());
 
@@ -502,7 +525,73 @@ window.Cyber3D = {
     }
     animate();
 
-    this.scenes[containerId] = { renderer, reqId, container };
+      this.scenes[containerId] = { renderer, reqId, container };
+    } catch (err) {
+      console.warn('renderSecurityShield WebGL fallback activated:', err);
+      this.renderStaticFallback(containerId, 'shield');
+    }
+  },
+
+  // Fallback SVG rendering if WebGL or Three.js is disabled/fails
+  renderStaticFallback: function(containerId, type) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (type === 'globe') {
+      container.innerHTML = `
+        <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#070C1E; padding:15px; box-sizing:border-box;">
+          <svg viewBox="0 0 400 200" style="width:90%; height:75%;">
+            <ellipse cx="200" cy="100" rx="160" ry="80" fill="none" stroke="rgba(0, 242, 254, 0.2)" stroke-dasharray="4,4"/>
+            <ellipse cx="200" cy="100" rx="100" ry="80" fill="none" stroke="rgba(0, 242, 254, 0.15)"/>
+            <line x1="40" y1="100" x2="360" y2="100" stroke="rgba(0, 242, 254, 0.25)"/>
+            <path d="M 120 70 Q 180 20 280 110" fill="none" stroke="#FF4B4B" stroke-width="2.5" stroke-dasharray="6,4"/>
+            <circle cx="120" cy="70" r="7" fill="#FF4B4B"/>
+            <text x="120" y="55" fill="#FF4B4B" font-family="monospace" font-size="9" text-anchor="middle">Frankfurt C2 (198.51.100.45)</text>
+            <circle cx="280" cy="110" r="7" fill="#00E676"/>
+            <text x="280" y="130" fill="#00E676" font-family="monospace" font-size="9" text-anchor="middle">Bangalore SOC Pod (10.20.4.15)</text>
+          </svg>
+          <div style="font-family:var(--font-mono); font-size:11px; color:#00F2FE;">[STATIC TELEMETRY FALLBACK] Active C2 Ingestion Diagram</div>
+        </div>
+      `;
+    } else if (type === 'mesh') {
+      container.innerHTML = `
+        <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#070C1E; padding:15px; box-sizing:border-box;">
+          <svg viewBox="0 0 400 180" style="width:90%; height:75%;">
+            <line x1="80" y1="90" x2="160" y2="50" stroke="#00F2FE" stroke-width="2"/>
+            <line x1="80" y1="90" x2="160" y2="130" stroke="#00F2FE" stroke-width="2"/>
+            <line x1="160" y1="50" x2="260" y2="50" stroke="#4FACFE" stroke-width="2"/>
+            <line x1="160" y1="130" x2="260" y2="130" stroke="#4FACFE" stroke-width="2"/>
+            <line x1="260" y1="50" x2="330" y2="90" stroke="#00E676" stroke-width="2"/>
+            <line x1="260" y1="130" x2="330" y2="90" stroke="#00E676" stroke-width="2"/>
+            <rect x="50" y="75" width="60" height="30" rx="4" fill="#0F172A" stroke="#FF4B4B" stroke-width="1.5"/>
+            <text x="80" y="94" fill="#FF4B4B" font-family="monospace" font-size="8" text-anchor="middle">DMZ Ingress</text>
+            <rect x="130" y="35" width="60" height="30" rx="4" fill="#0F172A" stroke="#00F2FE" stroke-width="1.5"/>
+            <text x="160" y="54" fill="#00F2FE" font-family="monospace" font-size="8" text-anchor="middle">Zeek Tap</text>
+            <rect x="130" y="115" width="60" height="30" rx="4" fill="#0F172A" stroke="#4FACFE" stroke-width="1.5"/>
+            <text x="160" y="134" fill="#4FACFE" font-family="monospace" font-size="8" text-anchor="middle">EDR Sysmon</text>
+            <rect x="230" y="35" width="60" height="30" rx="4" fill="#0F172A" stroke="#FFB300" stroke-width="1.5"/>
+            <text x="260" y="54" fill="#FFB300" font-family="monospace" font-size="8" text-anchor="middle">Tier 0 AD</text>
+            <rect x="230" y="115" width="60" height="30" rx="4" fill="#0F172A" stroke="#B388FF" stroke-width="1.5"/>
+            <text x="260" y="134" fill="#B388FF" font-family="monospace" font-size="8" text-anchor="middle">SIEM Pivot</text>
+            <rect x="300" y="75" width="60" height="30" rx="4" fill="#0F172A" stroke="#00E676" stroke-width="1.5"/>
+            <text x="330" y="94" fill="#00E676" font-family="monospace" font-size="8" text-anchor="middle">SOC Console</text>
+          </svg>
+          <div style="font-family:var(--font-mono); font-size:11px; color:#4FACFE;">[STATIC TOPOLOGY FALLBACK] Telemetry Triad Correlation</div>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `
+        <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#070C1E; padding:15px; box-sizing:border-box;">
+          <svg viewBox="0 0 200 160" style="width:70%; height:75%;">
+            <path d="M 100 15 L 165 35 L 155 105 C 145 130, 100 150, 100 150 C 100 150, 55 130, 45 105 L 35 35 Z" fill="#0F172A" stroke="#00F2FE" stroke-width="2.5"/>
+            <circle cx="100" cy="75" r="14" fill="#00E676"/>
+            <path d="M 94 75 L 98 79 L 107 70" fill="none" stroke="#050814" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <div style="font-family:var(--font-mono); font-size:11px; color:#00E676;">[PERIMETER SECURE] Zero-Trust Containment Enforced</div>
+        </div>
+      `;
+    }
   },
 
   // Cleanup helper

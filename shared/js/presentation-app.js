@@ -35,18 +35,24 @@ document.addEventListener('DOMContentLoaded', () => {
       updateTelemetryStatusBar(event);
       updateCustomCounter(event);
       triggerSlideInteractiveEngines(event.currentSlide);
+      if (window.CyberCharacters && window.CyberCharacters.mountAll) {
+        window.CyberCharacters.mountAll(event.currentSlide);
+      }
     });
 
     Reveal.on('ready', event => {
       updateTelemetryStatusBar(event);
       updateCustomCounter(event);
       triggerSlideInteractiveEngines(event.currentSlide);
+      if (window.CyberCharacters && window.CyberCharacters.mountAll) {
+        window.CyberCharacters.mountAll(document);
+      }
     });
   }
 
-  // 2. Prevent clicks on interactive cards, buttons, widgets, and mascots from bubbling to Reveal.js
+  // 2. Prevent clicks on interactive cards, buttons, widgets, mascots, and custom controls from bubbling to Reveal.js
   document.addEventListener('click', (e) => {
-    if (e.target.closest('.cyber-card, .interactive-decision-box, .three-canvas-container, .cyber-mascot, .terminal-buffer, .intel-cycle-container, .decision-btn, .phish-hotspot, button, a')) {
+    if (e.target.closest('.cyber-card, .interactive-decision-box, .three-canvas-container, .cyber-mascot, .terminal-buffer, .intel-cycle-container, .decision-btn, .phish-hotspot, button, a, [onclick], .cyber-badge, .nav-day-btn, .portal-home-btn, .decision-options')) {
       e.stopPropagation();
     }
   }, true);

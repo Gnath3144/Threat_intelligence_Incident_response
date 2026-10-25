@@ -328,5 +328,57 @@ window.CyberCharacters = {
         </svg>
       </div>
     `;
+  },
+
+  // Aliases for resilience
+  getImpostor: function(state, w, h) { return this.getPhishingImpostor(state, w, h); },
+  getEvidenceBot: function(state, w, h) { return this.getEvidenceRobot(state, w, h); },
+
+  // Auto-mount and Lifecycle Manager across Portal and Slides
+  mountAll: function(root = document) {
+    if (!root) root = document;
+
+    // 1. Attribute-based mounts: [data-mascot]
+    const elements = root.querySelectorAll ? root.querySelectorAll('[data-mascot]') : [];
+    elements.forEach(el => {
+      if (el.hasChildNodes() && el.querySelector('.cyber-mascot')) return;
+      const type = el.getAttribute('data-mascot');
+      const mood = el.getAttribute('data-mood') || 'neutral';
+      const w = parseInt(el.getAttribute('data-width') || '65', 10);
+      const h = parseInt(el.getAttribute('data-height') || '65', 10);
+
+      if (type === 'detective') el.innerHTML = this.getDetective(mood, w, h);
+      else if (type === 'alertBot') el.innerHTML = this.getAlertBot(mood, w, h);
+      else if (type === 'guardian') el.innerHTML = this.getGuardian(mood, w, h);
+      else if (type === 'impostor' || type === 'phishingImpostor') el.innerHTML = this.getPhishingImpostor(mood, w, h);
+      else if (type === 'evidenceBot' || type === 'evidenceRobot') el.innerHTML = this.getEvidenceRobot(mood, w, h);
+    });
+
+    // 2. ID-based mounts for presentation slides & portal
+    const idMap = {
+      'mascot-title-detective': () => this.getDetective('neutral', 65, 65),
+      'mascot-title-guardian': () => this.getGuardian('defending', 65, 65),
+      'mascot-soc-alert': () => this.getAlertBot('alarm', 60, 60),
+      'mascot-phish-impostor': () => this.getPhishingImpostor('luring', 55, 55),
+      'mascot-evidence-bot': () => this.getEvidenceRobot('analyzing', 60, 60),
+      'mascot-p1': () => this.getDetective('neutral', 70, 70),
+      'mascot-p2': () => this.getAlertBot('calm', 60, 60),
+      'mascot-p3': () => this.getGuardian('defending', 65, 65),
+      'mascot-p4': () => this.getEvidenceRobot('analyzing', 60, 60)
+    };
+
+    for (const [id, getter] of Object.entries(idMap)) {
+      const target = (root.querySelector ? root.querySelector('#' + id) : null) || document.getElementById(id);
+      if (target && (!target.hasChildNodes() || !target.querySelector('.cyber-mascot'))) {
+        target.innerHTML = getter();
+      }
+    }
   }
 };
+
+// Auto-run mount on DOM load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => window.CyberCharacters && window.CyberCharacters.mountAll());
+} else if (window.CyberCharacters) {
+  window.CyberCharacters.mountAll();
+}

@@ -124,9 +124,9 @@
 
   <div style="text-align: center; padding: 25px 20px;">
     <div style="display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 12px;">
-      <div id="mascot-title-detective"></div>
+      <div id="mascot-title-detective" data-mascot="detective" data-mood="neutral" data-width="65" data-height="65"></div>
       <div class="cyber-badge badge-cyan animate-fade-up">OPERATIONAL CYBERSECURITY IMMERSION</div>
-      <div id="mascot-title-guardian"></div>
+      <div id="mascot-title-guardian" data-mascot="guardian" data-mood="defending" data-width="65" data-height="65"></div>
     </div>
     <h1 class="animate-fade-up delay-1" style="font-size: 2.6em; margin-bottom: 8px;">Threat Intelligence &<br><span style="color: var(--cyber-cyan);">Incident Response</span></h1>
     <p class="animate-fade-up delay-2" style="font-size: 1.1em; color: var(--text-secondary); max-width: 800px; margin: 0 auto 24px auto;">
@@ -320,7 +320,7 @@
   <div style="text-align: left;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <div class="cyber-badge badge-red">OPENING ENGAGEMENT SCENARIO</div>
-      <div id="mascot-opening-alert"></div>
+      <div id="mascot-opening-alert" data-mascot="alertBot" data-mood="alarm" data-width="60" data-height="60"></div>
     </div>
     <h2>The Unsanctioned Dormitory Hotspot & Lateral Pivot</h2>
     <p>A Real-World Engineering Dilemma: Triage Under Time Pressure</p>
@@ -527,6 +527,16 @@ ACTION: Alert Logged (Unblocked)
       <div>
         <div class="three-canvas-container" id="globe-3d-canvas">
           <div class="three-canvas-overlay">🌐 3D GLOBAL THREAT TELEMETRY // DRAG TO ROTATE</div>
+          <svg viewBox="0 0 400 200" style="width:100%; height:100%; position:absolute; top:0; left:0; pointer-events:none;">
+            <ellipse cx="200" cy="100" rx="160" ry="80" fill="none" stroke="rgba(0, 242, 254, 0.2)" stroke-dasharray="4,4"/>
+            <ellipse cx="200" cy="100" rx="100" ry="80" fill="none" stroke="rgba(0, 242, 254, 0.15)"/>
+            <line x1="40" y1="100" x2="360" y2="100" stroke="rgba(0, 242, 254, 0.25)"/>
+            <path d="M 120 70 Q 180 20 280 110" fill="none" stroke="#FF4B4B" stroke-width="2.5" stroke-dasharray="6,4"/>
+            <circle cx="120" cy="70" r="6" fill="#FF4B4B"/>
+            <text x="120" y="55" fill="#FF4B4B" font-family="monospace" font-size="9" text-anchor="middle">Frankfurt C2 (198.51.100.45)</text>
+            <circle cx="280" cy="110" r="6" fill="#00E676"/>
+            <text x="280" y="130" fill="#00E676" font-family="monospace" font-size="9" text-anchor="middle">Bangalore SOC Pod (10.20.4.15)</text>
+          </svg>
         </div>
         <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 6px; text-align: center;">
           Active C2 telemetry arcs into Bangalore SOC Pod from Frankfurt & Virginia nodes.
@@ -1081,7 +1091,8 @@ Copy-Item -Path "D:\SOC_Master\Lab01\*" -Destination "C:\ThreatIntel_Labs\Lab01_
     </div>
   </div>
 
-  <!-- Shared Script Engines: Reveal.js, GSAP, Three.js, Mascots & Narratives -->
+  <!-- Shared Script Engines: Cyber-BG, Reveal.js, GSAP, Three.js, Mascots & Narratives -->
+  <script src="../shared/js/cyber-bg.js"></script>
   <script src="../shared/js/reveal.js"></script>
   <script src="../shared/js/gsap.min.js"></script>
   <script src="../shared/js/three.min.js"></script>

@@ -185,7 +185,9 @@
         <span style="font-family: var(--font-mono); font-size: 11px; color: #FF8A8A; font-weight: bold;">
           🔍 INTERACTIVE PHISHING EMAIL DISSECTOR (CLICK RED DASHED HOTSPOTS)
         </span>
-        <div class="phish-mascot-reaction" style="height: 35px; display: flex; align-items: center;"></div>
+        <div class="phish-mascot-reaction" style="height: 35px; display: flex; align-items: center;">
+          <div id="mascot-phish-impostor" data-mascot="impostor" data-mood="luring" data-width="55" data-height="55"></div>
+        </div>
       </div>
       <div class="phish-email-mockup">
         <div><strong>From:</strong> <span class="phish-hotspot" onclick="inspectPhishHotspot('display-name', this)">"Dr. K. Narayanan, Director" &lt;director@recipient-corp.com&gt;</span></div>
@@ -590,6 +592,11 @@ code "C:\Threat_Intel_IR_2026\06_Datasets\sample_phishing_email.eml"
       <div>
         <div class="three-canvas-container" id="shield-3d-canvas">
           <div class="three-canvas-overlay">🛡️ 3D CRYPTOGRAPHIC DEFENSE SHIELD // ACTIVE CONTAINMENT</div>
+          <svg viewBox="0 0 200 160" style="width:100%; height:100%; position:absolute; top:0; left:0; pointer-events:none;">
+            <path d="M 100 15 L 165 35 L 155 105 C 145 130, 100 150, 100 150 C 100 150, 55 130, 45 105 L 35 35 Z" fill="#0F172A" stroke="#00F2FE" stroke-width="2.5"/>
+            <circle cx="100" cy="75" r="14" fill="#00E676"/>
+            <path d="M 94 75 L 98 79 L 107 70" fill="none" stroke="#050814" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
         </div>
         <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 6px; text-align: center;">
           Active cryptographic boundary isolating infected subnet 10.0.4.0/24.
@@ -1567,7 +1574,8 @@ Impact Assessment: Distribution Telemetry Secured; No Blackout Incurred
     </div>
   </div>
 
-  <!-- Shared Script Engines: Reveal.js, GSAP, Three.js, Mascots & Narratives -->
+  <!-- Shared Script Engines: Cyber-BG, Reveal.js, GSAP, Three.js, Mascots & Narratives -->
+  <script src="../shared/js/cyber-bg.js"></script>
   <script src="../shared/js/reveal.js"></script>
   <script src="../shared/js/gsap.min.js"></script>
   <script src="../shared/js/three.min.js"></script>

@@ -589,11 +589,11 @@
         <p style="font-size: 12px; color: var(--text-muted);">Authoritative source mappings, day-wise test matrices, and technical operational manuals.</p>
       </div>
       <div class="doc-links">
-        <a href="../Threat_Intelligence_Incident_Response_Presentation_Technical_Guide.md" class="doc-link" target="_blank">📄 Technical Guide</a>
-        <a href="../Overall_Presentation_Audit_Report.md" class="doc-link" target="_blank">🛡️ Master Audit Report</a>
-        <a href="../Day_Wise_Presentation_Coverage_Matrix.xlsx" class="doc-link" target="_blank">📊 Coverage Matrix (XLSX)</a>
-        <a href="../Day_Wise_Presentation_Test_Matrix.xlsx" class="doc-link" target="_blank">🧪 Test Matrix (XLSX)</a>
-        <a href="../Threat_Intelligence_Incident_Response_Presentation_Preview/index.html" class="doc-link" target="_blank">🖼️ Preview Gallery</a>
+        <a href="docs/Threat_Intelligence_Incident_Response_Presentation_Technical_Guide.md" class="doc-link" target="_blank">📄 Technical Guide</a>
+        <a href="docs/Overall_Presentation_Audit_Report.md" class="doc-link" target="_blank">🛡️ Master Audit Report</a>
+        <a href="docs/Day_Wise_Presentation_Coverage_Matrix.xlsx" class="doc-link" target="_blank">📊 Coverage Matrix (XLSX)</a>
+        <a href="docs/Day_Wise_Presentation_Test_Matrix.xlsx" class="doc-link" target="_blank">🧪 Test Matrix (XLSX)</a>
+        <a href="docs/FINAL_QA_REPORT.md" class="doc-link" target="_blank">🛡️ Final QA Report</a>
       </div>
     </div>
 
@@ -605,15 +605,13 @@
 
   </div>
 
-  <!-- Shared Mascot Script -->
+  <!-- Live Cyber Particle Background & Shared Mascot Script -->
+  <script src="shared/js/cyber-bg.js"></script>
   <script src="shared/js/characters.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      if (window.CyberCharacters) {
-        document.getElementById('mascot-p1').innerHTML = window.CyberCharacters.getDetective('neutral', 70, 70);
-        document.getElementById('mascot-p2').innerHTML = window.CyberCharacters.getAlertBot('calm', 60, 60);
-        document.getElementById('mascot-p3').innerHTML = window.CyberCharacters.getGuardian('defending', 65, 65);
-        document.getElementById('mascot-p4').innerHTML = window.CyberCharacters.getEvidenceRobot('analyzing', 60, 60);
+      if (window.CyberCharacters && window.CyberCharacters.mountAll) {
+        window.CyberCharacters.mountAll();
       }
     });
   </script>
